@@ -1,0 +1,170 @@
+.dr-page {
+  background: #f5f6f8;
+  min-height: 100vh;
+  padding: 24rpx;
+}
+
+.dr-header {
+  margin-bottom: 0;
+}
+
+.dr-badge {
+  display: inline-block;
+  font-size: 20rpx;
+  color: #1A6EFF;
+  background: #edf2ff;
+  border-radius: 6rpx;
+  padding: 4rpx 16rpx;
+  margin-bottom: 20rpx;
+}
+
+.dr-student-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.dr-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background: #1A6EFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.dr-avatar-text {
+  font-size: 30rpx;
+  color: #fff;
+  font-weight: 600;
+}
+
+.dr-student-name {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 4rpx;
+}
+
+.dr-student-meta {
+  display: block;
+  font-size: 22rpx;
+  color: #888;
+  margin-bottom: 2rpx;
+}
+
+.dr-scores {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  padding: 24rpx 0;
+}
+
+.dr-score-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dr-score-val {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.dr-score-warn   { color: #ff7043; }
+.dr-score-target { color: #1A6EFF; }
+
+.dr-score-label {
+  font-size: 22rpx;
+  color: #aaa;
+  margin-top: 4rpx;
+}
+
+.dr-score-arrow {
+  font-size: 32rpx;
+  color: #ccc;
+}
+
+.dr-score-gap-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dr-score-gap {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #4CAF50;
+}
+
+/* 卡点列表 */
+.dr-point-item {
+  padding: 20rpx 0;
+}
+
+.dr-point-border {
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.dr-point-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.dr-point-desc {
+  font-size: 24rpx;
+  color: #888;
+  line-height: 1.6;
+}
+
+/* 规划 */
+.dr-plan-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 16rpx;
+}
+
+.dr-plan-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: #1A6EFF;
+  margin-top: 10rpx;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.dr-plan-text {
+  font-size: 26rpx;
+  color: #444;
+  line-height: 1.7;
+  flex: 1;
+}
+
+/* 老师签名 */
+.dr-sign {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 20rpx;
+  gap: 16rpx;
+}
+
+.dr-sign-name {
+  font-size: 24rpx;
+  color: #555;
+  font-weight: 500;
+}
+
+.dr-sign-date {
+  font-size: 22rpx;
+  color: #aaa;
+}

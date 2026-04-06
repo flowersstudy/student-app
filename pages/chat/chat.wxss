@@ -1,0 +1,452 @@
+/* ========================
+   微信仿真聊天页
+======================== */
+
+.chat-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #ededed;
+  position: relative;
+}
+
+/* ========================
+   右上角菜单
+======================== */
+.nav-more {
+  position: fixed;
+  top: calc(20rpx + env(safe-area-inset-top));
+  right: 24rpx;
+  z-index: 100;
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-more-icon {
+  font-size: 42rpx;
+  color: #1a1a1a;
+  font-weight: 700;
+  letter-spacing: -4rpx;
+}
+
+/* ========================
+   消息列表
+======================== */
+.msg-list {
+  flex: 1;
+  padding: 20rpx 16rpx;
+  height: calc(100vh - 120rpx);
+  box-sizing: border-box;
+}
+
+.msg-item {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 36rpx;
+  align-items: flex-start;
+}
+
+.msg-right {
+  flex-direction: row-reverse;
+}
+
+/* ========================
+   头像 — 微信圆角方形
+======================== */
+.msg-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 10rpx;
+  flex-shrink: 0;
+}
+
+.avatar-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-self {
+  background: #5b9bd5;
+}
+
+.avatar-other {
+  background: #f0a500;
+}
+
+.msg-avatar-text {
+  color: #ffffff;
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+/* ========================
+   消息体
+======================== */
+.msg-body {
+  max-width: 540rpx;
+  margin: 0 14rpx;
+}
+
+.msg-meta {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 10rpx;
+  margin-bottom: 8rpx;
+}
+
+.meta-right {
+  flex-direction: row-reverse;
+}
+
+.msg-name {
+  font-size: 22rpx;
+  color: #888888;
+}
+
+.msg-time {
+  font-size: 20rpx;
+  color: #b2b2b2;
+}
+
+/* ========================
+   气泡 — 带尾巴
+======================== */
+.msg-bubble {
+  position: relative;
+  border-radius: 8rpx;
+  padding: 18rpx 22rpx;
+  display: inline-block;
+  max-width: 100%;
+}
+
+/* 对方气泡：白色，左侧尾巴 */
+.bubble-white {
+  background: #ffffff;
+}
+
+.bubble-white::before {
+  content: '';
+  position: absolute;
+  top: 16rpx;
+  left: -14rpx;
+  width: 0;
+  height: 0;
+  border-top: 9rpx solid transparent;
+  border-right: 14rpx solid #ffffff;
+  border-bottom: 9rpx solid transparent;
+}
+
+/* 自己气泡：微信绿，右侧尾巴 */
+.bubble-green {
+  background: #95ec69;
+}
+
+.bubble-green::after {
+  content: '';
+  position: absolute;
+  top: 16rpx;
+  right: -14rpx;
+  width: 0;
+  height: 0;
+  border-top: 9rpx solid transparent;
+  border-left: 14rpx solid #95ec69;
+  border-bottom: 9rpx solid transparent;
+}
+
+.msg-content {
+  font-size: 30rpx;
+  line-height: 1.55;
+  color: #1a1a1a;
+  word-break: break-all;
+}
+
+/* ========================
+   底部输入区
+======================== */
+.input-area-wrap {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #f7f7f7;
+  border-top: 1rpx solid #d9d9d9;
+}
+
+.input-bar {
+  padding: 14rpx 16rpx;
+  padding-bottom: calc(14rpx + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 14rpx;
+}
+
+.input-action {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.input-action-icon {
+  font-size: 40rpx;
+}
+
+/* 输入框 — 白色，微信式矩形 */
+.chat-input {
+  flex: 1;
+  background: #ffffff;
+  border-radius: 8rpx;
+  padding: 14rpx 18rpx;
+  font-size: 30rpx;
+  height: 72rpx;
+  box-sizing: border-box;
+  line-height: 1.4;
+}
+
+.input-placeholder {
+  color: #c0c0c0;
+  font-size: 30rpx;
+}
+
+/* 按住说话按钮 */
+.voice-btn {
+  flex: 1;
+  background: #ffffff;
+  border-radius: 8rpx;
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1rpx solid #d9d9d9;
+}
+
+.voice-btn-text {
+  font-size: 28rpx;
+  color: #333333;
+}
+
+/* 发送按钮 — 微信绿 */
+.send-btn {
+  background: #07c160;
+  border-radius: 8rpx;
+  padding: 14rpx 24rpx;
+  flex-shrink: 0;
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.send-text {
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+/* ========================
+   表情面板
+======================== */
+.emoji-panel {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 16rpx 12rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  background: #f7f7f7;
+  border-top: 1rpx solid #d9d9d9;
+}
+
+.emoji-item {
+  width: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14rpx 0;
+}
+
+.emoji-text {
+  font-size: 46rpx;
+}
+
+/* ========================
+   更多面板
+======================== */
+.more-panel {
+  display: flex;
+  flex-direction: row;
+  padding: 28rpx 0 calc(28rpx + env(safe-area-inset-bottom));
+  background: #f7f7f7;
+  border-top: 1rpx solid #d9d9d9;
+}
+
+.more-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.more-icon-box {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 22rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.more-icon-blue   { background: #e8f0ff; }
+.more-icon-purple { background: #f0ebff; }
+.more-icon-green  { background: #e8fff0; }
+.more-icon-orange { background: #fff4e6; }
+.more-icon-red    { background: #fff0f0; }
+
+.more-icon {
+  font-size: 48rpx;
+}
+
+.more-label {
+  font-size: 20rpx;
+  color: #7d7d7d;
+}
+
+/* ========================
+   成员弹窗
+======================== */
+.panel-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 200;
+}
+
+.member-panel {
+  position: fixed;
+  top: 0;
+  right: -600rpx;
+  width: 560rpx;
+  height: 100vh;
+  background: #f7f7f7;
+  z-index: 300;
+  padding: 80rpx 32rpx 40rpx;
+  transition: right 0.3s ease;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.panel-show {
+  right: 0;
+}
+
+.panel-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #1a1a1a;
+  display: block;
+  margin-bottom: 32rpx;
+}
+
+.member-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #ebebeb;
+}
+
+.member-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 10rpx;
+  background: #5b9bd5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+}
+
+.member-avatar-text {
+  color: #ffffff;
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.member-info {
+  flex: 1;
+}
+
+.member-name {
+  font-size: 28rpx;
+  color: #1a1a1a;
+  font-weight: 500;
+  display: block;
+}
+
+.member-role {
+  font-size: 22rpx;
+  color: #999999;
+  display: block;
+  margin-top: 4rpx;
+}
+
+.divider {
+  height: 1rpx;
+  background: #ebebeb;
+  margin: 24rpx 0;
+}
+
+.clear-btn {
+  margin-top: 8rpx;
+  text-align: center;
+  padding: 24rpx;
+  background: #ffffff;
+  border-radius: 12rpx;
+}
+
+.clear-btn-text {
+  color: #fa5151;
+  font-size: 28rpx;
+}
+
+/* ========================
+   空状态
+======================== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 160rpx 64rpx;
+}
+
+.empty-icon {
+  font-size: 96rpx;
+  margin-bottom: 32rpx;
+}
+
+.empty-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #333333;
+  margin-bottom: 20rpx;
+}
+
+.empty-desc {
+  font-size: 26rpx;
+  color: #999999;
+  line-height: 1.7;
+  text-align: center;
+  margin-bottom: 48rpx;
+}
+
+.empty-btn {
+  width: 320rpx;
+}

@@ -1,0 +1,272 @@
+.pending-title {
+  color: #ff4d4f;
+  font-weight: 700;
+}
+
+.resolved-title {
+  color: #52c41a;
+  font-weight: 700;
+}
+
+/* ===== 总学习时长卡 ===== */
+.study-time-card {
+  margin: 16rpx 24rpx 0;
+}
+
+.st-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.st-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.st-label {
+  font-size: 24rpx;
+  color: #999999;
+  margin-bottom: 6rpx;
+}
+
+.st-value {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #1A6EFF;
+  line-height: 1.1;
+}
+
+.st-right {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.st-hint {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.st-arrow {
+  font-size: 40rpx;
+  color: #aaaaaa;
+  transform: rotate(0deg);
+  transition: transform 0.2s;
+  display: inline-block;
+}
+
+.st-arrow-up {
+  transform: rotate(90deg);
+}
+
+.st-detail {
+  margin-top: 4rpx;
+}
+
+.stp-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.stp-name {
+  font-size: 24rpx;
+  color: #555555;
+  width: 220rpx;
+  flex-shrink: 0;
+}
+
+.stp-bar-bg {
+  flex: 1;
+  height: 10rpx;
+  background: #eeeeee;
+  border-radius: 6rpx;
+  margin: 0 16rpx;
+  overflow: hidden;
+}
+
+.stp-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #1A6EFF, #4a9eff);
+  border-radius: 6rpx;
+}
+
+.stp-time {
+  font-size: 24rpx;
+  color: #1A6EFF;
+  font-weight: 600;
+  width: 120rpx;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.results-page {
+  min-height: 100vh;
+  background: #f5f6fa;
+  padding-bottom: 120rpx;
+}
+
+.stats-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding: 40rpx 24rpx;
+  background: #ffffff;
+  margin-bottom: 16rpx;
+}
+
+.stat-circle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.circle-inner {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1A6EFF, #4a9eff);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16rpx;
+  box-shadow: 0 8rpx 24rpx rgba(26, 110, 255, 0.3);
+}
+
+.stat-circle-solved .circle-inner {
+  background: linear-gradient(135deg, #52c41a, #95de64);
+  box-shadow: 0 8rpx 24rpx rgba(82, 196, 26, 0.3);
+}
+
+.stat-circle-pending .circle-inner {
+  background: linear-gradient(135deg, #fa8c16, #ffc069);
+  box-shadow: 0 8rpx 24rpx rgba(250, 140, 22, 0.3);
+}
+
+.circle-num {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.circle-unit {
+  font-size: 22rpx;
+  color: rgba(255,255,255,0.85);
+  margin-top: 4rpx;
+}
+
+.circle-label {
+  font-size: 26rpx;
+  color: #666666;
+  font-weight: 500;
+}
+
+.section-header-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 16rpx 24rpx 8rpx;
+}
+
+.section-dot {
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  margin-right: 12rpx;
+}
+
+.solved-dot {
+  background: #52c41a;
+}
+
+.pending-dot {
+  background: #fa8c16;
+}
+
+.section-title-bar {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+  flex: 1;
+}
+
+.section-count {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.point-block {
+  padding: 28rpx;
+}
+
+.point-block-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.point-block-summary {
+  font-size: 26rpx;
+  color: #666666;
+  line-height: 1.6;
+  margin-top: 16rpx;
+  display: block;
+}
+
+.point-block-date {
+  font-size: 22rpx;
+  color: #999999;
+  margin-top: 12rpx;
+  display: block;
+}
+
+.btn-detail {
+  background: #e8f0ff;
+  color: #1A6EFF;
+  font-size: 24rpx;
+  padding: 10rpx 24rpx;
+  border-radius: 28rpx;
+  border: none;
+  line-height: 1.5;
+}
+
+.btn-detail::after {
+  border: none;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 120rpx 64rpx;
+}
+
+.empty-icon {
+  font-size: 96rpx;
+  margin-bottom: 32rpx;
+}
+
+.empty-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #333333;
+  margin-bottom: 20rpx;
+}
+
+.empty-desc {
+  font-size: 26rpx;
+  color: #999999;
+  line-height: 1.7;
+  text-align: center;
+  margin-bottom: 48rpx;
+}
+
+.empty-btn {
+  width: 320rpx;
+}

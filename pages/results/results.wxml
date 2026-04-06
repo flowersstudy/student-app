@@ -1,0 +1,97 @@
+<view class="results-page">
+
+  <!-- 未购课空状态 -->
+  <block wx:if="{{!isEnrolled}}">
+    <view class="empty-state">
+      <view class="empty-icon">📊</view>
+      <text class="empty-title">暂无学习数据</text>
+      <text class="empty-desc">购课并开始学习后，你的卡点突破记录、学习时长、老师寄语都会在这里展示</text>
+      <button class="btn-primary empty-btn" bindtap="goEnroll">去选课</button>
+    </view>
+  </block>
+
+  <!-- 已购课内容 -->
+  <block wx:else>
+
+  <!-- 总学习时长 -->
+  <view class="study-time-card card" bindtap="toggleStudyTime">
+    <view class="st-header">
+      <view class="st-left">
+        <text class="st-label">累计学习时长</text>
+        <text class="st-value">{{totalStudyDisplay}}</text>
+      </view>
+      <view class="st-right">
+        <text class="st-hint">按卡点查看</text>
+        <text class="st-arrow {{studyTimeExpanded ? 'st-arrow-up' : ''}}">›</text>
+      </view>
+    </view>
+    <view wx:if="{{studyTimeExpanded}}" class="st-detail">
+      <view class="divider" style="margin:16rpx 0 12rpx;"></view>
+      <view wx:for="{{studyTimeByPoint}}" wx:key="id" class="stp-row">
+        <text class="stp-name">{{item.name}}</text>
+        <view class="stp-bar-bg">
+          <view class="stp-bar-fill" style="width:{{item.pct}}%;"></view>
+        </view>
+        <text class="stp-time">{{item.display}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 顶部3个圆形统计 -->
+  <view class="stats-row">
+    <view class="stat-circle">
+      <view class="circle-inner">
+        <text class="circle-num">{{stats.scoreGap}}</text>
+        <text class="circle-unit">分</text>
+      </view>
+      <text class="circle-label">提分目标</text>
+    </view>
+    <view class="stat-circle stat-circle-solved">
+      <view class="circle-inner">
+        <text class="circle-num">{{stats.solved}}</text>
+        <text class="circle-unit">个</text>
+      </view>
+      <text class="circle-label">已突破</text>
+    </view>
+    <view class="stat-circle stat-circle-pending">
+      <view class="circle-inner">
+        <text class="circle-num">{{stats.pending}}</text>
+        <text class="circle-unit">个</text>
+      </view>
+      <text class="circle-label">待解决</text>
+    </view>
+  </view>
+
+  <!-- 已解决卡点 -->
+  <view class="section-header-bar">
+    <view class="section-dot solved-dot"></view>
+    <text class="section-title-bar resolved-title">已解决</text>
+    <text class="section-count">{{solvedPoints.length}}个</text>
+  </view>
+
+  <view wx:for="{{solvedPoints}}" wx:key="id" class="card point-block">
+    <view class="row-between">
+      <text class="point-block-name">{{item.name}}</text>
+      <button class="btn-detail" bindtap="goCardDetail" data-id="{{item.id}}">学习数据</button>
+    </view>
+    <text class="point-block-summary">{{item.summary}}</text>
+    <text class="point-block-date">完成时间：{{item.completedAt}}</text>
+  </view>
+
+  <!-- 待解决卡点 -->
+  <view class="section-header-bar">
+    <view class="section-dot pending-dot"></view>
+    <text class="section-title-bar pending-title">待解决</text>
+    <text class="section-count">{{pendingPoints.length}}个</text>
+  </view>
+
+  <view wx:for="{{pendingPoints}}" wx:key="id" class="card point-block">
+    <view class="row-between">
+      <text class="point-block-name">{{item.name}}</text>
+    </view>
+    <text class="point-block-summary">{{item.desc}}</text>
+  </view>
+
+  <view class="safe-bottom"></view>
+  </block>
+</view>

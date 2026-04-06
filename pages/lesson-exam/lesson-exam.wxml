@@ -1,0 +1,117 @@
+<view class="exam-page">
+
+  <!-- 考题信息 -->
+  <view class="card">
+    <view class="exam-header">
+      <text class="tag tag-orange">{{examInfo.type}}</text>
+      <text class="tag tag-gray" style="margin-left:12rpx;">限时 {{examInfo.timeLimit}}</text>
+    </view>
+    <text class="exam-title">{{examInfo.title}}</text>
+  </view>
+
+  <!-- 题目讲义 -->
+  <view class="card">
+    <text class="section-title">题目 & 讲义</text>
+    <view wx:for="{{files}}" wx:key="id" class="file-card {{item.url ? '' : 'file-card-disabled'}}" bindtap="openFile" data-id="{{item.id}}">
+      <view class="file-icon {{item.type === '解析' ? 'file-icon-green' : ''}} {{item.url ? '' : 'file-icon-gray'}}">
+        <text class="file-icon-text">PDF</text>
+      </view>
+      <view class="file-info">
+        <text class="file-name {{item.url ? '' : 'file-name-gray'}}">{{item.name}}</text>
+        <text class="file-size">{{item.type}}</text>
+      </view>
+      <text wx:if="{{item.opened}}" class="tag tag-green">已打开</text>
+      <text wx:elif="{{item.url}}" class="file-arrow">›</text>
+      <text wx:else class="tag tag-gray">暂未上传</text>
+    </view>
+  </view>
+
+  <!-- 作答区 -->
+  <view class="card">
+    <text class="section-title">作答</text>
+
+    <!-- 倒计时显示区 -->
+    <view class="timer-display {{timeLow ? 'timer-display-low' : ''}} {{timeUp ? 'timer-display-up' : ''}}">
+      <text class="timer-badge">倒计时</text>
+      <text class="timer-text">{{timerDisplay}}</text>
+      <view class="timer-status-row">
+        <view wx:if="{{timerRunning}}" class="timer-dot-wrap">
+          <view class="timer-dot"></view>
+        </view>
+        <text class="timer-label">
+          {{timeUp ? '时间已到，请提交答案' : timeLow ? '剩余时间不足5分钟' : timerRunning ? '计时中' : '点击开始'}}
+        </text>
+      </view>
+    </view>
+
+    <!-- 按钮行 -->
+    <view class="btn-row">
+      <button
+        class="btn-flow {{timeUp ? 'btn-flow-disabled' : ''}}"
+        bindtap="toggleTimer"
+        disabled="{{timeUp}}"
+      >{{timerRunning ? '暂停' : timeUp ? '已结束' : '开始计时'}}</button>
+      <button class="btn-flow btn-flow-outline" bindtap="resetTimer">重置</button>
+      <button class="btn-flow btn-flow-outline" bindtap="openTimerEdit">编辑时长</button>
+    </view>
+    <button class="btn-upload" bindtap="uploadAnswer">上传答案</button>
+  </view>
+
+  <!-- 编辑时长 Modal -->
+  <view wx:if="{{showTimerEdit}}" class="modal-mask">
+    <view class="modal-box">
+      <text class="modal-title">设置考试时长</text>
+      <view class="modal-row">
+        <text class="modal-label">时长（分钟）</text>
+        <view style="display:flex;align-items:center;">
+          <input
+            class="modal-input"
+            type="number"
+            value="{{editMinutes}}"
+            bindinput="onEditMinutesInput"
+            placeholder="60"
+          />
+          <text class="modal-unit">分钟</text>
+        </view>
+      </view>
+      <view class="modal-btns">
+        <view class="modal-btn modal-btn-cancel" bindtap="cancelTimerEdit"><text>取消</text></view>
+        <view class="modal-btn modal-btn-confirm" bindtap="confirmTimerEdit"><text>确定</text></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 视频解析 -->
+  <view class="card">
+    <text class="section-title">解析视频</text>
+    <view class="video-banner" bindtap="watchAnalysis">
+      <view class="video-play-icon">▶</view>
+      <view class="video-info">
+        <text class="video-title">观看考题解析视频</text>
+        <text class="video-sub">{{examInfo.title}}</text>
+      </view>
+      <text class="video-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 笔记 -->
+  <view class="card">
+    <text class="section-title">备考笔记</text>
+    <textarea
+      class="input-area"
+      placeholder="记录本次考试的思路、问题或复盘..."
+      value="{{notes}}"
+      bindinput="onNotesInput"
+      auto-height
+      style="min-height:160rpx;"
+    />
+    <view class="ask-btn-row" style="margin-top:16rpx;">
+      <view class="ask-btn" bindtap="askTeacher">
+        <text class="ask-icon">💬</text>
+        <text class="ask-text">向老师提问</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="safe-bottom"></view>
+</view>

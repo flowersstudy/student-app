@@ -1,0 +1,82 @@
+<view class="purchase-page">
+
+  <!-- 卡点说明 -->
+  <view class="card">
+    <view class="row" style="margin-bottom:16rpx;">
+      <text class="point-name">{{pointInfo.name}}</text>
+      <text class="tag tag-blue" style="margin-left:16rpx;">{{pointInfo.type}}</text>
+    </view>
+    <text class="point-desc">{{pointInfo.desc}}</text>
+
+    <view class="divider" style="margin:20rpx 0;"></view>
+
+    <text class="section-title">课程包含</text>
+    <view wx:for="{{pointInfo.details}}" wx:key="index" class="detail-item">
+      <text class="detail-dot">·</text>
+      <text class="detail-text">{{item}}</text>
+    </view>
+  </view>
+
+  <!-- 学习团队 -->
+  <view class="card">
+    <text class="section-title" style="margin-bottom:20rpx;">我的学习团队</text>
+
+    <view wx:for="{{team}}" wx:key="role" class="team-member-card">
+      <!-- 已分配 -->
+      <view wx:if="{{item.status === 'assigned'}}" class="team-member-inner">
+        <view class="team-avatar team-avatar-assigned">
+          <text class="team-avatar-text">{{item.avatar}}</text>
+        </view>
+        <view class="team-info">
+          <view class="team-name-row">
+            <text class="team-name">{{item.name}}</text>
+            <text class="team-tag">{{item.tag}}</text>
+          </view>
+          <text class="team-role">{{item.role}}</text>
+          <text class="team-desc">{{item.desc}}</text>
+        </view>
+        <view class="team-status-badge team-badge-assigned">
+          <text class="team-badge-icon">🔒</text>
+          <text class="team-badge-text">已分配</text>
+        </view>
+      </view>
+
+      <!-- 待分配 -->
+      <view wx:if="{{item.status === 'pending'}}" class="team-member-inner team-member-pending">
+        <view class="team-avatar team-avatar-pending">
+          <text class="team-avatar-pending-icon">?</text>
+        </view>
+        <view class="team-info">
+          <view class="team-name-row">
+            <text class="team-name team-name-pending">待分配</text>
+            <text class="team-tag">{{item.tag}}</text>
+          </view>
+          <text class="team-role">{{item.role}}</text>
+          <text class="team-desc">{{item.desc}}</text>
+        </view>
+        <view class="team-status-badge team-badge-pending">
+          <text class="team-badge-icon">⏳</text>
+          <text class="team-badge-text">待分配</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 价格展示 -->
+  <view class="card price-card">
+    <view class="price-detail">
+      <text class="price-formula">¥{{unitPrice}} / 节</text>
+      <view class="price-total-row">
+        <text class="price-total-label">合计</text>
+        <text class="price-total">¥{{totalPrice}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 付款按钮 -->
+  <view class="pay-area">
+    <button class="btn-primary pay-btn" bindtap="goPayment">去付款</button>
+  </view>
+
+  <view class="safe-bottom"></view>
+</view>

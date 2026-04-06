@@ -1,0 +1,146 @@
+.diagnose-page {
+  background: #f5f6f8;
+  min-height: 100vh;
+  padding: 24rpx;
+}
+
+.dl-timeline {
+  position: relative;
+}
+
+.dl-item {
+  display: flex;
+  align-items: stretch;
+}
+
+.dl-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+  width: 24rpx;
+}
+
+.dl-dot {
+  width: 24rpx;
+  height: 24rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 10rpx;
+}
+.dl-dot-green { background: #4CAF50; }
+.dl-dot-blue  { background: #1A6EFF; }
+.dl-dot-gray  { background: #d0d0d0; }
+
+.dl-line {
+  width: 2rpx;
+  flex: 1;
+  background: #e4e4e4;
+  min-height: 20rpx;
+  margin-top: 4rpx;
+}
+
+.dl-content {
+  flex: 1;
+  padding-bottom: 24rpx;
+}
+
+.dl-card {
+  /* inherits global .card */
+}
+
+.dl-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+
+.dl-step-num {
+  font-size: 22rpx;
+  color: #aaa;
+  font-weight: 500;
+  letter-spacing: 1rpx;
+}
+
+.dl-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 8rpx;
+}
+
+.dl-time {
+  display: block;
+  font-size: 22rpx;
+  color: #fa8c16;
+  margin-bottom: 4rpx;
+}
+
+.dl-btn {
+  margin-top: 20rpx;
+  width: 100%;
+}
+
+.dl-tip {
+  margin-top: 16rpx;
+  padding: 16rpx 20rpx;
+  background: #f8f9fa;
+  border-radius: 10rpx;
+}
+
+.dl-tip-text {
+  font-size: 24rpx;
+  color: #888;
+}
+
+.dl-upload-row {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-top: 16rpx;
+  padding: 18rpx 20rpx;
+  border: 1.5rpx dashed #c8d8ff;
+  border-radius: 12rpx;
+  background: #f4f7ff;
+}
+
+.dl-upload-icon {
+  font-size: 32rpx;
+  color: #1A6EFF;
+  line-height: 1;
+}
+
+.dl-upload-label {
+  font-size: 26rpx;
+  color: #1A6EFF;
+}
+
+.dl-file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12rpx;
+  padding: 14rpx 18rpx;
+  background: #f5f6fa;
+  border-radius: 10rpx;
+}
+
+.dl-file-item-name {
+  font-size: 24rpx;
+  color: #333;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 16rpx;
+}
+
+.dl-file-item-del {
+  font-size: 32rpx;
+  color: #bbb;
+  flex-shrink: 0;
+  line-height: 1;
+}

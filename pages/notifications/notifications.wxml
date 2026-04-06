@@ -1,0 +1,54 @@
+<view class="notif-page">
+
+  <view wx:if="{{notifications.length === 0}}" class="notif-empty">
+    <text class="notif-empty-icon">🔔</text>
+    <text class="notif-empty-text">暂无新通知</text>
+  </view>
+
+  <view wx:else>
+    <!-- 置顶提醒（上课 / 考试）-->
+    <view wx:if="{{notifications[0].pinned}}" class="notif-section-label">重要提醒</view>
+    <view
+      wx:for="{{notifications}}"
+      wx:key="index"
+      wx:if="{{item.pinned}}"
+      class="notif-item notif-item-pinned"
+      bindtap="onItemTap"
+      data-url="{{item.url}}"
+      data-pinned="{{item.pinned}}"
+    >
+      <view class="notif-item-bar notif-bar-{{item.type}}"></view>
+      <view class="notif-item-icon-wrap notif-bg-{{item.type}}">
+        <text class="notif-item-icon">{{item.type === 'class' ? '📖' : '📝'}}</text>
+      </view>
+      <view class="notif-item-body">
+        <text class="notif-item-label">{{item.label}}</text>
+        <text class="notif-item-desc">{{item.desc}}</text>
+      </view>
+      <view class="notif-item-arrow"><text class="notif-arrow-text">›</text></view>
+    </view>
+
+    <!-- 普通提醒 -->
+    <view class="notif-section-label">其他提醒</view>
+    <view
+      wx:for="{{notifications}}"
+      wx:key="index"
+      wx:if="{{!item.pinned}}"
+      class="notif-item"
+      bindtap="onItemTap"
+      data-url="{{item.url}}"
+      data-pinned="{{item.pinned}}"
+    >
+      <view class="notif-item-bar notif-bar-{{item.type}}"></view>
+      <view class="notif-item-icon-wrap notif-bg-{{item.type}}">
+        <text class="notif-item-icon">{{item.type === 'hw' ? '📋' : item.type === 'drill' ? '✏️' : '🎬'}}</text>
+      </view>
+      <view class="notif-item-body">
+        <text class="notif-item-label">{{item.label}}</text>
+        <text class="notif-item-desc">{{item.desc}}</text>
+      </view>
+      <view class="notif-item-arrow"><text class="notif-arrow-text">›</text></view>
+    </view>
+  </view>
+
+</view>

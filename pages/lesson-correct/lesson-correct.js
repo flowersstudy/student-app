@@ -1,0 +1,95 @@
+Page({
+  data: {
+    lessonInfo: {
+      date: '2026年3月30日 周一',
+      time: '15:00 - 16:00',
+      teacher: '李老师',
+      subject: '1v1纠偏 - 提炼转述错误',
+      status: '待开始'
+    },
+    uploadedFiles: [],
+    topicOptions: [
+      { id: 1, name: '上次作业点评', selected: true },
+      { id: 2, name: '错误模式分析', selected: false },
+      { id: 3, name: '纠偏练习指导', selected: false }
+    ],
+    notes: '',
+    feedback: ''
+  },
+  onLoad() {},
+  selectTopic(e) {
+    const id = e.currentTarget.dataset.id
+    const topicOptions = this.data.topicOptions.map(t => ({
+      ...t, selected: t.id === id
+    }))
+    this.setData({ topicOptions })
+  },
+  choosePhoto() {
+    wx.chooseImage({
+      count: 1,
+      sizeType: ['compressed'],
+      sourceType: ['camera'],
+      success: (res) => this._doUpload(res.tempFilePaths[0], '作业图片.jpg'),
+    })
+  },
+  chooseFile() {
+    wx.chooseMessageFile({
+      count: 1,
+      type: 'file',
+      extension: ['pdf'],
+      success: (res) => this._doUpload(res.tempFiles[0].path, res.tempFiles[0].name),
+    })
+  },
+  _doUpload(filePath, fileName) {
+    const app    = getApp()
+    const profile = app.globalData.userProfile
+    const lesson  = this.data.lessonInfo
+    const topic   = this.data.topicOptions.find(t => t.selected) || {}
+
+    wx.showLoading({ title: '上传中…', mask: true })
+    wx.uploadFile({
+      url: `${app.globalData.serverBase}/api/submissions`,
+      filePath,
+      name: 'file',
+      formData: {
+        studentName:     profile.name,
+        studentId:       profile.name,
+        reviewType:      '卡点练习题',
+        checkpoint:      topic.name || lesson.subject,
+        deadline:        '今日 23:59',
+        priority:        'normal',
+        submittedNormal: 'true',
+      },
+      success: (res) => {
+        wx.hideLoading()
+        const result = JSON.parse(res.data)
+        if (result.ok) {
+          const uploadedFiles = [...this.data.uploadedFiles, { name: fileName, id: result.id }]
+          this.setData({ uploadedFiles })
+          wx.showToast({ title: '作业已提交', icon: 'success' })
+        } else {
+          wx.showToast({ title: result.error || '上传失败', icon: 'none' })
+        }
+      },
+      fail: () => {
+        wx.hideLoading()
+        wx.showToast({ title: '网络错误，请重试', icon: 'none' })
+      },
+    })
+  },
+  enterCourse() {
+    wx.showToast({ title: '正在进入课程...', icon: 'loading' })
+  },
+  viewReport() {
+    wx.showToast({ title: '报告加载中...', icon: 'loading' })
+  },
+  viewPlayback() {
+    wx.showToast({ title: '回放加载中...', icon: 'loading' })
+  },
+  onNotesInput(e) {
+    this.setData({ notes: e.detail.value })
+  },
+  onFeedbackInput(e) {
+    this.setData({ feedback: e.detail.value })
+  }
+})

@@ -1,0 +1,72 @@
+<view class="dr-page">
+
+  <!-- 头部 -->
+  <view class="card dr-header">
+    <view class="dr-badge">专属诊断报告</view>
+    <view class="dr-student-row">
+      <view class="dr-avatar">
+        <text class="dr-avatar-text">{{student.name[0]}}</text>
+      </view>
+      <view class="dr-student-info">
+        <text class="dr-student-name">{{student.name}}</text>
+        <text class="dr-student-meta">{{student.exam}}</text>
+        <text class="dr-student-meta">诊断日期：{{student.diagnosisDate}}</text>
+      </view>
+    </view>
+
+    <view class="dr-scores">
+      <view class="dr-score-item">
+        <text class="dr-score-val dr-score-warn">{{diagnosisScore}}</text>
+        <text class="dr-score-label">诊断分数</text>
+      </view>
+      <text class="dr-score-arrow">→</text>
+      <view class="dr-score-item">
+        <text class="dr-score-val dr-score-target">{{targetScore}}</text>
+        <text class="dr-score-label">目标分数</text>
+      </view>
+      <view class="dr-score-gap-wrap">
+        <text class="dr-score-gap">+{{scoreGap}}</text>
+        <text class="dr-score-label">提分目标</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 核心卡点 -->
+  <view class="card">
+    <text class="section-title">核心失分卡点</text>
+    <view wx:for="{{corePoints}}" wx:key="id" class="dr-point-item {{index < corePoints.length - 1 ? 'dr-point-border' : ''}}">
+      <view class="row-between" style="margin-bottom:10rpx;">
+        <text class="dr-point-name">{{item.name}}</text>
+        <text class="tag {{item.priority === '高' ? 'tag-orange' : 'tag-gray'}}">{{item.priority}}优先</text>
+      </view>
+      <text class="dr-point-desc">{{item.desc}}</text>
+    </view>
+  </view>
+
+  <!-- 学习规划 -->
+  <view class="card">
+    <text class="section-title">学习规划</text>
+    <view wx:for="{{plan}}" wx:key="index" class="dr-plan-item">
+      <view class="dr-plan-dot"></view>
+      <text class="dr-plan-text">{{item}}</text>
+    </view>
+  </view>
+
+  <!-- 老师点评 -->
+  <view class="card">
+    <text class="section-title">老师评语</text>
+    <view class="message-wrap">
+      <text class="teacher-message {{messageExpanded ? '' : 'message-collapsed'}}">{{teacherComment}}</text>
+    </view>
+    <view class="expand-btn" bindtap="toggleMessage">
+      <text class="expand-text">{{messageExpanded ? '收起' : '展开全文'}}</text>
+      <text class="expand-icon">{{messageExpanded ? '▲' : '▼'}}</text>
+    </view>
+    <view class="dr-sign">
+      <text class="dr-sign-name">{{student.teacher}}</text>
+      <text class="dr-sign-date">{{student.diagnosisDate}}</text>
+    </view>
+  </view>
+
+  <view class="safe-bottom"></view>
+</view>

@@ -1,0 +1,69 @@
+<view class="mailbox-page">
+
+  <!-- 提交成功状态 -->
+  <view wx:if="{{submitted}}" class="success-wrap">
+    <text class="success-icon">📬</text>
+    <text class="success-title">已投递</text>
+    <text class="success-desc">感谢你的反馈，校长将认真阅读每一封信。</text>
+    <view class="btn-again" bindtap="reset">
+      <text class="btn-again-text">再写一封</text>
+    </view>
+  </view>
+
+  <!-- 填写表单 -->
+  <view wx:else>
+
+    <view class="mailbox-intro card">
+      <text class="mailbox-intro-icon">📮</text>
+      <view class="mailbox-intro-text">
+        <text class="mailbox-intro-title">校长信箱</text>
+        <text class="mailbox-intro-desc">你的意见将直接送达校长，支持匿名投递。</text>
+      </view>
+    </view>
+
+    <view class="card">
+      <!-- 分类选择 -->
+      <view class="form-row">
+        <text class="form-label">反馈类型</text>
+        <picker range="{{categories}}" value="{{categories.indexOf(category)}}" bindchange="onCategoryChange">
+          <view class="form-picker">
+            <text class="form-picker-val">{{category}}</text>
+            <text class="form-picker-arrow">▾</text>
+          </view>
+        </picker>
+      </view>
+
+      <view class="form-divider"></view>
+
+      <!-- 匿名开关 -->
+      <view class="form-row">
+        <text class="form-label">匿名投递</text>
+        <view class="toggle-wrap" bindtap="toggleAnonymous">
+          <view class="toggle {{anonymous ? 'toggle-on' : ''}}">
+            <view class="toggle-thumb {{anonymous ? 'toggle-thumb-on' : ''}}"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 内容输入 -->
+    <view class="card">
+      <text class="form-label" style="margin-bottom:16rpx;display:block;">内容</text>
+      <textarea
+        class="mailbox-textarea"
+        placeholder="请写下你想对校长说的话，包括学习体验、课程建议、问题反馈等..."
+        placeholder-class="mailbox-placeholder"
+        value="{{content}}"
+        bindinput="onContentInput"
+        auto-height
+        style="min-height:240rpx;"
+        maxlength="500"
+      />
+      <text class="mailbox-count">{{content.length}}/500</text>
+    </view>
+
+    <button class="btn-submit" bindtap="submit">投递</button>
+
+  </view>
+
+</view>

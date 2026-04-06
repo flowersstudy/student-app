@@ -1,0 +1,258 @@
+.progress-page {
+  min-height: 100vh;
+  background: #f5f6fa;
+  padding-bottom: 120rpx;
+}
+
+.teacher-card {
+  margin-top: 16rpx;
+}
+
+.teacher-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.teacher-info {
+  flex: 1;
+  margin: 0 16rpx;
+}
+
+.teacher-name-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 6rpx;
+}
+
+.teacher-name {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.teacher-title-tag {
+  font-size: 20rpx;
+  color: #1A6EFF;
+  background: rgba(26,110,255,0.1);
+  padding: 3rpx 12rpx;
+  border-radius: 10rpx;
+}
+
+.teacher-years {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.teacher-arrow {
+  font-size: 36rpx;
+  color: #ccc;
+  flex-shrink: 0;
+}
+
+.teacher-pending-row {
+  opacity: 0.85;
+}
+
+.teacher-avatar-pending {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  border: 3rpx dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 20rpx;
+}
+
+.teacher-pending-icon {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #ccc;
+}
+
+.teacher-pending-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #999;
+  display: block;
+  margin-bottom: 6rpx;
+}
+
+.teacher-pending-desc {
+  font-size: 22rpx;
+  color: #bbb;
+  display: block;
+}
+
+.teacher-divider {
+  height: 1rpx;
+  background: #f0f0f0;
+  margin: 20rpx 0;
+}
+
+.progress-row {
+  /* inherits layout */
+}
+
+.teacher-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1A6EFF, #4a9eff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 20rpx;
+}
+
+.teacher-avatar-text {
+  color: #ffffff;
+  font-size: 36rpx;
+  font-weight: 700;
+}
+
+.progress-center {
+  flex: 1;
+  margin-right: 20rpx;
+}
+
+.progress-label {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.progress-percent {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #1A6EFF;
+}
+
+.progress-bar-bg {
+  height: 12rpx;
+  background: #f0f0f0;
+  border-radius: 6rpx;
+  overflow: hidden;
+  margin-bottom: 8rpx;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #1A6EFF, #4a9eff);
+  border-radius: 6rpx;
+}
+
+
+.task-card {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+}
+
+.task-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.task-day {
+  font-size: 22rpx;
+  color: #999999;
+}
+
+.task-label {
+  font-size: 28rpx;
+  color: #333333;
+  font-weight: 500;
+  flex: 1;
+}
+
+.btn-task {
+  background: #1A6EFF;
+  color: #ffffff;
+  font-size: 24rpx;
+  padding: 12rpx 28rpx;
+  border-radius: 36rpx;
+  border: none;
+  flex-shrink: 0;
+  line-height: 1.5;
+}
+
+.btn-task::after {
+  border: none;
+}
+
+.subtask-toggle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 20rpx;
+  padding-top: 4rpx;
+}
+
+.subtask-toggle-line {
+  flex: 1;
+  height: 1rpx;
+  background: #eeeeee;
+}
+
+.subtask-toggle-arrow {
+  font-size: 22rpx;
+  color: #cccccc;
+  padding: 0 16rpx;
+}
+
+.subtask-arrow-up {
+  display: inline-block;
+  transform: rotate(180deg);
+}
+
+.subtask-list {
+  margin-top: 12rpx;
+}
+
+.subtask-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 18rpx 0;
+  border-bottom: 1rpx solid #f5f6fa;
+}
+
+.subtask-item:last-child {
+  border-bottom: none;
+}
+
+.subtask-index {
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  background: #f0f0f0;
+  font-size: 20rpx;
+  font-weight: 700;
+  color: #999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 16rpx;
+}
+
+.subtask-title {
+  font-size: 26rpx;
+  color: #333;
+  flex: 1;
+  margin-right: 12rpx;
+}
+
+.subtask-arrow {
+  font-size: 32rpx;
+  color: #ccc;
+  margin-left: 8rpx;
+}

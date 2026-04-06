@@ -1,0 +1,168 @@
+<view class="diagnose-page">
+  <view class="dl-timeline">
+
+    <!-- ── Step 1 建立专属诊断群 ── -->
+    <view class="dl-item">
+      <view class="dl-left">
+        <view class="dl-dot dl-dot-green"></view>
+        <view class="dl-line"></view>
+      </view>
+      <view class="dl-content">
+        <view class="card dl-card">
+          <view class="dl-header">
+            <text class="dl-step-num">Step 1</text>
+            <text class="tag tag-green">已完成</text>
+          </view>
+          <text class="dl-title">建立专属诊断群</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ── Step 2 1v1 电话沟通 ── -->
+    <view class="dl-item">
+      <view class="dl-left">
+        <view class="dl-dot {{step2.status === '已完成' ? 'dl-dot-green' : step2.status === '待电话沟通' ? 'dl-dot-blue' : 'dl-dot-gray'}}"></view>
+        <view class="dl-line"></view>
+      </view>
+      <view class="dl-content">
+        <view class="card dl-card">
+          <view class="dl-header">
+            <text class="dl-step-num">Step 2</text>
+            <text class="tag {{step2.status === '已完成' ? 'tag-green' : step2.status === '待电话沟通' ? 'tag-blue' : 'tag-gray'}}">{{step2.status}}</text>
+          </view>
+          <text class="dl-title">1v1 电话沟通</text>
+          <text class="dl-time">2天内完成</text>
+          <button wx:if="{{step2.status === '待约时间'}}" class="btn-outline dl-btn" bindtap="scheduleCall">去约时间</button>
+          <view wx:elif="{{step2.status === '待电话沟通'}}" class="dl-tip">
+            <text class="dl-tip-text">等待电话沟通，请保持手机畅通</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- ── Step 3 针对性配卷 ── -->
+    <view class="dl-item">
+      <view class="dl-left">
+        <view class="dl-dot {{step3.status === '去答题' ? 'dl-dot-blue' : 'dl-dot-gray'}}"></view>
+        <view class="dl-line"></view>
+      </view>
+      <view class="dl-content">
+        <view class="card dl-card">
+          <view class="dl-header">
+            <text class="dl-step-num">Step 3</text>
+            <text class="tag {{step3.status === '去答题' ? 'tag-blue' : 'tag-gray'}}">{{step3.status}}</text>
+          </view>
+          <text class="dl-title">诊断卷</text>
+          <text class="dl-time">3天内完成</text>
+
+          <block wx:if="{{step3.status === '去答题'}}">
+            <!-- 试卷 PDF -->
+            <view class="file-card {{step3.fileUrl ? '' : 'file-card-disabled'}}" style="margin-top:20rpx;" bindtap="openPaper">
+              <view class="file-icon {{step3.fileUrl ? '' : 'file-icon-gray'}}">
+                <text class="file-icon-text">PDF</text>
+              </view>
+              <view class="file-info">
+                <text class="file-name {{step3.fileUrl ? '' : 'file-name-gray'}}">{{step3.fileName}}</text>
+              </view>
+              <text wx:if="{{step3.fileOpened}}" class="tag tag-green">已打开</text>
+              <text wx:elif="{{step3.fileUrl}}" class="file-arrow">›</text>
+              <text wx:else class="tag tag-gray">暂未上传</text>
+            </view>
+            <!-- 上传答案 -->
+            <button
+              class="{{step3.answerUploaded ? 'btn-primary' : 'btn-outline'}} dl-btn"
+              style="margin-top:16rpx;"
+              bindtap="uploadAnswer"
+            >{{step3.answerUploaded ? '答案已上传 ✓' : '上传答案'}}</button>
+          </block>
+        </view>
+      </view>
+    </view>
+
+    <!-- ── Step 4 听解析 ── -->
+    <view class="dl-item">
+      <view class="dl-left">
+        <view class="dl-dot {{step4.feedbackSubmitted ? 'dl-dot-green' : step4.status === '去反馈' ? 'dl-dot-blue' : 'dl-dot-gray'}}"></view>
+        <view class="dl-line"></view>
+      </view>
+      <view class="dl-content">
+        <view class="card dl-card">
+          <view class="dl-header">
+            <text class="dl-step-num">Step 4</text>
+            <text class="tag {{step4.feedbackSubmitted ? 'tag-green' : step4.status === '去反馈' ? 'tag-blue' : 'tag-gray'}}">
+              {{step4.feedbackSubmitted ? '已反馈' : step4.status}}
+            </text>
+          </view>
+          <text class="dl-title">听解析</text>
+          <text class="dl-time">2天内完成</text>
+
+          <block wx:if="{{step4.status === '去反馈' && !step4.feedbackSubmitted}}">
+            <textarea
+              class="input-area"
+              placeholder="填写听课收获及思考..."
+              value="{{step4.feedback}}"
+              bindinput="onFeedbackInput"
+              auto-height
+              style="min-height:120rpx;margin-top:20rpx;"
+            />
+            <!-- 上传文档 -->
+            <view class="dl-upload-row" bindtap="uploadFeedbackFile">
+              <text class="dl-upload-icon">＋</text>
+              <text class="dl-upload-label">上传文档</text>
+            </view>
+            <!-- 已上传文件列表 -->
+            <view wx:for="{{step4.uploadedFiles}}" wx:key="index" class="dl-file-item">
+              <text class="dl-file-item-name">{{item.name}}</text>
+              <text class="dl-file-item-del" data-index="{{index}}" bindtap="removeFeedbackFile">×</text>
+            </view>
+            <button class="btn-outline dl-btn" style="margin-top:12rpx;" bindtap="submitFeedback">提交反馈</button>
+          </block>
+          <view wx:elif="{{step4.feedbackSubmitted}}" class="dl-tip">
+            <text class="dl-tip-text">反馈已提交，等待老师查看</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- ── Step 5 1v1 诊断沟通 ── -->
+    <view class="dl-item">
+      <view class="dl-left">
+        <view class="dl-dot {{step5.status === '已完成' ? 'dl-dot-green' : step5.status === '待上课' ? 'dl-dot-blue' : 'dl-dot-gray'}}"></view>
+        <view class="dl-line"></view>
+      </view>
+      <view class="dl-content">
+        <view class="card dl-card">
+          <view class="dl-header">
+            <text class="dl-step-num">Step 5</text>
+            <text class="tag {{step5.status === '已完成' ? 'tag-green' : step5.status === '待上课' ? 'tag-blue' : 'tag-gray'}}">{{step5.status}}</text>
+          </view>
+          <text class="dl-title">1v1 诊断沟通</text>
+          <text class="dl-time">3天内完成</text>
+          <button wx:if="{{step5.status === '待约课'}}" class="btn-outline dl-btn" bindtap="scheduleCourse">去约课</button>
+          <view wx:elif="{{step5.status === '待上课'}}" class="dl-tip">
+            <text class="dl-tip-text">等待上课，请按约定时间进入课堂</text>
+          </view>
+          <button wx:elif="{{step5.status === '已完成'}}" class="btn-outline dl-btn" bindtap="viewPlayback">查看回放</button>
+        </view>
+      </view>
+    </view>
+
+    <!-- ── Step 6 出具报告 ── -->
+    <view class="dl-item">
+      <view class="dl-left">
+        <view class="dl-dot dl-dot-gray"></view>
+      </view>
+      <view class="dl-content">
+        <view class="card dl-card">
+          <view class="dl-header">
+            <text class="dl-step-num">Step 6</text>
+          </view>
+          <text class="dl-title">出具报告</text>
+          <button class="btn-outline dl-btn" bindtap="viewReport">查看报告</button>
+        </view>
+      </view>
+    </view>
+
+  </view>
+  <view class="safe-bottom"></view>
+</view>

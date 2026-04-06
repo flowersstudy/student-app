@@ -1,0 +1,214 @@
+.purchase-page {
+  min-height: 100vh;
+  background: #f5f6fa;
+  padding-bottom: 200rpx;
+}
+
+.point-name {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #333333;
+}
+
+.point-desc {
+  font-size: 28rpx;
+  color: #666666;
+  line-height: 1.7;
+  display: block;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  margin-bottom: 12rpx;
+}
+
+.detail-dot {
+  font-size: 28rpx;
+  color: #1A6EFF;
+  margin-right: 12rpx;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.detail-text {
+  font-size: 26rpx;
+  color: #555555;
+  line-height: 1.6;
+  flex: 1;
+}
+
+.team-member-card {
+  border-radius: 16rpx;
+  border: 2rpx solid #eeeeee;
+  margin-bottom: 16rpx;
+  background: #fafafa;
+  overflow: hidden;
+}
+
+.team-member-inner {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 24rpx;
+}
+
+.team-member-pending {
+  background: #fffbe6;
+  border-color: #ffe58f;
+}
+
+.team-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 20rpx;
+}
+
+.team-avatar-assigned {
+  background: linear-gradient(135deg, #1A6EFF, #4a9eff);
+}
+
+.team-avatar-pending {
+  background: #e8e8e8;
+}
+
+.team-avatar-text {
+  color: #ffffff;
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.team-avatar-pending-icon {
+  color: #aaaaaa;
+  font-size: 40rpx;
+  font-weight: 700;
+}
+
+.team-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.team-name-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 4rpx;
+}
+
+.team-name {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #333333;
+  margin-right: 12rpx;
+}
+
+.team-name-pending {
+  color: #aaaaaa;
+}
+
+.team-tag {
+  font-size: 20rpx;
+  color: #1A6EFF;
+  background: #e8f0ff;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+}
+
+.team-role {
+  font-size: 22rpx;
+  color: #aaaaaa;
+  display: block;
+  margin-bottom: 6rpx;
+}
+
+.team-desc {
+  font-size: 24rpx;
+  color: #999999;
+  line-height: 1.5;
+  display: block;
+}
+
+.team-status-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+  flex-shrink: 0;
+  margin-left: 16rpx;
+}
+
+.team-badge-assigned {
+  opacity: 0.6;
+}
+
+.team-badge-pending {
+  opacity: 0.8;
+}
+
+.team-badge-icon {
+  font-size: 32rpx;
+}
+
+.team-badge-text {
+  font-size: 20rpx;
+  color: #999999;
+}
+
+.price-card {
+  background: linear-gradient(135deg, #f0f4ff, #ffffff);
+  border: 2rpx solid #e8f0ff;
+}
+
+.price-detail {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.price-formula {
+  font-size: 26rpx;
+  color: #999999;
+}
+
+.price-total-row {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+}
+
+.price-total-label {
+  font-size: 26rpx;
+  color: #666666;
+  margin-right: 12rpx;
+}
+
+.price-total {
+  font-size: 52rpx;
+  font-weight: 700;
+  color: #ff4d4f;
+}
+
+.pay-area {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24rpx 32rpx;
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+  background: #ffffff;
+  box-shadow: 0 -2rpx 16rpx rgba(0,0,0,0.08);
+}
+
+.pay-btn {
+  width: 100%;
+  padding: 28rpx 0;
+  font-size: 32rpx;
+}

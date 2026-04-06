@@ -1,0 +1,54 @@
+{
+  "pages": [
+    "pages/splash/splash",
+    "pages/login/login",
+    "pages/register/register",
+    "pages/home/home",
+    "pages/progress/progress",
+    "pages/chat/chat",
+    "pages/results/results",
+    "pages/card-detail/card-detail",
+    "pages/lesson-live/lesson-live",
+    "pages/lesson-recorded/lesson-recorded",
+    "pages/lesson-correct/lesson-correct",
+    "pages/lesson-drill/lesson-drill",
+    "pages/purchase/purchase",
+    "pages/course-intro/course-intro",
+    "pages/leave/leave",
+    "pages/lesson-exam/lesson-exam",
+    "pages/review/review",
+    "pages/diagnose/diagnose",
+    "pages/diagnose-report/diagnose-report",
+    "pages/notifications/notifications",
+    "pages/mailbox/mailbox",
+    "pages/teacher/teacher"
+  ],
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#1A6EFF",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/chat/chat",
+        "text": "找老师"
+      },
+      {
+        "pagePath": "pages/results/results",
+        "text": "复盘"
+      }
+    ]
+  },
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTitleText": "学习助手",
+    "navigationBarTextStyle": "black"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

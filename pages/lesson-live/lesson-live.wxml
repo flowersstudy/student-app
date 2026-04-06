@@ -1,0 +1,81 @@
+<view class="lesson-page">
+  <view class="timeline">
+
+    <!-- 课前 -->
+    <view class="timeline-item">
+      <view class="timeline-left">
+        <view class="timeline-dot"></view>
+        <view class="timeline-line"></view>
+      </view>
+      <view class="timeline-content">
+        <text class="phase-label">课前</text>
+        <view class="phase-card">
+          <view class="lesson-info-row">
+            <text class="info-icon">📅</text>
+            <text class="info-text">{{lessonInfo.date}} {{lessonInfo.time}}</text>
+          </view>
+          <view class="lesson-info-row">
+            <text class="info-icon">👤</text>
+            <text class="info-text">{{lessonInfo.teacher}} · {{lessonInfo.subject}}</text>
+          </view>
+          <view class="row-between" style="margin-top:20rpx;">
+            <text class="tag tag-blue">{{lessonInfo.status}}</text>
+            <button class="btn-outline" bindtap="viewReport">查看报告</button>
+          </view>
+
+        </view>
+      </view>
+    </view>
+
+    <!-- 上课中 -->
+    <view class="timeline-item">
+      <view class="timeline-left">
+        <view class="timeline-dot"></view>
+        <view class="timeline-line"></view>
+      </view>
+      <view class="timeline-content">
+        <text class="phase-label">上课中</text>
+        <view class="phase-card">
+          <button class="btn-enter" bindtap="enterCourse">进入课程</button>
+        </view>
+      </view>
+    </view>
+
+    <!-- 课后 -->
+    <view class="timeline-item">
+      <view class="timeline-left">
+        <view class="timeline-dot timeline-dot-gray"></view>
+      </view>
+      <view class="timeline-content">
+        <text class="phase-label">课后</text>
+        <view class="phase-card">
+          <text class="sub-label">课堂笔记</text>
+          <textarea
+            class="input-area"
+            placeholder="记录本次课堂重点..."
+            value="{{notes}}"
+            bindinput="onNotesInput"
+            auto-height
+          />
+
+          <button class="btn-outline" style="margin-top:20rpx;width:100%;" bindtap="viewPlayback">
+            观看课堂回放
+          </button>
+
+          <view class="divider" style="margin:20rpx 0;"></view>
+
+          <text class="sub-label">课堂反馈</text>
+          <textarea
+            class="input-area"
+            placeholder="分享本次课程的收获或问题..."
+            value="{{feedback}}"
+            bindinput="onFeedbackInput"
+            auto-height
+          />
+        </view>
+      </view>
+    </view>
+
+  </view>
+  <view class="safe-bottom"></view>
+</view>

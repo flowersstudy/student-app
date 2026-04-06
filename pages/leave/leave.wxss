@@ -1,0 +1,389 @@
+.leave-page {
+  min-height: 100vh;
+  background: #f5f6fa;
+  padding-bottom: 120rpx;
+}
+
+/* 请假类型选择 */
+.type-row {
+  display: flex;
+  flex-direction: row;
+  gap: 20rpx;
+  margin-top: 16rpx;
+}
+
+.type-item {
+  flex: 1;
+  border: 2rpx solid #e8e8e8;
+  border-radius: 16rpx;
+  padding: 28rpx 20rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10rpx;
+  background: #fafafa;
+}
+
+.type-item-active {
+  border-color: #1A6EFF;
+  background: #f0f5ff;
+}
+
+.type-icon {
+  font-size: 48rpx;
+}
+
+.type-label {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.type-desc {
+  font-size: 22rpx;
+  color: #999999;
+  text-align: center;
+}
+
+.type-item-active .type-label {
+  color: #1A6EFF;
+}
+
+/* 请假课程 picker */
+.picker-label {
+  font-size: 24rpx;
+  color: #999;
+  display: block;
+  margin-bottom: 10rpx;
+  margin-top: 16rpx;
+}
+
+.picker-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background: #f5f6fa;
+  border-radius: 12rpx;
+  padding: 22rpx 24rpx;
+  border: 1.5rpx solid #e8e8e8;
+}
+
+.picker-value {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+  flex: 1;
+}
+
+.picker-arrow {
+  font-size: 28rpx;
+  color: #aaa;
+  margin-left: 12rpx;
+}
+
+/* 原因输入 */
+.input-placeholder {
+  color: #cccccc;
+  font-size: 28rpx;
+}
+
+.char-count {
+  font-size: 22rpx;
+  color: #cccccc;
+  display: block;
+  text-align: right;
+  margin-top: 8rpx;
+}
+
+/* 补课意向 */
+.makeup-row {
+  display: flex;
+  flex-direction: row;
+  gap: 20rpx;
+  margin-top: 16rpx;
+}
+
+.makeup-item {
+  flex: 1;
+  border: 2rpx solid #e8e8e8;
+  border-radius: 12rpx;
+  padding: 22rpx;
+  text-align: center;
+  background: #fafafa;
+}
+
+.makeup-active {
+  border-color: #1A6EFF;
+  background: #f0f5ff;
+}
+
+.makeup-label {
+  font-size: 28rpx;
+  color: #333333;
+  font-weight: 500;
+}
+
+.makeup-active .makeup-label {
+  color: #1A6EFF;
+}
+
+/* ===== 请假预警卡 ===== */
+.leave-warn-card {
+  margin: 0 24rpx 16rpx;
+  background: #fffbe6;
+  border: 1.5rpx solid #ffe58f;
+  border-radius: 16rpx;
+  padding: 24rpx;
+}
+
+.lw-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #ad6800;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.lw-body {
+  font-size: 26rpx;
+  color: #555555;
+  line-height: 1.7;
+  display: block;
+  margin-bottom: 14rpx;
+}
+
+.lw-body-miss {
+  color: #aaaaaa;
+  font-size: 24rpx;
+  margin-top: -6rpx;
+}
+
+.lw-highlight {
+  color: #fa8c16;
+  font-weight: 600;
+}
+
+.lw-exam-alert {
+  border-radius: 10rpx;
+  padding: 14rpx 16rpx;
+  margin-top: 4rpx;
+}
+
+.lw-exam-high {
+  background: #fff1f0;
+  border: 1rpx solid #ffa39e;
+}
+
+.lw-exam-medium {
+  background: #fff7e6;
+  border: 1rpx solid #ffd591;
+}
+
+.lw-exam-low {
+  background: #f6ffed;
+  border: 1rpx solid #b7eb8f;
+}
+
+.lw-exam-text {
+  font-size: 24rpx;
+  color: #333333;
+  line-height: 1.6;
+}
+
+/* 提示说明 */
+.notice-card {
+  margin: 0 24rpx 24rpx;
+  background: #fffbe6;
+  border-radius: 12rpx;
+  padding: 20rpx 24rpx;
+  border: 1rpx solid #ffe58f;
+}
+
+.notice-text {
+  font-size: 24rpx;
+  color: #ad6800;
+  line-height: 1.7;
+}
+
+/* 提交按钮 */
+.submit-btn {
+  width: 100%;
+  margin-top: 8rpx;
+}
+
+.btn-disabled {
+  background: #bbb !important;
+  color: #fff !important;
+}
+
+/* ===== 警告 Banner ===== */
+.warn-banner {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  border-radius: 14rpx;
+  padding: 20rpx 18rpx;
+  margin-top: 16rpx;
+  gap: 14rpx;
+}
+
+.warn-ban-red {
+  background: #fff1f0;
+  border: 1.5rpx solid #ffa39e;
+}
+
+.warn-ban-orange {
+  background: #fff7e6;
+  border: 1.5rpx solid #ffd591;
+}
+
+.warn-icon {
+  font-size: 32rpx;
+  flex-shrink: 0;
+  margin-top: 2rpx;
+}
+
+.warn-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.warn-title {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #333;
+  display: block;
+  margin-bottom: 4rpx;
+  line-height: 1.5;
+}
+
+.warn-sub {
+  font-size: 22rpx;
+  color: #888;
+  display: block;
+  line-height: 1.5;
+}
+
+.warn-btn-sm {
+  flex-shrink: 0;
+  background: #1A6EFF;
+  color: #fff;
+  font-size: 22rpx;
+  font-weight: 600;
+  border-radius: 20rpx;
+  padding: 8rpx 18rpx;
+  align-self: center;
+}
+
+/* ===== 提交后状态卡 ===== */
+.status-card {
+  margin: 32rpx 24rpx;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 48rpx 32rpx 36rpx;
+  box-shadow: 0 4rpx 24rpx rgba(0,0,0,0.07);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.status-icon-wrap {
+  margin-bottom: 24rpx;
+}
+
+.status-icon {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-icon-pending {
+  background: linear-gradient(135deg, #1A6EFF, #4a9eff);
+}
+
+.status-icon-approved {
+  background: linear-gradient(135deg, #52c41a, #73d13d);
+}
+
+.status-icon-text {
+  color: #fff;
+  font-size: 48rpx;
+  font-weight: 700;
+}
+
+.status-main-text {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #1a1a1a;
+  display: block;
+  margin-bottom: 10rpx;
+  text-align: center;
+}
+
+.status-sub-text {
+  font-size: 24rpx;
+  color: #888;
+  line-height: 1.6;
+  text-align: center;
+  display: block;
+  margin-bottom: 32rpx;
+}
+
+.status-detail-card {
+  width: 100%;
+  background: #f8f9fb;
+  border-radius: 16rpx;
+  padding: 4rpx 0;
+  margin-bottom: 28rpx;
+}
+
+.status-detail-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18rpx 24rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.status-detail-row-last {
+  border-bottom: none;
+}
+
+.status-detail-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.status-detail-value {
+  font-size: 26rpx;
+  color: #333;
+  font-weight: 500;
+  text-align: right;
+  flex: 1;
+  margin-left: 16rpx;
+}
+
+.status-value-pending {
+  color: #fa8c16;
+}
+
+.status-value-approved {
+  color: #52c41a;
+}
+
+.status-chat-btn {
+  background: #f0f5ff;
+  border-radius: 50rpx;
+  padding: 18rpx 48rpx;
+}
+
+.status-chat-text {
+  font-size: 26rpx;
+  color: #1A6EFF;
+  font-weight: 600;
+}

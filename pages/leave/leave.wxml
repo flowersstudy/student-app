@@ -1,0 +1,177 @@
+<view class="leave-page">
+
+  <!-- ===== 提交后状态卡 ===== -->
+  <block wx:if="{{submitted}}">
+    <view class="status-card {{approvalStatus === 'approved' ? 'status-card-approved' : ''}}">
+
+      <view class="status-icon-wrap">
+        <view class="status-icon {{approvalStatus === 'approved' ? 'status-icon-approved' : 'status-icon-pending'}}">
+          <text class="status-icon-text">{{approvalStatus === 'approved' ? '✓' : '…'}}</text>
+        </view>
+      </view>
+
+      <text class="status-main-text">
+        {{approvalStatus === 'approved' ? '老师已同意' : '已反馈，等待老师同意'}}
+      </text>
+      <text class="status-sub-text" wx:if="{{approvalStatus === 'approved'}}">请假已批准，注意合理安排学习时间</text>
+
+      <!-- 请假详情 -->
+      <view class="status-detail-card">
+        <view wx:if="{{submittedInfo.leaveType === 'single'}}" class="status-detail-row">
+          <text class="status-detail-label">请假卡点</text>
+          <text class="status-detail-value">{{submittedInfo.pointName}}</text>
+        </view>
+        <view wx:if="{{submittedInfo.leaveType === 'single'}}" class="status-detail-row">
+          <text class="status-detail-label">请假课节</text>
+          <text class="status-detail-value">{{submittedInfo.stepName}}</text>
+        </view>
+        <view wx:else class="status-detail-row">
+          <text class="status-detail-label">请假类型</text>
+          <text class="status-detail-value">整体请假</text>
+        </view>
+        <view class="status-detail-row">
+          <text class="status-detail-label">请假时长</text>
+          <text class="status-detail-value">{{submittedInfo.days}}</text>
+        </view>
+        <view class="status-detail-row">
+          <text class="status-detail-label">提交时间</text>
+          <text class="status-detail-value">{{submittedInfo.submitTime}}</text>
+        </view>
+        <view class="status-detail-row status-detail-row-last">
+          <text class="status-detail-label">审批状态</text>
+          <text class="status-detail-value {{approvalStatus === 'approved' ? 'status-value-approved' : 'status-value-pending'}}">
+            {{approvalStatus === 'approved' ? '已同意' : '审批中'}}
+          </text>
+        </view>
+      </view>
+
+      <view wx:if="{{approvalStatus === 'pending'}}" class="status-chat-btn" bindtap="goChat">
+        <text class="status-chat-text">联系学管</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- ===== 请假表单 ===== -->
+  <block wx:else>
+
+    <!-- 请假类型 -->
+    <view class="card">
+      <text class="section-title">请假类型</text>
+      <view class="type-row">
+        <view class="type-item {{leaveType === 'single' ? 'type-item-active' : ''}}" bindtap="selectType" data-type="single">
+          <text class="type-icon">📅</text>
+          <text class="type-label">单节课请假</text>
+          <text class="type-desc">针对某一节具体课程</text>
+        </view>
+        <view class="type-item {{leaveType === 'all' ? 'type-item-active' : ''}}" bindtap="selectType" data-type="all">
+          <text class="type-icon">🗓️</text>
+          <text class="type-label">整体请假</text>
+          <text class="type-desc">近期无法正常学习</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 请假课程（单节课） -->
+    <view class="card" wx:if="{{leaveType === 'single'}}">
+      <text class="section-title">请假课程</text>
+
+      <text class="picker-label">所属卡点</text>
+      <picker mode="selector" range="{{pointNames}}" value="{{pointIndex}}" bindchange="onPointChange">
+        <view class="picker-row">
+          <text class="picker-value">{{pointNames[pointIndex]}}</text>
+          <text class="picker-arrow">▾</text>
+        </view>
+      </picker>
+
+      <!-- 已达上限提醒 -->
+      <view wx:if="{{warnMaxLeaves}}" class="warn-banner warn-ban-red">
+        <text class="warn-icon">⚠️</text>
+        <view class="warn-info">
+          <text class="warn-title">该卡点已申请 {{currentPointLeaveCount}} 次请假，已达上限（每卡点最多2次）</text>
+          <text class="warn-sub">如需继续请假，请联系学管处理</text>
+        </view>
+        <view class="warn-btn-sm" bindtap="goChat">联系学管</view>
+      </view>
+
+      <!-- 剩余次数提示 -->
+      <view wx:elif="{{currentPointLeaveCount === 1}}" class="warn-banner warn-ban-orange">
+        <text class="warn-icon">ℹ️</text>
+        <view class="warn-info">
+          <text class="warn-title">该卡点本次为第 2 次（最后一次）请假机会</text>
+          <text class="warn-sub">每个卡点最多允许请假 2 次，请合理使用</text>
+        </view>
+      </view>
+
+      <text class="picker-label" style="margin-top:24rpx;">课程节次</text>
+      <picker mode="selector" range="{{steps}}" value="{{stepIndex}}" bindchange="onStepChange">
+        <view class="picker-row">
+          <text class="picker-value">{{steps[stepIndex]}}</text>
+          <text class="picker-arrow">▾</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 请假天数 -->
+    <view class="card">
+      <text class="section-title">请假时长</text>
+      <picker mode="selector" range="{{daysOptions}}" value="{{daysIndex}}" bindchange="onDaysChange">
+        <view class="picker-row">
+          <text class="picker-value">{{daysOptions[daysIndex]}}</text>
+          <text class="picker-arrow">▾</text>
+        </view>
+      </picker>
+
+      <!-- 7天以上警告 -->
+      <view wx:if="{{warnLongLeave}}" class="warn-banner warn-ban-orange" style="margin-top:20rpx;">
+        <text class="warn-icon">⚠️</text>
+        <view class="warn-info">
+          <text class="warn-title">请假 7 天及以上，需提前与学管沟通</text>
+          <text class="warn-sub">请联系学管确认后再提交申请，否则无法正常审批</text>
+        </view>
+        <view class="warn-btn-sm" bindtap="goChat">去联系</view>
+      </view>
+    </view>
+
+    <!-- 请假预警 -->
+    <view wx:if="{{leaveWarning}}" class="leave-warn-card">
+      <text class="lw-title">进度顺延提示</text>
+      <text class="lw-body">请假 {{leaveWarning.days}} 天，学习进度将顺延 {{leaveWarning.days}} 天，预计 <text class="lw-highlight">{{leaveWarning.newResumeDate}}</text> 继续学习。</text>
+      <text class="lw-body lw-body-miss">若时间紧张，可能来不及完成全部学习内容，具体以老师安排为准。</text>
+      <view wx:if="{{leaveWarning.examAlert}}" class="lw-exam-alert lw-exam-{{leaveWarning.priority}}">
+        <text class="lw-exam-text">{{leaveWarning.examAlert}}</text>
+      </view>
+    </view>
+
+    <!-- 请假原因 -->
+    <view class="card">
+      <text class="section-title">请假原因</text>
+      <textarea
+        class="input-area"
+        placeholder="请说明请假原因，方便老师安排调课..."
+        placeholder-class="input-placeholder"
+        maxlength="200"
+        bindinput="onReasonInput"
+        value="{{reason}}"
+      />
+      <text class="char-count">{{reason.length}}/200</text>
+    </view>
+
+    <!-- 提示 -->
+    <view class="notice-card">
+      <text class="notice-text">提交后，你的带教老师和学管会收到通知。</text>
+    </view>
+
+    <!-- 提交按钮 -->
+    <view style="padding: 0 24rpx;">
+      <button
+        class="btn-primary submit-btn {{(warnMaxLeaves && leaveType === 'single') || warnLongLeave ? 'btn-disabled' : ''}}"
+        bindtap="submit"
+      >
+        {{warnMaxLeaves && leaveType === 'single' ? '该卡点已达请假上限' : warnLongLeave ? '请先联系学管' : '提交申请'}}
+      </button>
+    </view>
+
+  </block>
+
+  <view class="safe-bottom"></view>
+</view>

@@ -1,0 +1,189 @@
+.mailbox-page {
+  min-height: 100vh;
+  background: #f5f6fa;
+  padding: 24rpx 24rpx 60rpx;
+}
+
+/* ===== 提交成功 ===== */
+.success-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 140rpx;
+  gap: 20rpx;
+}
+
+.success-icon {
+  font-size: 96rpx;
+  line-height: 1;
+}
+
+.success-title {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.success-desc {
+  font-size: 26rpx;
+  color: #888;
+  text-align: center;
+  line-height: 1.7;
+  padding: 0 40rpx;
+}
+
+.btn-again {
+  margin-top: 24rpx;
+  background: #1A6EFF;
+  border-radius: 48rpx;
+  padding: 22rpx 64rpx;
+}
+
+.btn-again-text {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* ===== 简介条 ===== */
+.mailbox-intro {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.mailbox-intro-icon {
+  font-size: 56rpx;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.mailbox-intro-text {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.mailbox-intro-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.mailbox-intro-desc {
+  font-size: 22rpx;
+  color: #888;
+  line-height: 1.5;
+}
+
+/* ===== 表单行 ===== */
+.form-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 0;
+}
+
+.form-divider {
+  height: 1rpx;
+  background: #f0f0f0;
+}
+
+.form-label {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.form-picker {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.form-picker-val {
+  font-size: 28rpx;
+  color: #1A6EFF;
+  font-weight: 600;
+}
+
+.form-picker-arrow {
+  font-size: 22rpx;
+  color: #aaa;
+}
+
+/* ===== 匿名开关 ===== */
+.toggle-wrap {
+  padding: 8rpx 0;
+}
+
+.toggle {
+  width: 88rpx;
+  height: 48rpx;
+  border-radius: 24rpx;
+  background: #ddd;
+  position: relative;
+  transition: background 0.25s;
+}
+
+.toggle-on {
+  background: #1A6EFF;
+}
+
+.toggle-thumb {
+  position: absolute;
+  top: 4rpx;
+  left: 4rpx;
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2rpx 6rpx rgba(0,0,0,0.18);
+  transition: left 0.25s;
+}
+
+.toggle-thumb-on {
+  left: 44rpx;
+}
+
+/* ===== 文本输入 ===== */
+.mailbox-textarea {
+  width: 100%;
+  font-size: 28rpx;
+  color: #1a1a1a;
+  line-height: 1.7;
+  box-sizing: border-box;
+}
+
+.mailbox-placeholder {
+  color: #bbb;
+  font-size: 28rpx;
+}
+
+.mailbox-count {
+  font-size: 20rpx;
+  color: #bbb;
+  display: block;
+  text-align: right;
+  margin-top: 12rpx;
+}
+
+/* ===== 提交按钮 ===== */
+.btn-submit {
+  width: 100%;
+  margin-top: 32rpx;
+  background: #1A6EFF;
+  color: #fff;
+  border-radius: 50rpx;
+  padding: 28rpx 0;
+  font-size: 30rpx;
+  font-weight: 700;
+  border: none;
+  text-align: center;
+}
+
+.btn-submit::after { border: none; }

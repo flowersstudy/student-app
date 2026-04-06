@@ -1,0 +1,126 @@
+<view class="review-page">
+
+  <!-- 顶部触发原因卡 -->
+  <view class="trigger-card trigger-{{triggerType}}">
+    <view class="trigger-icon-wrap">
+      <text class="trigger-icon">{{triggerType === 'all_complete' ? '🎉' : '⏰'}}</text>
+    </view>
+    <view class="trigger-info">
+      <text class="trigger-label">{{triggerLabel}}</text>
+      <text class="trigger-desc">{{triggerDesc}}</text>
+    </view>
+  </view>
+
+  <!-- 进度条 -->
+  <view class="progress-section">
+    <view class="progress-header-row">
+      <text class="progress-title">复习进度</text>
+      <text class="progress-count">{{checkedCount}} / {{totalPoints}} 个知识点</text>
+    </view>
+    <view class="progress-bar-bg">
+      <view class="progress-bar-fill" style="width:{{totalPoints > 0 ? checkedCount / totalPoints * 100 : 0}}%"></view>
+    </view>
+  </view>
+
+  <!-- 复习内容列表 -->
+  <view class="review-list">
+    <view
+      wx:for="{{reviewGroups}}"
+      wx:key="id"
+      class="review-group"
+    >
+      <!-- 卡点组标题 -->
+      <view class="group-header" bindtap="toggleGroup" data-id="{{item.id}}">
+        <view class="group-left">
+          <view class="group-index">{{index + 1}}</view>
+          <text class="group-name">{{item.name}}</text>
+        </view>
+        <view class="group-right">
+          <text class="group-checked-num">{{item.groupCheckedCount}}/{{item.knowledgePoints.length}}</text>
+          <text class="group-arrow {{item.expanded ? 'group-arrow-up' : ''}}">›</text>
+        </view>
+      </view>
+
+      <!-- 知识点列表 -->
+      <view class="kp-list" wx:if="{{item.expanded}}">
+        <view
+          wx:for="{{item.knowledgePoints}}"
+          wx:for-item="kp"
+          wx:key="id"
+          class="kp-item {{kp.checked ? 'kp-item-checked' : ''}}"
+          bindtap="toggleCheck"
+          data-groupid="{{item.id}}"
+          data-pointid="{{kp.id}}"
+        >
+          <view class="kp-checkbox {{kp.checked ? 'kp-checkbox-checked' : ''}}">
+            <text wx:if="{{kp.checked}}" class="kp-check-icon">✓</text>
+          </view>
+          <text class="kp-title {{kp.checked ? 'kp-title-checked' : ''}}">{{kp.title}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 完成按钮 -->
+  <view class="finish-wrap" wx:if="{{!showFeedback}}">
+    <button
+      class="btn-finish {{allChecked ? 'btn-finish-active' : 'btn-finish-disabled'}}"
+      bindtap="finishReview"
+      disabled="{{!allChecked}}"
+    >
+      {{allChecked ? '我已复习完成，查看老师讲解' : '请逐项勾选已复习的知识点（' + checkedCount + '/' + totalPoints + '）'}}
+    </button>
+  </view>
+
+  <!-- ===== 老师反馈区 ===== -->
+  <view class="feedback-section" wx:if="{{showFeedback}}">
+    <view class="feedback-header">
+      <text class="feedback-title">老师已为你准备了复习讲解</text>
+      <text class="feedback-sub">以下内容来自群内，可直接收听 / 观看</text>
+    </view>
+
+    <view class="chat-bubble-list">
+      <view
+        wx:for="{{feedbackMessages}}"
+        wx:key="id"
+        class="chat-row"
+      >
+        <!-- 头像 -->
+        <view class="chat-avatar">
+          <text class="chat-avatar-text">{{item.avatar}}</text>
+        </view>
+
+        <!-- 语音气泡 -->
+        <view wx:if="{{item.type === 'voice'}}" class="bubble bubble-voice" bindtap="playVoice" data-label="{{item.label}}">
+          <view class="voice-wave">
+            <view class="wave-bar wb1"></view>
+            <view class="wave-bar wb2"></view>
+            <view class="wave-bar wb3"></view>
+            <view class="wave-bar wb4"></view>
+            <view class="wave-bar wb5"></view>
+          </view>
+          <view class="voice-info">
+            <text class="voice-duration">{{item.duration}}</text>
+            <text class="voice-label">{{item.label}}</text>
+          </view>
+        </view>
+
+        <!-- 视频气泡 -->
+        <view wx:if="{{item.type === 'video'}}" class="bubble bubble-video" bindtap="playVideo" data-title="{{item.title}}">
+          <view class="video-thumb">
+            <text class="video-play-icon">▶</text>
+          </view>
+          <view class="video-info">
+            <text class="video-title">{{item.title}}</text>
+            <text class="video-meta">{{item.teacher}} · {{item.duration}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 完成按钮 -->
+    <button class="btn-done" bindtap="goHome">复习完成，返回首页</button>
+  </view>
+
+  <view style="height:80rpx;"></view>
+</view>

@@ -1,0 +1,111 @@
+.notif-page {
+  min-height: 100vh;
+  background: #f5f6fa;
+  padding: 16rpx 0 40rpx;
+}
+
+.notif-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 160rpx;
+  gap: 24rpx;
+}
+
+.notif-empty-icon {
+  font-size: 80rpx;
+  line-height: 1;
+}
+
+.notif-empty-text {
+  font-size: 28rpx;
+  color: #bbb;
+}
+
+.notif-section-label {
+  font-size: 24rpx;
+  color: #aaa;
+  font-weight: 600;
+  padding: 24rpx 32rpx 10rpx;
+  letter-spacing: 1rpx;
+}
+
+.notif-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background: #fff;
+  margin: 0 24rpx 16rpx;
+  border-radius: 20rpx;
+  padding: 24rpx 20rpx;
+  gap: 18rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.05);
+}
+
+.notif-item-pinned {
+  border: 1.5rpx solid rgba(26,110,255,0.18);
+}
+
+.notif-item-bar {
+  width: 6rpx;
+  height: 56rpx;
+  border-radius: 3rpx;
+  flex-shrink: 0;
+}
+
+.notif-bar-class { background: #1A6EFF; }
+.notif-bar-exam  { background: #ff4d4f; }
+.notif-bar-hw    { background: #52c41a; }
+.notif-bar-drill { background: #fa8c16; }
+.notif-bar-video { background: #7B61FF; }
+
+.notif-item-icon-wrap {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.notif-bg-class { background: rgba(26,110,255,0.10); }
+.notif-bg-exam  { background: rgba(255,77,79,0.10); }
+.notif-bg-hw    { background: rgba(82,196,26,0.10); }
+.notif-bg-drill { background: rgba(250,140,22,0.10); }
+.notif-bg-video { background: rgba(123,97,255,0.10); }
+
+.notif-item-icon {
+  font-size: 36rpx;
+  line-height: 1;
+}
+
+.notif-item-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+  min-width: 0;
+}
+
+.notif-item-label {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+  display: block;
+}
+
+.notif-item-desc {
+  font-size: 23rpx;
+  color: #888;
+  display: block;
+}
+
+.notif-item-arrow {
+  flex-shrink: 0;
+}
+
+.notif-arrow-text {
+  font-size: 36rpx;
+  color: #ccc;
+}

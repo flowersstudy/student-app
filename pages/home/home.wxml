@@ -1,0 +1,409 @@
+<view class="home-page">
+  <!-- ===== 未购课视图 ===== -->
+  <block wx:if="{{!isEnrolled}}">
+    <!-- 诊断测评入口（突出展示） -->
+    <view class="diagnose-hero-home">
+      <view class="diagnose-hero-badge">专属诊断报告</view>
+      <text class="diagnose-hero-title">真正找出你的失分原因</text>
+      <text class="diagnose-hero-sub">深度诊断 · 老师手批 · {{selectedProvince}}专属分析</text>
+
+      <picker range="{{provinces}}" value="{{provinceIndex}}" bindchange="onProvinceChange">
+        <view class="diagnose-province-row">
+          <text class="diagnose-province-label">备考省份</text>
+          <text class="diagnose-province-val">{{selectedProvince}}</text>
+          <text class="diagnose-province-arrow">▾</text>
+        </view>
+      </picker>
+
+      <view class="diagnose-report-preview">
+        <text class="diagnose-report-title">完成后你将收到</text>
+        <view class="diagnose-report-item">
+          <text class="diagnose-report-dot">·</text>
+          <text class="diagnose-report-text">精准定位你的3-5个核心失分卡点</text>
+        </view>
+        <view class="diagnose-report-item">
+          <text class="diagnose-report-dot">·</text>
+          <text class="diagnose-report-text">每个卡点附上你的真实答题记录与分析</text>
+        </view>
+        <view class="diagnose-report-item">
+          <text class="diagnose-report-dot">·</text>
+          <text class="diagnose-report-text">老师手动批注，不是系统自动生成</text>
+        </view>
+      </view>
+
+      <view class="diagnose-stats-row">
+        <view class="diagnose-stat-item">
+          <text class="diagnose-stat-num">12,847</text>
+          <text class="diagnose-stat-desc">人已诊断</text>
+        </view>
+        <view class="diagnose-stat-divider"></view>
+        <view class="diagnose-stat-item">
+          <text class="diagnose-stat-num">+16分</text>
+          <text class="diagnose-stat-desc">平均提分</text>
+        </view>
+        <view class="diagnose-stat-divider"></view>
+        <view class="diagnose-stat-item">
+          <text class="diagnose-stat-num">3-5小时</text>
+          <text class="diagnose-stat-desc">深度诊断</text>
+        </view>
+      </view>
+
+      <button class="btn-diagnose-hero">立即开始诊断</button>
+    </view>
+
+    <!-- 卡点轮播动画 -->
+    <view class="kadian-carousel">
+      <text class="kadian-carousel-label">你可能正在经历…</text>
+      <view class="kadian-card-wrap">
+        <view class="kadian-card">
+          <text class="kadian-card-name">{{carouselCards[carouselIndex].name}}</text>
+          <text class="kadian-card-symptom">{{carouselCards[carouselIndex].symptom}}</text>
+        </view>
+      </view>
+      <view class="kadian-dots">
+        <view
+          wx:for="{{carouselCards}}"
+          wx:key="index"
+          class="kadian-dot {{index === carouselIndex ? 'kadian-dot-active' : ''}}"
+        ></view>
+      </view>
+    </view>
+
+    <view class="section-label">全部卡点课程</view>
+    <view class="course-grid-home">
+      <view
+        wx:for="{{courses}}"
+        wx:key="id"
+        class="course-card-home"
+        bindtap="goCourseDetail"
+        data-id="{{item.id}}"
+      >
+        <view class="course-num-home">{{item.id}}</view>
+        <text class="course-card-name-home">{{item.name}}</text>
+        <text class="course-card-arrow">›</text>
+      </view>
+    </view>
+    <view class="section-label">学员档案示例</view>
+    <view class="profile-example-home" wx:for="{{examples}}" wx:key="id">
+      <view class="example-header-home">
+        <view class="example-avatar-home">{{item.name[0]}}</view>
+        <view class="example-base-home">
+          <view class="row">
+            <text class="example-name-home">{{item.name}}</text>
+            <text class="tag tag-blue" style="margin-left:12rpx;">{{item.exam}}</text>
+          </view>
+          <text class="example-meta-home">{{item.grade}} · {{item.major}}</text>
+        </view>
+        <text class="example-score-home">+{{item.score}}分</text>
+      </view>
+      <text class="example-comment-home">"{{item.comment}}"</text>
+    </view>
+    <view style="height:120rpx;"></view>
+  </block>
+
+  <!-- ===== 已购课视图 ===== -->
+  <block wx:else>
+
+  <!-- 置顶课程提醒 Banner -->
+  <view wx:if="{{topReminder}}" class="top-reminder top-reminder-{{topReminder.type}}">
+    <view class="top-reminder-left">
+      <text class="top-reminder-icon">{{topReminder.type === 'exam' ? '📝' : '📖'}}</text>
+      <view class="top-reminder-text-wrap">
+        <text class="top-reminder-label">{{topReminder.label}}</text>
+        <!-- 考试类型：显示实时倒计时，可点击编辑 -->
+        <view wx:if="{{topReminder.type === 'exam'}}" class="exam-cd-row" bindtap="openExamEdit">
+          <text class="top-reminder-cd">{{examCountdown}}</text>
+          <text class="top-reminder-cd-edit">编辑</text>
+        </view>
+        <text wx:else class="top-reminder-desc">{{topReminder.desc}}</text>
+      </view>
+    </view>
+    <view class="top-reminder-btn" bindtap="goTopReminder">
+      <text class="top-reminder-btn-text">{{topReminder.type === 'exam' ? '去考试' : '进入课堂'}}</text>
+    </view>
+  </view>
+
+  <!-- 考试时间编辑 Modal -->
+  <view wx:if="{{showExamEdit}}" class="modal-mask">
+    <view class="modal-box">
+      <text class="modal-title">编辑考试时间</text>
+      <view class="modal-row">
+        <text class="modal-label">日期</text>
+        <picker mode="date" value="{{examEditDate}}" bindchange="onExamEditDateChange">
+          <view class="modal-picker-val">{{examEditDate}} ▾</view>
+        </picker>
+      </view>
+      <view class="modal-row">
+        <text class="modal-label">时间</text>
+        <picker mode="time" value="{{examEditTime}}" bindchange="onExamEditTimeChange">
+          <view class="modal-picker-val">{{examEditTime}} ▾</view>
+        </picker>
+      </view>
+      <view class="modal-btns">
+        <view class="modal-btn modal-btn-cancel" bindtap="cancelExamEdit"><text>取消</text></view>
+        <view class="modal-btn modal-btn-confirm" bindtap="confirmExamEdit"><text>确定</text></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 学生档案卡 -->
+  <view class="profile-card card">
+    <!-- 第一行：头像 + 姓名身份 + 铃铛 + 去诊断 -->
+    <view class="profile-card-header">
+      <view class="profile-card-avatar">
+        <text class="profile-card-avatar-text">{{userProfile.name[0]}}</text>
+      </view>
+      <view class="profile-card-identity">
+        <view class="profile-card-name-row">
+          <text class="profile-card-name">{{userProfile.name}}</text>
+          <text class="tag tag-green" style="margin-left:12rpx;">{{userProfile.examStatus}}</text>
+        </view>
+        <text class="profile-card-meta">{{userProfile.grade}} · {{userProfile.major}}</text>
+      </view>
+      <!-- 铃铛 -->
+      <view class="bell-wrap" bindtap="goNotifications">
+        <text class="bell-icon">🔔</text>
+        <view wx:if="{{notificationCount > 0}}" class="bell-badge">
+          <text class="bell-badge-text">{{notificationCount > 9 ? '9+' : notificationCount}}</text>
+        </view>
+      </view>
+      <view class="profile-card-diagnose-btn" bindtap="goDiagnose">
+        <text class="profile-card-diagnose-text">去诊断</text>
+        <text class="profile-card-diagnose-arrow">›</text>
+      </view>
+    </view>
+
+    <!-- 分隔线 -->
+    <view class="profile-card-divider"></view>
+
+    <!-- 第二行：四项关键数据 -->
+    <view class="profile-card-stats">
+      <view class="profile-stat-item">
+        <text class="profile-stat-val profile-stat-val-sm">{{diagnosis.targetExam}}</text>
+        <text class="profile-stat-label">目标考试</text>
+      </view>
+      <view class="profile-stat-divider"></view>
+      <view class="profile-stat-item">
+        <text class="profile-stat-val">{{diagnosis.targetScore}}</text>
+        <text class="profile-stat-label">目标分数</text>
+      </view>
+      <view class="profile-stat-divider"></view>
+      <view class="profile-stat-item">
+        <text class="profile-stat-val profile-stat-val-warn">{{diagnosis.diagnosisScore}}</text>
+        <text class="profile-stat-label">诊断分数</text>
+      </view>
+      <view class="profile-stat-divider"></view>
+      <view class="profile-stat-item">
+        <text class="profile-stat-val profile-stat-val-primary">+{{diagnosis.scoreGap}}</text>
+        <text class="profile-stat-label">提分目标</text>
+      </view>
+    </view>
+
+    <!-- 第三行：省份 + 考试时间 -->
+    <view class="profile-card-footer">
+      <text class="profile-footer-item">{{userProfile.hometown}}</text>
+      <text class="profile-footer-dot">·</text>
+      <text class="profile-footer-item">{{userProfile.examTime}}考试</text>
+      <block wx:if="{{examDaysLeft > 0}}">
+        <text class="profile-footer-dot">·</text>
+        <text class="profile-footer-countdown">还有{{examDaysLeft}}天</text>
+      </block>
+    </view>
+  </view>
+
+  <!-- 待解决模块 -->
+  <view class="module-section">
+    <view class="module-header">
+      <text class="module-title pending-title">待解决</text>
+    </view>
+    <view class="point-list">
+      <view
+        wx:for="{{xingcePoints}}"
+        wx:key="id"
+        class="point-card"
+        bindtap="goProgress"
+        data-id="{{item.id}}"
+      >
+        <view class="point-left">
+          <text class="point-name">{{item.name}}</text>
+          <view class="progress-bar-wrap">
+            <view class="progress-bar-inner" style="width:{{item.progress}}%"></view>
+          </view>
+        </view>
+        <view class="point-right">
+          <text class="tag {{item.status === '已完成' ? 'tag-green' : item.status === '学习中' ? 'tag-blue' : 'tag-gray'}}">{{item.status}}</text>
+          <text class="point-arrow">›</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 已解决模块 -->
+  <view class="module-section">
+    <view class="module-header">
+      <text class="module-title resolved-title">已解决</text>
+    </view>
+    <view class="point-list">
+      <view
+        wx:for="{{shenlunPoints}}"
+        wx:key="id"
+        class="point-card"
+        bindtap="goProgress"
+        data-id="{{item.id}}"
+      >
+        <view class="point-left">
+          <text class="point-name">{{item.name}}</text>
+          <view class="progress-bar-wrap">
+            <view class="progress-bar-inner" style="width:{{item.progress}}%"></view>
+          </view>
+        </view>
+        <view class="point-right">
+          <text class="tag {{item.status === '已完成' ? 'tag-green' : item.status === '学习中' ? 'tag-blue' : 'tag-gray'}}">{{item.status}}</text>
+          <text class="point-arrow">›</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 日程表 -->
+  <view class="module-section">
+    <view class="module-header">
+      <text class="module-tag module-tag-orange">日程</text>
+      <text class="module-title">学习日历</text>
+    </view>
+    <view class="cal-card" bindtouchstart="onCalTouchStart" bindtouchmove="onCalTouchMove">
+
+      <!-- 月份导航 -->
+      <view class="cal-nav">
+        <view class="cal-nav-btn" bindtap="onCalPrev"><text class="cal-nav-arrow">‹</text></view>
+        <text class="cal-nav-title">{{calendarView === 'week' ? calendarWeekTitle : calendarYear + '年' + calendarMonth + '月'}}</text>
+        <view class="cal-view-toggle" bindtap="onCalToggleView">
+          <text class="cal-view-toggle-text">{{calendarView === 'month' ? '周' : '月'}}</text>
+        </view>
+        <view class="cal-nav-btn" bindtap="onCalNext"><text class="cal-nav-arrow">›</text></view>
+      </view>
+
+      <!-- 星期标题行 -->
+      <view class="cal-weekday-row">
+        <text class="cal-weekday-label" wx:for="{{['一','二','三','四','五','六','日']}}" wx:key="*this">{{item}}</text>
+      </view>
+
+      <!-- 月视图 -->
+      <view wx:if="{{calendarView === 'month'}}" class="cal-month-body">
+        <view wx:for="{{calendarWeeks}}" wx:for-item="week" wx:key="index" class="cal-week-container">
+          <!-- 第一行：日期数字 -->
+          <view class="cal-week-row">
+            <view wx:for="{{week.days}}" wx:for-item="day" wx:key="dateStr"
+              class="cal-day-col" data-date="{{day.dateStr}}" bindtap="onCalDayTap">
+              <view class="cal-day-num-wrap">
+                <view class="cal-day-circle {{day.isToday ? 'cal-today-circle' : ''}} {{day.dateStr === calendarSelectedDate && !day.isToday ? 'cal-selected-circle' : ''}}">
+                  <text class="cal-day-num {{day.isCurrentMonth ? '' : 'cal-day-other'}} {{day.isToday ? 'cal-day-num-today' : ''}}">{{day.dayNum}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+          <!-- 第二行：跨天事件条 -->
+          <view wx:if="{{week.spans.length > 0}}" class="cal-span-layer">
+            <view wx:for="{{week.spans}}" wx:for-item="sp" wx:key="index" class="cal-span-row-item">
+              <view style="width:{{sp.leftPct}}%"></view>
+              <view class="cal-span-bar cal-event-{{sp.type}}" style="width:{{sp.widthPct}}%">
+                <text class="cal-span-label">{{sp.label}}</text>
+              </view>
+            </view>
+          </view>
+          <!-- 第三行：单日事件块 -->
+          <view class="cal-week-row cal-events-row">
+            <view wx:for="{{week.days}}" wx:for-item="day" wx:key="dateStr"
+              class="cal-day-col" data-date="{{day.dateStr}}" bindtap="onCalDayTap">
+              <view wx:for="{{day.tasks}}" wx:for-item="task" wx:key="index" class="cal-event-block cal-event-{{task.type}}">
+                <text class="cal-event-name">{{task.label}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 周视图 -->
+      <view wx:else class="cal-month-body">
+        <view class="cal-week-container">
+          <view class="cal-week-row">
+            <view wx:for="{{calendarWeekDays.days}}" wx:key="dateStr"
+              class="cal-day-col" data-date="{{item.dateStr}}" bindtap="onCalDayTap">
+              <view class="cal-day-num-wrap">
+                <view class="cal-day-circle {{item.isToday ? 'cal-today-circle' : ''}} {{item.dateStr === calendarSelectedDate && !item.isToday ? 'cal-selected-circle' : ''}}">
+                  <text class="cal-day-num {{item.isToday ? 'cal-day-num-today' : ''}}">{{item.dayNum}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+          <view wx:if="{{calendarWeekDays.spans.length > 0}}" class="cal-span-layer">
+            <view wx:for="{{calendarWeekDays.spans}}" wx:for-item="sp" wx:key="index" class="cal-span-row-item">
+              <view style="width:{{sp.leftPct}}%"></view>
+              <view class="cal-span-bar cal-event-{{sp.type}}" style="width:{{sp.widthPct}}%">
+                <text class="cal-span-label">{{sp.label}}</text>
+              </view>
+            </view>
+          </view>
+          <view class="cal-week-row cal-events-row">
+            <view wx:for="{{calendarWeekDays.days}}" wx:key="dateStr"
+              class="cal-day-col" data-date="{{item.dateStr}}" bindtap="onCalDayTap">
+              <view wx:for="{{item.tasks}}" wx:for-item="task" wx:key="index" class="cal-event-block cal-event-{{task.type}}">
+                <text class="cal-event-name">{{task.label}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+    </view>
+  </view>
+
+  <!-- 今日日程 -->
+  <view class="module-section">
+    <view class="module-header">
+      <text class="module-tag">今日</text>
+      <text class="module-title">{{todayDateStr}}</text>
+    </view>
+    <view class="today-card">
+      <view wx:if="{{todaySpans.length === 0 && todayTasks.length === 0}}" class="today-empty">
+        <text class="today-empty-text">今天暂无日程</text>
+      </view>
+      <!-- 跨天任务 -->
+      <view wx:for="{{todaySpans}}" wx:key="index"
+        class="today-item today-span-item"
+        bindtap="onTodayTaskTap"
+        data-url="{{item.url}}"
+        data-done="{{false}}"
+      >
+        <view class="today-item-bar cal-event-{{item.type}}"></view>
+        <view class="today-item-info">
+          <text class="today-item-label">{{item.label}}</text>
+          <text class="today-item-meta">截止 {{item.end}}</text>
+        </view>
+        <view class="today-item-arrow">
+          <text class="today-arrow-text">›</text>
+        </view>
+      </view>
+      <!-- 单日任务 -->
+      <view wx:for="{{todayTasks}}" wx:key="index"
+        class="today-item"
+        bindtap="onTodayTaskTap"
+        data-url="{{item.url}}"
+        data-done="{{item.done}}"
+      >
+        <view class="today-item-bar cal-event-{{item.type}}"></view>
+        <view class="today-item-info">
+          <text class="today-item-label">{{item.label}}</text>
+        </view>
+        <text wx:if="{{item.done}}" class="tag tag-green">已完成</text>
+        <view wx:else class="today-item-arrow">
+          <text class="today-arrow-text">›</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="safe-bottom"></view>
+  </block>
+
+</view>

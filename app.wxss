@@ -1,0 +1,320 @@
+/* app.wxss - 全局样式 */
+page {
+  background-color: #f5f6fa;
+  font-family: -apple-system, 'PingFang SC', sans-serif;
+  font-size: 28rpx;
+  color: #333333;
+  box-sizing: border-box;
+}
+
+view, text, input, textarea, button, image, scroll-view {
+  box-sizing: border-box;
+}
+
+/* 通用卡片 */
+.card {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 28rpx;
+  margin: 16rpx 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+/* 主按钮 */
+.btn-primary {
+  background: #1A6EFF;
+  color: #ffffff;
+  border-radius: 48rpx;
+  padding: 22rpx 48rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  text-align: center;
+  border: none;
+  line-height: 1.5;
+}
+
+.btn-primary::after {
+  border: none;
+}
+
+/* 标签基础 */
+.tag {
+  display: inline-block;
+  padding: 6rpx 18rpx;
+  border-radius: 24rpx;
+  font-size: 22rpx;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.tag-blue {
+  background: #e8f0ff;
+  color: #1A6EFF;
+}
+
+.tag-red {
+  background: #fff0f0;
+  color: #ff4d4f;
+}
+
+.tag-green {
+  background: #f0fff4;
+  color: #52c41a;
+}
+
+.tag-gray {
+  background: #f5f5f5;
+  color: #999999;
+}
+
+.tag-orange {
+  background: #fff7e6;
+  color: #fa8c16;
+}
+
+/* 分割线 */
+.divider {
+  height: 1rpx;
+  background: #f0f0f0;
+  margin: 16rpx 0;
+}
+
+/* 底部安全区 */
+.safe-bottom {
+  height: 120rpx;
+}
+
+/* 时间线容器 */
+.timeline {
+  padding: 0 24rpx;
+}
+
+.timeline-item {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  padding-bottom: 32rpx;
+}
+
+.timeline-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 48rpx;
+  margin-right: 20rpx;
+}
+
+.timeline-dot {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 50%;
+  background: #1A6EFF;
+  flex-shrink: 0;
+  margin-top: 8rpx;
+}
+
+.timeline-dot-gray {
+  background: #cccccc;
+}
+
+.timeline-line {
+  width: 2rpx;
+  flex: 1;
+  background: #e0e0e0;
+  margin-top: 4rpx;
+}
+
+.timeline-content {
+  flex: 1;
+}
+
+/* 文件卡片 */
+.file-card {
+  background: #ffffff;
+  border-radius: 12rpx;
+  padding: 20rpx 24rpx;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border: 1rpx solid #f0f0f0;
+  margin-bottom: 16rpx;
+}
+
+.file-icon {
+  width: 72rpx;
+  height: 72rpx;
+  background: #ff4d4f;
+  border-radius: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.file-icon-text {
+  color: #ffffff;
+  font-size: 22rpx;
+  font-weight: 700;
+}
+
+.file-info {
+  flex: 1;
+}
+
+.file-name {
+  font-size: 28rpx;
+  color: #333333;
+  font-weight: 500;
+}
+
+.file-size {
+  font-size: 22rpx;
+  color: #999999;
+  margin-top: 4rpx;
+}
+
+/* 输入框 */
+.input-area {
+  background: #f5f6fa;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  font-size: 28rpx;
+  color: #333333;
+  width: 100%;
+  min-height: 120rpx;
+}
+
+/* 页面标题 */
+.section-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 16rpx;
+}
+
+/* 行布局 */
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.row-between {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* 二级待办任务列表 */
+.task-progress-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.task-progress-text {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.task-item {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f5f6fa;
+}
+
+.task-item:last-child {
+  border-bottom: none;
+}
+
+.task-check {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  border: 2rpx solid #cccccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 20rpx;
+  margin-top: 4rpx;
+}
+
+.task-check-done {
+  background: #52c41a;
+  border-color: #52c41a;
+}
+
+.task-check-icon {
+  font-size: 22rpx;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.task-body {
+  flex: 1;
+}
+
+.task-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+  display: block;
+  margin-bottom: 6rpx;
+}
+
+.task-title-done {
+  color: #999;
+  text-decoration: line-through;
+}
+
+.task-desc {
+  font-size: 24rpx;
+  color: #aaa;
+  line-height: 1.5;
+  display: block;
+}
+
+.task-tag {
+  font-size: 20rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 20rpx;
+  flex-shrink: 0;
+  margin-left: 12rpx;
+  margin-top: 4rpx;
+}
+
+.task-tag-todo {
+  background: #fff3e8;
+  color: #fa8c16;
+}
+
+.task-tag-done {
+  background: #f0fff0;
+  color: #52c41a;
+}
+
+/* 文件未上传状态 */
+.file-card-disabled {
+  opacity: 0.5;
+}
+
+.file-icon-gray {
+  background: #cccccc !important;
+}
+
+.file-name-gray {
+  color: #aaaaaa;
+}
+
+/* 文字省略 */
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
