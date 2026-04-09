@@ -1,162 +1,70 @@
 page {
-  background: #0878c2;
+  background: #f7f9fc;
 }
 
 .splash {
-  width: 100%;
-  min-height: 100vh;
-  background: linear-gradient(175deg, #4dd4f5 0%, #0fa8e0 40%, #0878c2 100%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  padding: calc(72rpx + env(safe-area-inset-top)) 40rpx calc(64rpx + env(safe-area-inset-bottom));
-  box-sizing: border-box;
-  overflow: hidden;
   position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, #fbfcfe 0%, #f5f7fb 100%);
+  overflow: hidden;
 }
 
-/* 背景装饰圆 */
-.deco {
+.bg-glow {
   position: absolute;
   border-radius: 50%;
+  filter: blur(8rpx);
   pointer-events: none;
 }
 
-.dc1 {
-  width: 560rpx;
-  height: 560rpx;
-  background: rgba(255,255,255,0.09);
-  top: -200rpx;
-  right: -180rpx;
+.bg-glow-top {
+  width: 360rpx;
+  height: 360rpx;
+  top: -100rpx;
+  right: -80rpx;
+  background: rgba(47, 107, 255, 0.08);
 }
 
-.dc2 {
-  width: 400rpx;
-  height: 400rpx;
-  background: rgba(255,255,255,0.06);
-  bottom: -120rpx;
-  left: -130rpx;
+.bg-glow-bottom {
+  width: 300rpx;
+  height: 300rpx;
+  left: -80rpx;
+  bottom: -60rpx;
+  background: rgba(78, 205, 196, 0.07);
 }
 
-/* ========================
-   品牌
-======================== */
-.brand {
-  opacity: 0;
-  animation: fade-up 0.5s ease 0.1s both;
-}
-
-.brand-name {
-  font-size: 24rpx;
-  font-weight: 600;
-  color: rgba(255,255,255,0.6);
-  letter-spacing: 10rpx;
-}
-
-/* ========================
-   主视觉
-======================== */
-.hero {
+.welcome-card {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 560rpx;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1rpx solid rgba(15, 23, 42, 0.06);
+  border-radius: 28rpx;
+  padding: 78rpx 44rpx;
+  box-sizing: border-box;
+  box-shadow: 0 20rpx 60rpx rgba(15, 23, 42, 0.08);
   display: flex;
   flex-direction: column;
   align-items: center;
-  opacity: 0;
-  animation: hero-in 0.8s cubic-bezier(0.34,1.35,0.64,1) 0.25s both;
 }
 
-.hero-num {
-  font-size: 296rpx;
-  font-weight: 900;
-  color: #ffffff;
-  line-height: 0.88;
-  letter-spacing: -12rpx;
-  text-shadow: 0 8rpx 56rpx rgba(0,60,150,0.3);
-}
-
-.hero-title {
-  font-size: 50rpx;
+.brand-title {
+  font-size: 54rpx;
+  line-height: 1.2;
   font-weight: 700;
-  color: #ffffff;
-  letter-spacing: 12rpx;
-  margin-top: 10rpx;
+  color: #1f2937;
+  letter-spacing: 2rpx;
 }
 
-.hero-sub {
-  font-size: 22rpx;
-  color: rgba(255,255,255,0.58);
-  letter-spacing: 4rpx;
-  margin-top: 14rpx;
-}
-
-@keyframes hero-in {
-  from { opacity: 0; transform: scale(0.72) translateY(24rpx); }
-  to   { opacity: 1; transform: scale(1) translateY(0); }
-}
-
-/* ========================
-   标签
-======================== */
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 16rpx;
-}
-
-.tag {
-  background: rgba(255,255,255,0.16);
-  border: 1.5rpx solid rgba(255,255,255,0.4);
-  border-radius: 60rpx;
-  padding: 14rpx 30rpx;
+.brand-subtitle {
+  margin-top: 18rpx;
   font-size: 26rpx;
-  font-weight: 500;
-  color: #ffffff;
-  letter-spacing: 1rpx;
-  opacity: 0;
-  animation: tag-pop 0.38s cubic-bezier(0.34,1.4,0.64,1) both;
-}
-
-.t1 { animation-delay: 0.68s; }
-.t2 { animation-delay: 0.80s; }
-.t3 { animation-delay: 0.92s; }
-.t4 { animation-delay: 1.04s; }
-.t5 { animation-delay: 1.16s; }
-.t6 { animation-delay: 1.28s; }
-.t7 { animation-delay: 1.40s; }
-.t8 { animation-delay: 1.52s; }
-
-@keyframes tag-pop {
-  from { opacity: 0; transform: scale(0.65); }
-  to   { opacity: 1; transform: scale(1); }
-}
-
-/* ========================
-   底部
-======================== */
-.footer {
-  opacity: 0;
-  animation: fade-up 0.55s ease 1.9s both;
-}
-
-.cta {
-  background: #ffffff;
-  border-radius: 100rpx;
-  padding: 24rpx 120rpx;
-  box-shadow: 0 10rpx 44rpx rgba(0,70,180,0.28);
-}
-
-.cta-text {
-  font-size: 30rpx;
-  font-weight: 700;
-  color: #0878c2;
-  letter-spacing: 6rpx;
-}
-
-/* ========================
-   公共动画
-======================== */
-@keyframes fade-up {
-  from { opacity: 0; transform: translateY(20rpx); }
-  to   { opacity: 1; transform: translateY(0); }
+  line-height: 1.8;
+  color: #6b7280;
+  text-align: center;
 }

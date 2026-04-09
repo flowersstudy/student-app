@@ -1,9 +1,9 @@
 /* app.wxss - 全局样式 */
 page {
-  background-color: #f5f6fa;
-  font-family: -apple-system, 'PingFang SC', sans-serif;
+  background-color: #f3f5f8;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
   font-size: 28rpx;
-  color: #333333;
+  color: #1f2937;
   box-sizing: border-box;
 }
 
@@ -14,23 +14,25 @@ view, text, input, textarea, button, image, scroll-view {
 /* 通用卡片 */
 .card {
   background: #ffffff;
-  border-radius: 16rpx;
-  padding: 28rpx;
-  margin: 16rpx 24rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+  border-radius: 28rpx;
+  padding: 30rpx;
+  margin: 18rpx 24rpx;
+  border: 1rpx solid rgba(148, 163, 184, 0.18);
+  box-shadow: 0 16rpx 40rpx rgba(15, 23, 42, 0.06);
 }
 
 /* 主按钮 */
 .btn-primary {
-  background: #1A6EFF;
+  background: #2563eb;
   color: #ffffff;
-  border-radius: 48rpx;
+  border-radius: 999rpx;
   padding: 22rpx 48rpx;
   font-size: 30rpx;
-  font-weight: 600;
+  font-weight: 700;
   text-align: center;
   border: none;
   line-height: 1.5;
+  box-shadow: 0 12rpx 28rpx rgba(37, 99, 235, 0.22);
 }
 
 .btn-primary::after {
@@ -39,43 +41,57 @@ view, text, input, textarea, button, image, scroll-view {
 
 /* 标签基础 */
 .tag {
-  display: inline-block;
-  padding: 6rpx 18rpx;
-  border-radius: 24rpx;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44rpx;
+  padding: 0 18rpx;
+  border-radius: 999rpx;
   font-size: 22rpx;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.4;
+  border: 1rpx solid transparent;
 }
 
+.tag-status-active,
 .tag-blue {
-  background: #e8f0ff;
-  color: #1A6EFF;
+  background: #eaf2ff;
+  color: #2563eb;
+  border-color: rgba(37, 99, 235, 0.14);
 }
 
+.tag-status-danger,
 .tag-red {
-  background: #fff0f0;
-  color: #ff4d4f;
+  background: #fff1f2;
+  color: #e11d48;
+  border-color: rgba(225, 29, 72, 0.12);
 }
 
+.tag-status-success,
 .tag-green {
-  background: #f0fff4;
-  color: #52c41a;
+  background: #eefbf3;
+  color: #15803d;
+  border-color: rgba(21, 128, 61, 0.12);
 }
 
+.tag-status-muted,
 .tag-gray {
-  background: #f5f5f5;
-  color: #999999;
+  background: #f3f4f6;
+  color: #6b7280;
+  border-color: rgba(107, 114, 128, 0.12);
 }
 
+.tag-status-warning,
 .tag-orange {
-  background: #fff7e6;
-  color: #fa8c16;
+  background: #fff7ed;
+  color: #c2410c;
+  border-color: rgba(194, 65, 12, 0.12);
 }
 
 /* 分割线 */
 .divider {
   height: 1rpx;
-  background: #f0f0f0;
+  background: #e5e7eb;
   margin: 16rpx 0;
 }
 
@@ -108,19 +124,19 @@ view, text, input, textarea, button, image, scroll-view {
   width: 20rpx;
   height: 20rpx;
   border-radius: 50%;
-  background: #1A6EFF;
+  background: #2563eb;
   flex-shrink: 0;
   margin-top: 8rpx;
 }
 
 .timeline-dot-gray {
-  background: #cccccc;
+  background: #cbd5e1;
 }
 
 .timeline-line {
   width: 2rpx;
   flex: 1;
-  background: #e0e0e0;
+  background: #dbe3ee;
   margin-top: 4rpx;
 }
 
@@ -131,20 +147,20 @@ view, text, input, textarea, button, image, scroll-view {
 /* 文件卡片 */
 .file-card {
   background: #ffffff;
-  border-radius: 12rpx;
+  border-radius: 18rpx;
   padding: 20rpx 24rpx;
   display: flex;
   flex-direction: row;
   align-items: center;
-  border: 1rpx solid #f0f0f0;
+  border: 1rpx solid rgba(148, 163, 184, 0.16);
   margin-bottom: 16rpx;
 }
 
 .file-icon {
   width: 72rpx;
   height: 72rpx;
-  background: #ff4d4f;
-  border-radius: 8rpx;
+  background: #ef4444;
+  border-radius: 14rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -164,33 +180,35 @@ view, text, input, textarea, button, image, scroll-view {
 
 .file-name {
   font-size: 28rpx;
-  color: #333333;
-  font-weight: 500;
+  color: #1f2937;
+  font-weight: 600;
 }
 
 .file-size {
   font-size: 22rpx;
-  color: #999999;
+  color: #94a3b8;
   margin-top: 4rpx;
 }
 
 /* 输入框 */
 .input-area {
-  background: #f5f6fa;
-  border-radius: 12rpx;
+  background: #f8fafc;
+  border-radius: 18rpx;
   padding: 20rpx;
   font-size: 28rpx;
-  color: #333333;
+  color: #1f2937;
   width: 100%;
   min-height: 120rpx;
+  border: 1rpx solid rgba(148, 163, 184, 0.18);
 }
 
 /* 页面标题 */
 .section-title {
   font-size: 30rpx;
-  font-weight: 600;
-  color: #333333;
-  margin-bottom: 16rpx;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #111827;
+  margin-bottom: 18rpx;
 }
 
 /* 行布局 */
@@ -217,7 +235,7 @@ view, text, input, textarea, button, image, scroll-view {
 
 .task-progress-text {
   font-size: 24rpx;
-  color: #999;
+  color: #94a3b8;
 }
 
 .task-item {
@@ -225,7 +243,7 @@ view, text, input, textarea, button, image, scroll-view {
   flex-direction: row;
   align-items: flex-start;
   padding: 20rpx 0;
-  border-bottom: 1rpx solid #f5f6fa;
+  border-bottom: 1rpx solid #eef2f7;
 }
 
 .task-item:last-child {
@@ -236,7 +254,7 @@ view, text, input, textarea, button, image, scroll-view {
   width: 40rpx;
   height: 40rpx;
   border-radius: 50%;
-  border: 2rpx solid #cccccc;
+  border: 2rpx solid #cbd5e1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -246,8 +264,8 @@ view, text, input, textarea, button, image, scroll-view {
 }
 
 .task-check-done {
-  background: #52c41a;
-  border-color: #52c41a;
+  background: #16a34a;
+  border-color: #16a34a;
 }
 
 .task-check-icon {
@@ -262,20 +280,20 @@ view, text, input, textarea, button, image, scroll-view {
 
 .task-title {
   font-size: 28rpx;
-  font-weight: 500;
-  color: #333;
+  font-weight: 600;
+  color: #1f2937;
   display: block;
   margin-bottom: 6rpx;
 }
 
 .task-title-done {
-  color: #999;
+  color: #94a3b8;
   text-decoration: line-through;
 }
 
 .task-desc {
   font-size: 24rpx;
-  color: #aaa;
+  color: #9aa5b1;
   line-height: 1.5;
   display: block;
 }
@@ -283,20 +301,20 @@ view, text, input, textarea, button, image, scroll-view {
 .task-tag {
   font-size: 20rpx;
   padding: 4rpx 14rpx;
-  border-radius: 20rpx;
+  border-radius: 999rpx;
   flex-shrink: 0;
   margin-left: 12rpx;
   margin-top: 4rpx;
 }
 
 .task-tag-todo {
-  background: #fff3e8;
-  color: #fa8c16;
+  background: #fff7ed;
+  color: #c2410c;
 }
 
 .task-tag-done {
-  background: #f0fff0;
-  color: #52c41a;
+  background: #eefbf3;
+  color: #15803d;
 }
 
 /* 文件未上传状态 */
@@ -305,11 +323,11 @@ view, text, input, textarea, button, image, scroll-view {
 }
 
 .file-icon-gray {
-  background: #cccccc !important;
+  background: #cbd5e1 !important;
 }
 
 .file-name-gray {
-  color: #aaaaaa;
+  color: #94a3b8;
 }
 
 /* 文字省略 */

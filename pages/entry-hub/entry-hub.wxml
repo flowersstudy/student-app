@@ -1,0 +1,75 @@
+<view class="entry-page">
+  <view class="entry-bg entry-bg-left"></view>
+  <view class="entry-bg entry-bg-right"></view>
+  <view class="entry-overlay"></view>
+
+  <view class="entry-stage">
+    <view class="entry-shell">
+      <view class="entry-top">
+        <text class="entry-top-eyebrow">学习入口</text>
+        <text class="entry-top-title">选择你的起点</text>
+        <text class="entry-top-desc">没有默认项，按你的节奏开始。</text>
+      </view>
+
+      <view class="entry-cards">
+        <view class="entry-card entry-card-diagnose" bindtap="goGenerateDiagnose">
+          <view class="entry-card-main">
+            <view class="entry-card-icon entry-card-icon-diagnose">
+              <image class="entry-card-icon-image" src="{{uiIcons.spark}}" mode="aspectFit" />
+            </view>
+            <view class="entry-card-copy">
+              <text class="entry-card-kicker">精准诊断</text>
+              <text class="entry-card-title">先做诊断</text>
+              <text class="entry-card-desc">先看清问题，再决定路径。</text>
+              <text class="entry-card-meta">老师手批</text>
+            </view>
+          </view>
+          <view class="entry-card-arrow-wrap">
+            <text class="entry-arrow">></text>
+          </view>
+        </view>
+
+        <view class="entry-card entry-card-trial" bindtap="goTrialDrill">
+          <view class="entry-card-main">
+            <view class="entry-card-icon entry-card-icon-trial">
+              <image class="entry-card-icon-image" src="{{uiIcons.target}}" mode="aspectFit" />
+            </view>
+            <view class="entry-card-copy">
+              <text class="entry-card-kicker">轻量体验</text>
+              <text class="entry-card-title">先体验刷题</text>
+              <text class="entry-card-desc">先感受节奏，再决定要不要深入。</text>
+              <text class="entry-card-meta">免费体验</text>
+            </view>
+          </view>
+          <view class="entry-card-arrow-wrap">
+            <text class="entry-arrow">></text>
+          </view>
+        </view>
+
+        <view class="entry-card entry-card-kpoint" bindtap="goKpointList">
+          <view class="entry-card-main">
+            <view class="entry-card-icon entry-card-icon-kpoint">
+              <image class="entry-card-icon-image" src="{{uiIcons.chart}}" mode="aspectFit" />
+            </view>
+            <view class="entry-card-copy">
+              <text class="entry-card-kicker">了解体系</text>
+              <text class="entry-card-title">先看卡点</text>
+              <text class="entry-card-desc">先了解类型，再判断自己更像哪一类。</text>
+              <text class="entry-card-meta">8 大卡点</text>
+            </view>
+          </view>
+          <view class="entry-card-arrow-wrap">
+            <text class="entry-arrow">></text>
+          </view>
+        </view>
+      </view>
+
+      <view class="entry-bottom">
+        <text class="entry-bottom-tip">也可以稍后再选。</text>
+        <view class="entry-skip" bindtap="skipEntry">
+          <text class="entry-skip-text">稍后再选</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

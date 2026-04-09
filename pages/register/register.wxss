@@ -60,9 +60,8 @@
 }
 
 .check-icon {
-  font-size: 24rpx;
-  color: #1A6EFF;
-  font-weight: 700;
+  width: 28rpx;
+  height: 28rpx;
 }
 
 .course-card-name {
@@ -142,15 +141,8 @@
 .diagnose-icon {
   width: 72rpx;
   height: 72rpx;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.25);
-  color: #fff;
-  font-size: 28rpx;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   flex-shrink: 0;
+  filter: drop-shadow(0 10rpx 16rpx rgba(255, 255, 255, 0.12));
 }
 
 .diagnose-title {

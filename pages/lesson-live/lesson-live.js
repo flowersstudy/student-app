@@ -1,5 +1,8 @@
+const { uiIcons } = require('../../utils/ui-icons')
+
 Page({
   data: {
+    uiIcons,
     lessonInfo: {
       date: '2026年3月28日 周六',
       time: '14:00 - 15:00',

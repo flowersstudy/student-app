@@ -1,12 +1,14 @@
 /* ========================
-   微信仿真聊天页
+   教学沟通页
 ======================== */
 
 .chat-page {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #ededed;
+  background:
+    radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 24%),
+    linear-gradient(180deg, #f7f9fc 0%, #f3f5f8 100%);
   position: relative;
 }
 
@@ -18,18 +20,18 @@
   top: calc(20rpx + env(safe-area-inset-top));
   right: 24rpx;
   z-index: 100;
-  width: 64rpx;
-  height: 64rpx;
+  width: 72rpx;
+  height: 72rpx;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .nav-more-icon {
-  font-size: 42rpx;
-  color: #1a1a1a;
-  font-weight: 700;
-  letter-spacing: -4rpx;
+  width: 38rpx;
+  height: 38rpx;
+  opacity: 0.92;
+  filter: drop-shadow(0 6rpx 10rpx rgba(15, 23, 42, 0.08));
 }
 
 /* ========================
@@ -37,7 +39,7 @@
 ======================== */
 .msg-list {
   flex: 1;
-  padding: 20rpx 16rpx;
+  padding: calc(24rpx + env(safe-area-inset-top)) 18rpx 20rpx;
   height: calc(100vh - 120rpx);
   box-sizing: border-box;
 }
@@ -54,12 +56,12 @@
 }
 
 /* ========================
-   头像 — 微信圆角方形
+   头像
 ======================== */
 .msg-avatar {
   width: 80rpx;
   height: 80rpx;
-  border-radius: 10rpx;
+  border-radius: 24rpx;
   flex-shrink: 0;
 }
 
@@ -67,20 +69,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 10rpx 20rpx rgba(15, 23, 42, 0.06);
 }
 
 .avatar-self {
-  background: #5b9bd5;
+  background: linear-gradient(135deg, #2563eb, #60a5fa);
 }
 
 .avatar-other {
-  background: #f0a500;
+  background: linear-gradient(135deg, #64748b, #94a3b8);
 }
 
 .msg-avatar-text {
   color: #ffffff;
   font-size: 30rpx;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 /* ========================
@@ -105,63 +108,66 @@
 
 .msg-name {
   font-size: 22rpx;
-  color: #888888;
+  color: #64748b;
 }
 
 .msg-time {
   font-size: 20rpx;
-  color: #b2b2b2;
+  color: #94a3b8;
 }
 
 /* ========================
-   气泡 — 带尾巴
+   气泡
 ======================== */
 .msg-bubble {
   position: relative;
-  border-radius: 8rpx;
-  padding: 18rpx 22rpx;
+  border-radius: 24rpx;
+  padding: 20rpx 24rpx;
   display: inline-block;
   max-width: 100%;
+  border: 1rpx solid rgba(148, 163, 184, 0.12);
 }
 
-/* 对方气泡：白色，左侧尾巴 */
 .bubble-white {
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 12rpx 24rpx rgba(15, 23, 42, 0.05);
 }
 
 .bubble-white::before {
   content: '';
   position: absolute;
-  top: 16rpx;
-  left: -14rpx;
-  width: 0;
-  height: 0;
-  border-top: 9rpx solid transparent;
-  border-right: 14rpx solid #ffffff;
-  border-bottom: 9rpx solid transparent;
+  top: 20rpx;
+  left: -10rpx;
+  width: 20rpx;
+  height: 20rpx;
+  background: rgba(255, 255, 255, 0.94);
+  border-left: 1rpx solid rgba(148, 163, 184, 0.12);
+  border-bottom: 1rpx solid rgba(148, 163, 184, 0.12);
+  transform: rotate(45deg);
 }
 
-/* 自己气泡：微信绿，右侧尾巴 */
 .bubble-green {
-  background: #95ec69;
+  background: linear-gradient(180deg, #eaf2ff, #dbeafe);
+  box-shadow: 0 12rpx 24rpx rgba(37, 99, 235, 0.08);
 }
 
 .bubble-green::after {
   content: '';
   position: absolute;
-  top: 16rpx;
-  right: -14rpx;
-  width: 0;
-  height: 0;
-  border-top: 9rpx solid transparent;
-  border-left: 14rpx solid #95ec69;
-  border-bottom: 9rpx solid transparent;
+  top: 20rpx;
+  right: -10rpx;
+  width: 20rpx;
+  height: 20rpx;
+  background: #dbeafe;
+  border-right: 1rpx solid rgba(37, 99, 235, 0.1);
+  border-bottom: 1rpx solid rgba(37, 99, 235, 0.1);
+  transform: rotate(-45deg);
 }
 
 .msg-content {
   font-size: 30rpx;
-  line-height: 1.55;
-  color: #1a1a1a;
+  line-height: 1.6;
+  color: #0f172a;
   word-break: break-all;
 }
 
@@ -173,8 +179,9 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: #f7f7f7;
-  border-top: 1rpx solid #d9d9d9;
+  background: rgba(255, 255, 255, 0.96);
+  border-top: 1rpx solid rgba(226, 232, 240, 0.96);
+  box-shadow: 0 -10rpx 28rpx rgba(15, 23, 42, 0.04);
 }
 
 .input-bar {
@@ -187,8 +194,8 @@
 }
 
 .input-action {
-  width: 60rpx;
-  height: 60rpx;
+  width: 72rpx;
+  height: 72rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -196,47 +203,58 @@
 }
 
 .input-action-icon {
-  font-size: 40rpx;
+  width: 44rpx;
+  height: 44rpx;
+  opacity: 0.96;
+  filter: drop-shadow(0 8rpx 12rpx rgba(37, 99, 235, 0.1));
 }
 
-/* 输入框 — 白色，微信式矩形 */
+.input-action-icon-plus {
+  width: 40rpx;
+  height: 40rpx;
+  padding: 14rpx;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #3b82f6, #2563eb);
+  box-shadow: 0 12rpx 24rpx rgba(37, 99, 235, 0.24);
+}
+
 .chat-input {
   flex: 1;
-  background: #ffffff;
-  border-radius: 8rpx;
+  background: #f8fafc;
+  border-radius: 22rpx;
   padding: 14rpx 18rpx;
   font-size: 30rpx;
   height: 72rpx;
   box-sizing: border-box;
   line-height: 1.4;
+  border: 1rpx solid rgba(148, 163, 184, 0.16);
 }
 
 .input-placeholder {
-  color: #c0c0c0;
-  font-size: 30rpx;
+  color: #94a3b8;
+  font-size: 28rpx;
 }
 
-/* 按住说话按钮 */
 .voice-btn {
   flex: 1;
-  background: #ffffff;
-  border-radius: 8rpx;
+  background: #f8fafc;
+  border-radius: 22rpx;
   height: 72rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1rpx solid #d9d9d9;
+  border: 1rpx solid rgba(148, 163, 184, 0.16);
 }
 
 .voice-btn-text {
   font-size: 28rpx;
-  color: #333333;
+  color: #334155;
+  font-weight: 600;
 }
 
-/* 发送按钮 — 微信绿 */
 .send-btn {
-  background: #07c160;
-  border-radius: 8rpx;
+  background: #2563eb;
+  border-radius: 22rpx;
   padding: 14rpx 24rpx;
   flex-shrink: 0;
   height: 72rpx;
@@ -244,12 +262,13 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
+  box-shadow: 0 10rpx 20rpx rgba(37, 99, 235, 0.2);
 }
 
 .send-text {
   color: #ffffff;
   font-size: 28rpx;
-  font-weight: 500;
+  font-weight: 700;
 }
 
 /* ========================
@@ -260,8 +279,8 @@
   flex-wrap: wrap;
   padding: 16rpx 12rpx;
   padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
-  background: #f7f7f7;
-  border-top: 1rpx solid #d9d9d9;
+  background: rgba(255, 255, 255, 0.98);
+  border-top: 1rpx solid rgba(226, 232, 240, 0.96);
 }
 
 .emoji-item {
@@ -282,9 +301,9 @@
 .more-panel {
   display: flex;
   flex-direction: row;
-  padding: 28rpx 0 calc(28rpx + env(safe-area-inset-bottom));
-  background: #f7f7f7;
-  border-top: 1rpx solid #d9d9d9;
+  padding: 30rpx 12rpx calc(28rpx + env(safe-area-inset-bottom));
+  background: rgba(255, 255, 255, 0.98);
+  border-top: 1rpx solid rgba(226, 232, 240, 0.96);
 }
 
 .more-item {
@@ -292,31 +311,50 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12rpx;
+  gap: 16rpx;
 }
 
-.more-icon-box {
-  width: 100rpx;
-  height: 100rpx;
-  border-radius: 22rpx;
+.more-icon-stage {
+  width: 120rpx;
+  height: 104rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
-.more-icon-blue   { background: #e8f0ff; }
-.more-icon-purple { background: #f0ebff; }
-.more-icon-green  { background: #e8fff0; }
-.more-icon-orange { background: #fff4e6; }
-.more-icon-red    { background: #fff0f0; }
+.more-icon-blue {
+  background: radial-gradient(circle at center, rgba(59, 130, 246, 0.18) 0%, rgba(59, 130, 246, 0.08) 38%, transparent 72%);
+}
+
+.more-icon-slate {
+  background: radial-gradient(circle at center, rgba(100, 116, 139, 0.18) 0%, rgba(100, 116, 139, 0.08) 38%, transparent 72%);
+}
+
+.more-icon-cyan {
+  background: radial-gradient(circle at center, rgba(8, 145, 178, 0.18) 0%, rgba(8, 145, 178, 0.08) 38%, transparent 72%);
+}
+
+.more-icon-amber {
+  background: radial-gradient(circle at center, rgba(217, 119, 6, 0.18) 0%, rgba(217, 119, 6, 0.08) 38%, transparent 72%);
+}
+
+.more-icon-indigo {
+  background: radial-gradient(circle at center, rgba(79, 70, 229, 0.18) 0%, rgba(79, 70, 229, 0.08) 38%, transparent 72%);
+}
 
 .more-icon {
-  font-size: 48rpx;
+  width: 68rpx;
+  height: 68rpx;
+  filter: drop-shadow(0 12rpx 16rpx rgba(15, 23, 42, 0.1));
 }
 
 .more-label {
-  font-size: 20rpx;
-  color: #7d7d7d;
+  font-size: 22rpx;
+  color: #475569;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.45;
 }
 
 /* ========================
@@ -324,8 +362,11 @@
 ======================== */
 .panel-mask {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.4);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.36);
   z-index: 200;
 }
 
@@ -335,12 +376,14 @@
   right: -600rpx;
   width: 560rpx;
   height: 100vh;
-  background: #f7f7f7;
+  background: linear-gradient(180deg, #f8fbff, #ffffff);
   z-index: 300;
   padding: 80rpx 32rpx 40rpx;
   transition: right 0.3s ease;
   overflow-y: auto;
   box-sizing: border-box;
+  border-left: 1rpx solid rgba(148, 163, 184, 0.16);
+  box-shadow: -18rpx 0 36rpx rgba(15, 23, 42, 0.08);
 }
 
 .panel-show {
@@ -350,7 +393,7 @@
 .panel-title {
   font-size: 32rpx;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #0f172a;
   display: block;
   margin-bottom: 32rpx;
 }
@@ -360,14 +403,14 @@
   flex-direction: row;
   align-items: center;
   padding: 20rpx 0;
-  border-bottom: 1rpx solid #ebebeb;
+  border-bottom: 1rpx solid #edf2f7;
 }
 
 .member-avatar {
   width: 80rpx;
   height: 80rpx;
-  border-radius: 10rpx;
-  background: #5b9bd5;
+  border-radius: 24rpx;
+  background: linear-gradient(135deg, #2563eb, #60a5fa);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -377,7 +420,7 @@
 .member-avatar-text {
   color: #ffffff;
   font-size: 32rpx;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .member-info {
@@ -386,14 +429,14 @@
 
 .member-name {
   font-size: 28rpx;
-  color: #1a1a1a;
-  font-weight: 500;
+  color: #0f172a;
+  font-weight: 600;
   display: block;
 }
 
 .member-role {
   font-size: 22rpx;
-  color: #999999;
+  color: #94a3b8;
   display: block;
   margin-top: 4rpx;
 }
@@ -409,12 +452,14 @@
   text-align: center;
   padding: 24rpx;
   background: #ffffff;
-  border-radius: 12rpx;
+  border-radius: 18rpx;
+  border: 1rpx solid rgba(148, 163, 184, 0.16);
 }
 
 .clear-btn-text {
-  color: #fa5151;
+  color: #ef4444;
   font-size: 28rpx;
+  font-weight: 600;
 }
 
 /* ========================
@@ -428,20 +473,22 @@
 }
 
 .empty-icon {
-  font-size: 96rpx;
+  width: 120rpx;
+  height: 120rpx;
   margin-bottom: 32rpx;
+  filter: drop-shadow(0 14rpx 22rpx rgba(37, 99, 235, 0.12));
 }
 
 .empty-title {
   font-size: 34rpx;
   font-weight: 700;
-  color: #333333;
+  color: #0f172a;
   margin-bottom: 20rpx;
 }
 
 .empty-desc {
   font-size: 26rpx;
-  color: #999999;
+  color: #64748b;
   line-height: 1.7;
   text-align: center;
   margin-bottom: 48rpx;

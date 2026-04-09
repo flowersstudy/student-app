@@ -1,5 +1,8 @@
+const { uiIcons } = require('../../utils/ui-icons')
+
 Page({
   data: {
+    uiIcons,
     courses: [
       { id: 1, name: '游走式找点', price: 1080, selected: false },
       { id: 2, name: '提炼转述错误', price: 1080, selected: false },

@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>复盘页高保真原型</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --primary: #1677ff;
+      --success: #36d399;
+      --warning: #ff9f43;
+      --bg: #f5f7fa;
+      --card: #ffffff;
+      --text: #333333;
+      --subtext: #666666;
+      --line: rgba(22, 119, 255, 0.08);
+      --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.06);
+      --nav-bg: rgba(255, 255, 255, 0.92);
+      --soft-blue: linear-gradient(180deg, #f5faff 0%, #eaf3ff 100%);
+      --soft-surface: linear-gradient(180deg, #ffffff 0%, #fafcff 100%);
+      --soft-square: linear-gradient(180deg, #fbfdff 0%, #f4f8ff 100%);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f1722;
+        --card: #16202d;
+        --text: #f3f6fb;
+        --subtext: #a8b2c1;
+        --line: rgba(255, 255, 255, 0.06);
+        --shadow-sm: 0 8px 20px rgba(0, 0, 0, 0.24);
+        --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.28);
+        --nav-bg: rgba(18, 27, 39, 0.92);
+        --soft-blue: linear-gradient(180deg, rgba(22, 119, 255, 0.2) 0%, rgba(22, 119, 255, 0.12) 100%);
+        --soft-surface: linear-gradient(180deg, #182434 0%, #15202c 100%);
+        --soft-square: linear-gradient(180deg, #172538 0%, #162232 100%);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(22, 119, 255, 0.12), transparent 26%),
+        var(--bg);
+      color: var(--text);
+    }
+
+    body {
+      display: grid;
+      place-items: center;
+      padding: 18px;
+    }
+
+    .phone-shell {
+      width: min(390px, 100vw);
+      height: min(844px, 100dvh);
+      border-radius: 28px;
+      overflow: hidden;
+      background: var(--bg);
+      box-shadow: 0 24px 70px rgba(10, 20, 35, 0.16);
+      position: relative;
+    }
+
+    .app {
+      height: 100%;
+      display: grid;
+      grid-template-rows: 8fr 22fr 62fr 8fr;
+      padding-top: env(safe-area-inset-top, 0);
+      padding-bottom: env(safe-area-inset-bottom, 0);
+      background:
+        radial-gradient(circle at 0% 0%, rgba(22, 119, 255, 0.1), transparent 28%),
+        var(--bg);
+    }
+
+    .topbar {
+      padding: 14px 18px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .topbar-side {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      color: var(--subtext);
+    }
+
+    .page-title {
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .icon-dots {
+      width: 16px;
+      height: 16px;
+      position: relative;
+    }
+
+    .icon-dots::before,
+    .icon-dots::after,
+    .icon-dots span {
+      content: "";
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: currentColor;
+      top: 6px;
+    }
+
+    .icon-dots::before { left: 0; }
+    .icon-dots span { left: 6px; }
+    .icon-dots::after { right: 0; }
+
+    .overview {
+      padding: 0 16px 10px;
+    }
+
+    .overview-card {
+      height: 100%;
+      border-radius: 20px;
+      background: var(--card);
+      box-shadow: var(--shadow-sm);
+      padding: 12px;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      gap: 12px;
+    }
+
+    .overview-top {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      min-height: 0;
+    }
+
+    .overview-bottom {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .kpi-card,
+    .mini-card {
+      border-radius: 8px;
+      padding: 16px;
+      background: var(--soft-surface);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--line);
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    }
+
+    .kpi-card:hover,
+    .mini-card:hover,
+    .list-card:hover,
+    .nav-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(22, 119, 255, 0.08);
+    }
+
+    .kpi-card.time-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .kpi-card.points-card {
+      background: var(--soft-blue);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .kpi-card.square-card {
+      background: var(--soft-square);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .kpi-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .kpi-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--subtext);
+    }
+
+    .kpi-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.08;
+      margin-top: 10px;
+    }
+
+    .points-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #ffe7a8 0%, #ffc863 62%, #ff9f43 100%);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      box-shadow: 0 8px 18px rgba(255, 159, 67, 0.24);
+    }
+
+    .square-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .square-sub {
+      font-size: 12px;
+      color: var(--subtext);
+      line-height: 1.4;
+    }
+
+    .square-arrow {
+      font-size: 13px;
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .mini-card {
+      padding: 12px 10px;
+      text-align: center;
+      background: var(--card);
+    }
+
+    .mini-label {
+      font-size: 12px;
+      color: var(--subtext);
+      margin-bottom: 8px;
+    }
+
+    .mini-value-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 3px;
+    }
+
+    .mini-value {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .mini-unit {
+      font-size: 12px;
+      color: var(--subtext);
+      transform: translateY(-2px);
+    }
+
+    .goal { color: var(--primary); }
+    .resolved { color: var(--success); }
+    .pending { color: var(--warning); }
+
+    .core-list {
+      min-height: 0;
+      overflow: auto;
+      padding: 0 16px 10px;
+      scroll-behavior: smooth;
+    }
+
+    .core-list::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+
+    .group {
+      margin-bottom: 18px;
+    }
+
+    .group-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding: 0 2px;
+    }
+
+    .group-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .group-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .group-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .group-count {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--subtext);
+      background: rgba(22, 119, 255, 0.06);
+      padding: 5px 10px;
+      border-radius: 999px;
+    }
+
+    .list-stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .list-card {
+      border-radius: 12px;
+      padding: 20px;
+      background: var(--card);
+      box-shadow: var(--shadow-md);
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+      border: 1px solid transparent;
+    }
+
+    .list-card.solved-card {
+      border-color: rgba(54, 211, 153, 0.18);
+    }
+
+    .list-card.pending-card {
+      border-color: rgba(255, 159, 67, 0.18);
+      animation: breathe 2.8s ease-in-out infinite;
+    }
+
+    .list-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .list-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .state-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--subtext);
+    }
+
+    .check-icon,
+    .arrow-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: inline-grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .check-icon {
+      background: rgba(54, 211, 153, 0.16);
+      color: var(--success);
+    }
+
+    .arrow-icon {
+      background: rgba(255, 159, 67, 0.16);
+      color: var(--warning);
+    }
+
+    .list-desc {
+      margin-top: 10px;
+      font-size: 12px;
+      line-height: 1.65;
+      color: var(--subtext);
+    }
+
+    .bottom-nav {
+      background: var(--nav-bg);
+      backdrop-filter: blur(18px);
+      border-top: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      align-items: center;
+      padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+
+    .nav-item {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      font-size: 12px;
+      color: var(--subtext);
+      transition: color 0.22s ease, background 0.22s ease;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+      background: rgba(22, 119, 255, 0.06);
+    }
+
+    .nav-icon {
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .reveal.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes breathe {
+      0%, 100% { box-shadow: var(--shadow-md); }
+      50% { box-shadow: 0 8px 18px rgba(255, 159, 67, 0.16); }
+    }
+
+    @media (max-width: 420px) {
+      body {
+        padding: 0;
+      }
+
+      .phone-shell {
+        width: 100vw;
+        height: 100dvh;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="phone-shell">
+    <div class="app">
+      <header class="topbar">
+        <div class="topbar-side"></div>
+        <div class="page-title">复盘</div>
+        <div class="topbar-side" aria-label="更多功能">
+          <div class="icon-dots"><span></span></div>
+        </div>
+      </header>
+
+      <section class="overview reveal">
+        <div class="overview-card">
+          <div class="overview-top">
+            <div class="kpi-card time-card">
+              <div class="kpi-top">
+                <div class="kpi-label">累计学习时长</div>
+              </div>
+              <div class="kpi-value" data-count="1240" data-unit="m">20h40m</div>
+            </div>
+
+            <div class="kpi-card points-card">
+              <div class="points-icon">✦</div>
+              <div class="kpi-label">累计积分</div>
+              <div class="kpi-value" data-count="1260">1260</div>
+            </div>
+
+            <div class="kpi-card square-card">
+              <div class="square-title">学习广场</div>
+              <div class="square-sub">活动发布 / 组队学习 / 信息同步</div>
+              <div class="square-arrow">进入广场 ></div>
+            </div>
+          </div>
+
+          <div class="overview-bottom">
+            <div class="mini-card">
+              <div class="mini-label">提分目标</div>
+              <div class="mini-value-row">
+                <div class="mini-value goal" data-count="22">22</div>
+                <div class="mini-unit">分</div>
+              </div>
+            </div>
+            <div class="mini-card">
+              <div class="mini-label">已解决</div>
+              <div class="mini-value-row">
+                <div class="mini-value resolved" data-count="3">3</div>
+                <div class="mini-unit">个</div>
+              </div>
+            </div>
+            <div class="mini-card">
+              <div class="mini-label">待突破</div>
+              <div class="mini-value-row">
+                <div class="mini-value pending" data-count="5">5</div>
+                <div class="mini-unit">个</div>
+              </div>
+            </div>
+            <div class="mini-card">
+              <div class="mini-label">学习效率</div>
+              <div class="mini-value-row">
+                <div class="mini-value goal" data-count="85">85</div>
+                <div class="mini-unit">%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <main class="core-list" id="coreList">
+        <section class="group reveal">
+          <div class="group-header">
+            <div class="group-title-wrap">
+              <span class="group-dot" style="background:#36D399"></span>
+              <span class="group-title">已解决</span>
+            </div>
+            <span class="group-count">3 个卡点</span>
+          </div>
+          <div class="list-stack">
+            <article class="list-card solved-card reveal">
+              <div class="list-top">
+                <div class="list-name">提炼转述错误</div>
+                <div class="state-badge"><span class="check-icon">✓</span>已完成</div>
+              </div>
+              <div class="list-desc">已掌握主题句提炼与关键信息转述逻辑，最近三次训练中材料提炼稳定性明显提升。</div>
+            </article>
+            <article class="list-card solved-card reveal">
+              <div class="list-top">
+                <div class="list-name">公文结构错误</div>
+                <div class="state-badge"><span class="check-icon">✓</span>已完成</div>
+              </div>
+              <div class="list-desc">公文格式、称谓、结尾与整体结构已基本稳定，限时练习中的失误率持续下降。</div>
+            </article>
+            <article class="list-card solved-card reveal">
+              <div class="list-top">
+                <div class="list-name">作文立意错误</div>
+                <div class="state-badge"><span class="check-icon">✓</span>已完成</div>
+              </div>
+              <div class="list-desc">作文审题方向趋于准确，中心立意更加集中，已具备较好的快速定题能力。</div>
+            </article>
+          </div>
+        </section>
+
+        <section class="group reveal">
+          <div class="group-header">
+            <div class="group-title-wrap">
+              <span class="group-dot" style="background:#FF9F43"></span>
+              <span class="group-title">待突破</span>
+            </div>
+            <span class="group-count">5 个卡点</span>
+          </div>
+          <div class="list-stack">
+            <article class="list-card pending-card reveal">
+              <div class="list-top">
+                <div class="list-name">游走式找点</div>
+                <div class="state-badge"><span class="arrow-icon">→</span>优先突破</div>
+              </div>
+              <div class="list-desc">当前找点不够聚焦，容易在材料中来回游走，建议继续加强段落功能判断与关键信息标记。</div>
+            </article>
+            <article class="list-card pending-card reveal">
+              <div class="list-top">
+                <div class="list-name">对策推导错误</div>
+                <div class="state-badge"><span class="arrow-icon">→</span>进行中</div>
+              </div>
+              <div class="list-desc">对策生成仍然偏表层，缺少从问题根因倒推出方案的完整链路，需继续做真题演练。</div>
+            </article>
+            <article class="list-card pending-card reveal">
+              <div class="list-top">
+                <div class="list-name">分析结构错误</div>
+                <div class="state-badge"><span class="arrow-icon">→</span>待优化</div>
+              </div>
+              <div class="list-desc">段落分析框架不够稳定，观点与材料之间衔接偏弱，建议继续训练“观点—论证—回扣”的表达节奏。</div>
+            </article>
+            <article class="list-card pending-card reveal">
+              <div class="list-top">
+                <div class="list-name">作文逻辑不清晰</div>
+                <div class="state-badge"><span class="arrow-icon">→</span>待优化</div>
+              </div>
+              <div class="list-desc">整体论证链条尚不顺畅，分论点层次感不足，需要继续打磨总分总结构与段内推进逻辑。</div>
+            </article>
+            <article class="list-card pending-card reveal">
+              <div class="list-top">
+                <div class="list-name">作文表达不流畅</div>
+                <div class="state-badge"><span class="arrow-icon">→</span>待优化</div>
+              </div>
+              <div class="list-desc">书面表达还偏口语化，句式密度和书面规范感不足，建议通过优秀范文跟写来提升表达质感。</div>
+            </article>
+          </div>
+        </section>
+      </main>
+
+      <nav class="bottom-nav">
+        <div class="nav-item">
+          <div class="nav-icon">⌂</div>
+          <div>首页</div>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon">◔</div>
+          <div>找老师</div>
+        </div>
+        <div class="nav-item active">
+          <div class="nav-icon">▣</div>
+          <div>复盘</div>
+        </div>
+      </nav>
+    </div>
+
+  </div>
+
+  <script>
+    const numbers = document.querySelectorAll('[data-count]');
+    const revealNodes = document.querySelectorAll('.reveal');
+    const coreList = document.getElementById('coreList');
+
+    function animateNumber(node) {
+      const target = Number(node.dataset.count);
+      const suffix = node.dataset.unit === 'm' ? '' : '';
+      const isTime = node.dataset.unit === 'm';
+      const start = performance.now();
+      const duration = 1000;
+
+      function frame(now) {
+        const progress = Math.min((now - start) / duration, 1);
+        const value = Math.round(target * (1 - Math.pow(1 - progress, 3)));
+        if (isTime) {
+          const hours = Math.floor(value / 60);
+          const minutes = value % 60;
+          node.textContent = `${hours}h${String(minutes).padStart(2, '0')}m`;
+        } else {
+          node.textContent = `${value}${suffix}`;
+        }
+        if (progress < 1) requestAnimationFrame(frame);
+      }
+
+      requestAnimationFrame(frame);
+    }
+
+    numbers.forEach((node, index) => {
+      setTimeout(() => animateNumber(node), 120 + index * 90);
+    });
+
+    function reveal(entries) {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('show');
+        }
+      });
+    }
+
+    const observer = new IntersectionObserver(reveal, {
+      root: coreList,
+      threshold: 0.12
+    });
+
+    revealNodes.forEach((node, index) => {
+      if (index === 0) {
+        requestAnimationFrame(() => node.classList.add('show'));
+      } else {
+        observer.observe(node);
+      }
+    });
+
+  </script>
+</body>
+</html>

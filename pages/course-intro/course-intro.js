@@ -1,3 +1,5 @@
+const { uiIcons } = require('../../utils/ui-icons')
+
 const courseMap = {
   1: {
     name: '游走式找点',
@@ -17,10 +19,10 @@ const courseMap = {
       '真题实练：从慢到快，形成肌肉记忆'
     ],
     includes: [
-      { icon: '🎯', name: '1v1纠偏课', desc: '45分钟，老师针对你的找点误区专项纠偏' },
-      { icon: '📹', name: '理论录播课', desc: '约60分钟，系统讲解找点方法论，免费观看' },
-      { icon: '📄', name: '配套讲义', desc: '真题专项练习材料，课后自主巩固' },
-      { icon: '💬', name: '无限提问', desc: '课后随时在群内向老师提问答疑' }
+      { iconKey: 'target', name: '1v1纠偏课', desc: '45分钟，老师针对你的找点误区专项纠偏' },
+      { iconKey: 'video', name: '理论录播课', desc: '约60分钟，系统讲解找点方法论，免费观看' },
+      { iconKey: 'file', name: '配套讲义', desc: '真题专项练习材料，课后自主巩固' },
+      { iconKey: 'chat', name: '无限提问', desc: '课后随时在群内向老师提问答疑' }
     ]
   },
   2: {
@@ -41,10 +43,10 @@ const courseMap = {
       '从单段练习到全文综合，循序渐进'
     ],
     includes: [
-      { icon: '🎯', name: '1v1纠偏课', desc: '45分钟，针对你的偏题规律逐一纠正' },
-      { icon: '📹', name: '理论录播课', desc: '约60分钟，讲解主旨提炼核心方法，免费观看' },
-      { icon: '📄', name: '配套讲义', desc: '分类真题练习，含答案解析' },
-      { icon: '💬', name: '无限提问', desc: '课后随时在群内向老师提问答疑' }
+      { iconKey: 'target', name: '1v1纠偏课', desc: '45分钟，针对你的偏题规律逐一纠正' },
+      { iconKey: 'video', name: '理论录播课', desc: '约60分钟，讲解主旨提炼核心方法，免费观看' },
+      { iconKey: 'file', name: '配套讲义', desc: '分类真题练习，含答案解析' },
+      { iconKey: 'chat', name: '无限提问', desc: '课后随时在群内向老师提问答疑' }
     ]
   },
   3: {
@@ -65,10 +67,10 @@ const courseMap = {
       '分析题答题模板与灵活运用'
     ],
     includes: [
-      { icon: '🎯', name: '1v1纠偏课', desc: '45分钟，针对你的分析短板专项突破' },
-      { icon: '📹', name: '理论录播课', desc: '约60分钟，综合分析题全解，免费观看' },
-      { icon: '📄', name: '配套讲义', desc: '历年综合分析题精选，附详解' },
-      { icon: '💬', name: '无限提问', desc: '课后随时在群内向老师提问答疑' }
+      { iconKey: 'target', name: '1v1纠偏课', desc: '45分钟，针对你的分析短板专项突破' },
+      { iconKey: 'video', name: '理论录播课', desc: '约60分钟，综合分析题全解，免费观看' },
+      { iconKey: 'file', name: '配套讲义', desc: '历年综合分析题精选，附详解' },
+      { iconKey: 'chat', name: '无限提问', desc: '课后随时在群内向老师提问答疑' }
     ]
   },
   4: {
@@ -89,10 +91,10 @@ const courseMap = {
       '真题实练：通知、报告、方案等高频文种'
     ],
     includes: [
-      { icon: '🎯', name: '1v1纠偏课', desc: '45分钟，公文写作全面诊断与纠偏' },
-      { icon: '📹', name: '理论录播课', desc: '约60分钟，公文写作系统讲解，免费观看' },
-      { icon: '📄', name: '配套讲义', desc: '各类公文模板与真题对比分析' },
-      { icon: '💬', name: '无限提问', desc: '课后随时在群内向老师提问答疑' }
+      { iconKey: 'target', name: '1v1纠偏课', desc: '45分钟，公文写作全面诊断与纠偏' },
+      { iconKey: 'video', name: '理论录播课', desc: '约60分钟，公文写作系统讲解，免费观看' },
+      { iconKey: 'file', name: '配套讲义', desc: '各类公文模板与真题对比分析' },
+      { iconKey: 'chat', name: '无限提问', desc: '课后随时在群内向老师提问答疑' }
     ]
   },
   5: {
@@ -113,10 +115,10 @@ const courseMap = {
       '真题实练：从材料到对策的完整拆解'
     ],
     includes: [
-      { icon: '🎯', name: '1v1纠偏课', desc: '45分钟，专项训练你的对策思维' },
-      { icon: '📹', name: '理论录播课', desc: '约60分钟，对策题全方法论，免费观看' },
-      { icon: '📄', name: '配套讲义', desc: '对策题真题精选，分难度分类型' },
-      { icon: '💬', name: '无限提问', desc: '课后随时在群内向老师提问答疑' }
+      { iconKey: 'target', name: '1v1纠偏课', desc: '45分钟，专项训练你的对策思维' },
+      { iconKey: 'video', name: '理论录播课', desc: '约60分钟，对策题全方法论，免费观看' },
+      { iconKey: 'file', name: '配套讲义', desc: '对策题真题精选，分难度分类型' },
+      { iconKey: 'chat', name: '无限提问', desc: '课后随时在群内向老师提问答疑' }
     ]
   },
   6: {
@@ -137,10 +139,10 @@ const courseMap = {
       '五类常考主题的立意规律总结'
     ],
     includes: [
-      { icon: '🎯', name: '1v1纠偏课', desc: '45分钟，专项训练立意准确度' },
-      { icon: '📹', name: '理论录播课', desc: '约60分钟，大作文立意全解，免费观看' },
-      { icon: '📄', name: '配套讲义', desc: '近三年大作文真题立意精析' },
-      { icon: '💬', name: '无限提问', desc: '课后随时在群内向老师提问答疑' }
+      { iconKey: 'target', name: '1v1纠偏课', desc: '45分钟，专项训练立意准确度' },
+      { iconKey: 'video', name: '理论录播课', desc: '约60分钟，大作文立意全解，免费观看' },
+      { iconKey: 'file', name: '配套讲义', desc: '近三年大作文真题立意精析' },
+      { iconKey: 'chat', name: '无限提问', desc: '课后随时在群内向老师提问答疑' }
     ]
   },
   7: {
@@ -161,10 +163,10 @@ const courseMap = {
       '真题实练：从要点堆砌到有效论述的转化'
     ],
     includes: [
-      { icon: '🎯', name: '1v1纠偏课', desc: '45分钟，论证能力专项训练' },
-      { icon: '📹', name: '理论录播课', desc: '约60分钟，论述写作全方法论，免费观看' },
-      { icon: '📄', name: '配套讲义', desc: '论述段落改写练习，含优劣对比' },
-      { icon: '💬', name: '无限提问', desc: '课后随时在群内向老师提问答疑' }
+      { iconKey: 'target', name: '1v1纠偏课', desc: '45分钟，论证能力专项训练' },
+      { iconKey: 'video', name: '理论录播课', desc: '约60分钟，论述写作全方法论，免费观看' },
+      { iconKey: 'file', name: '配套讲义', desc: '论述段落改写练习，含优劣对比' },
+      { iconKey: 'chat', name: '无限提问', desc: '课后随时在群内向老师提问答疑' }
     ]
   },
   8: {
@@ -185,10 +187,10 @@ const courseMap = {
       '真题语言改写练习，形成语感'
     ],
     includes: [
-      { icon: '🎯', name: '1v1纠偏课', desc: '45分钟，语言表达专项打磨' },
-      { icon: '📹', name: '理论录播课', desc: '约60分钟，申论语言规范全讲，免费观看' },
-      { icon: '📄', name: '配套讲义', desc: '口语→书面语改写练习册' },
-      { icon: '💬', name: '无限提问', desc: '课后随时在群内向老师提问答疑' }
+      { iconKey: 'target', name: '1v1纠偏课', desc: '45分钟，语言表达专项打磨' },
+      { iconKey: 'video', name: '理论录播课', desc: '约60分钟，申论语言规范全讲，免费观看' },
+      { iconKey: 'file', name: '配套讲义', desc: '口语→书面语改写练习册' },
+      { iconKey: 'chat', name: '无限提问', desc: '课后随时在群内向老师提问答疑' }
     ]
   }
 }
@@ -212,14 +214,22 @@ const teachers = [
 
 Page({
   data: {
+    uiIcons,
     course: {},
     teachers: teachers
   },
   onLoad(options) {
     const id = parseInt(options.id) || 1
     const course = courseMap[id] || courseMap[1]
-    this.setData({ course })
-    wx.setNavigationBarTitle({ title: course.name })
+    const courseWithIcons = {
+      ...course,
+      includes: (course.includes || []).map((item) => ({
+        ...item,
+        icon: uiIcons[item.iconKey]
+      }))
+    }
+    this.setData({ course: courseWithIcons })
+    wx.setNavigationBarTitle({ title: courseWithIcons.name })
   },
   goPurchase() {
     wx.navigateTo({ url: '/pages/purchase/purchase' })

@@ -3,7 +3,7 @@
   <!-- 未购课空状态 -->
   <block wx:if="{{!isEnrolled}}">
     <view class="empty-state">
-      <view class="empty-icon">💬</view>
+      <image class="empty-icon" src="{{uiIcons.chat}}" mode="aspectFit" />
       <text class="empty-title">暂无师生对话</text>
       <text class="empty-desc">购课后，你将加入专属学习群，与带教老师、学管实时沟通</text>
       <button class="btn-primary empty-btn" bindtap="goEnroll">去选课</button>
@@ -15,7 +15,7 @@
 
   <!-- 右上角菜单 -->
   <view class="nav-more" bindtap="toggleMemberPanel">
-    <text class="nav-more-icon">⋯</text>
+    <image class="nav-more-icon" src="{{inputIcons.menu}}" mode="aspectFit" />
   </view>
 
   <!-- 消息列表 -->
@@ -53,7 +53,7 @@
     <view class="input-bar">
       <!-- 语音/键盘切换 -->
       <view class="input-action" bindtap="toggleVoice">
-        <text class="input-action-icon">{{voiceMode ? '⌨️' : '🎤'}}</text>
+        <image class="input-action-icon" src="{{voiceMode ? inputIcons.keyboard : inputIcons.voice}}" mode="aspectFit" />
       </view>
 
       <!-- 文字输入 / 按住说话 -->
@@ -74,7 +74,7 @@
 
       <!-- 表情 -->
       <view class="input-action" bindtap="toggleEmoji">
-        <text class="input-action-icon">{{showEmoji ? '⌨️' : '😊'}}</text>
+        <image class="input-action-icon" src="{{showEmoji ? inputIcons.keyboard : inputIcons.emoji}}" mode="aspectFit" />
       </view>
 
       <!-- 更多 或 发送 -->
@@ -82,7 +82,7 @@
         <text class="send-text">发送</text>
       </view>
       <view wx:else class="input-action" bindtap="toggleMore">
-        <text class="input-action-icon">➕</text>
+        <image class="input-action-icon input-action-icon-plus" src="{{inputIcons.plus}}" mode="aspectFit" />
       </view>
     </view>
 
@@ -101,25 +101,17 @@
 
     <!-- 更多面板 -->
     <view wx:if="{{showMore}}" class="more-panel">
-      <view class="more-item" bindtap="sendImage">
-        <view class="more-icon-box more-icon-blue"><text class="more-icon">🖼️</text></view>
-        <text class="more-label">图片</text>
-      </view>
-      <view class="more-item" bindtap="sendFile">
-        <view class="more-icon-box more-icon-purple"><text class="more-icon">📄</text></view>
-        <text class="more-label">文件</text>
-      </view>
-      <view class="more-item" bindtap="sendCamera">
-        <view class="more-icon-box more-icon-green"><text class="more-icon">📷</text></view>
-        <text class="more-label">拍照</text>
-      </view>
-      <view class="more-item" bindtap="goLeave">
-        <view class="more-icon-box more-icon-orange"><text class="more-icon">🙋</text></view>
-        <text class="more-label">申请请假</text>
-      </view>
-      <view class="more-item" bindtap="goMailbox">
-        <view class="more-icon-box more-icon-red"><text class="more-icon">📮</text></view>
-        <text class="more-label">校长信箱</text>
+      <view
+        wx:for="{{quickActions}}"
+        wx:key="key"
+        class="more-item"
+        bindtap="handleQuickAction"
+        data-key="{{item.key}}"
+      >
+        <view class="more-icon-stage more-icon-{{item.tone}}">
+          <image class="more-icon" src="{{item.icon}}" mode="aspectFit" />
+        </view>
+        <text class="more-label">{{item.label}}</text>
       </view>
     </view>
 

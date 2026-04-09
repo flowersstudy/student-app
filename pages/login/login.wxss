@@ -1,225 +1,186 @@
-/* ===== 整体页面 ===== */
 .login-page {
   min-height: 100vh;
-  position: relative;
+  background: linear-gradient(180deg, #fbfbfd 0%, #f4f5f7 100%);
+}
+
+.login-shell {
+  min-height: 100vh;
+  padding: calc(92rpx + env(safe-area-inset-top)) 36rpx calc(48rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  justify-content: flex-start;
 }
 
-/* ===== 渐变背景 ===== */
-.login-bg {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(155deg, #0D1B3E 0%, #1248cc 45%, #1A6EFF 75%, #3d8bff 100%);
-  z-index: 0;
-}
-
-/* ===== 装饰圆环 ===== */
-.deco-ring {
-  position: absolute;
-  border-radius: 50%;
-  border: 2rpx solid rgba(255,255,255,0.12);
-}
-.deco-ring-1 { width: 560rpx; height: 560rpx; top: -160rpx; right: -140rpx; }
-.deco-ring-2 { width: 360rpx; height: 360rpx; top: 260rpx; left: -120rpx; border-color: rgba(255,255,255,0.08); }
-
-.deco-dot { position: absolute; border-radius: 50%; }
-.deco-dot-1 { width: 180rpx; height: 180rpx; background: rgba(255,255,255,0.06); top: -40rpx; right: 60rpx; }
-.deco-dot-2 { width: 100rpx; height: 100rpx; background: rgba(255,255,255,0.07); top: 320rpx; right: 40rpx; }
-
-/* ===== 品牌区 ===== */
 .brand-area {
-  position: relative;
-  z-index: 1;
+  padding: 0 10rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: calc(100rpx + env(safe-area-inset-top));
-  padding-bottom: 48rpx;
-  flex: 1;
+  text-align: center;
 }
 
-.logo-wrap { margin-bottom: 28rpx; }
-
-.logo-outer-ring {
-  width: 160rpx; height: 160rpx;
-  border-radius: 50%;
-  border: 2rpx solid rgba(255,255,255,0.35);
-  display: flex; align-items: center; justify-content: center;
-  padding: 10rpx; box-sizing: border-box;
+.brand-mark {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 24rpx;
+  background: #ffffff;
+  border: 1rpx solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 8rpx 24rpx rgba(15, 23, 42, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #111827;
+  font-size: 28rpx;
+  font-weight: 700;
 }
 
-.logo-box {
-  width: 128rpx; height: 128rpx;
+.brand-name {
+  display: block;
+  margin-top: 28rpx;
+  color: #111827;
+  font-size: 58rpx;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: 1rpx;
+}
+
+.brand-slogan {
+  display: block;
+  margin-top: 14rpx;
+  color: #6b7280;
+  font-size: 26rpx;
+  line-height: 1.7;
+}
+
+.login-card {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1rpx solid rgba(15, 23, 42, 0.06);
   border-radius: 32rpx;
-  background: rgba(255,255,255,0.18);
-  display: flex; align-items: center; justify-content: center;
-  border: 1.5rpx solid rgba(255,255,255,0.3);
+  padding: 22rpx 22rpx 30rpx;
+  box-shadow: 0 20rpx 60rpx rgba(15, 23, 42, 0.07);
+  backdrop-filter: blur(16rpx);
+  margin-top: 200rpx;
 }
 
-.logo-char { font-size: 72rpx; font-weight: 700; color: #fff; line-height: 1; }
-
-.brand-name { font-size: 48rpx; font-weight: 700; color: #fff; letter-spacing: 5rpx; margin-bottom: 12rpx; }
-.brand-slogan { font-size: 25rpx; color: rgba(255,255,255,0.72); letter-spacing: 2rpx; }
-
-/* ===== 底部表单卡 ===== */
-.login-sheet {
-  position: relative;
-  z-index: 1;
-  background: #fff;
-  border-radius: 44rpx 44rpx 0 0;
-  padding: 20rpx 44rpx 0;
-  padding-bottom: calc(40rpx + env(safe-area-inset-bottom));
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-shadow: 0 -8rpx 40rpx rgba(0,0,0,0.12);
-}
-
-.sheet-handle {
-  width: 72rpx; height: 8rpx;
-  background: #e8e8e8; border-radius: 4rpx;
-  margin-bottom: 32rpx;
-}
-
-/* ===== Tab 切换 ===== */
 .tab-row {
   display: flex;
-  flex-direction: row;
-  width: 100%;
-  border-bottom: 1.5rpx solid #f0f0f0;
-  margin-bottom: 36rpx;
+  padding: 8rpx;
+  background: #f3f4f6;
+  border-radius: 24rpx;
 }
 
-.tab-item {
+.tab-pill {
   flex: 1;
-  text-align: center;
-  padding-bottom: 20rpx;
-  border-bottom: 4rpx solid transparent;
-  margin-bottom: -1.5rpx;
+  height: 72rpx;
+  border-radius: 18rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.tab-active {
-  border-bottom-color: #1A6EFF;
+.tab-pill-active {
+  background: #ffffff;
+  box-shadow: 0 6rpx 18rpx rgba(15, 23, 42, 0.06);
 }
 
 .tab-text {
-  font-size: 32rpx;
+  color: #9ca3af;
+  font-size: 28rpx;
   font-weight: 600;
-  color: #ccc;
 }
 
-.tab-active .tab-text {
-  color: #1A6EFF;
+.tab-text-active {
+  color: #111827;
 }
 
-/* ===== 表单 ===== */
 .form {
-  width: 100%;
-  margin-bottom: 32rpx;
+  margin-top: 28rpx;
+}
+
+.field-group {
+  margin-bottom: 22rpx;
+}
+
+.field-label {
+  display: block;
+  margin-bottom: 12rpx;
+  color: #6b7280;
+  font-size: 23rpx;
+  line-height: 1.4;
 }
 
 .input-wrap {
   display: flex;
-  flex-direction: row;
   align-items: center;
-  border: 1.5rpx solid #e8e8e8;
-  border-radius: 16rpx;
+  min-height: 96rpx;
   padding: 0 24rpx;
-  height: 96rpx;
-  margin-bottom: 20rpx;
-  background: #fafafa;
+  background: #f9fafb;
+  border: 1.5rpx solid #e5e7eb;
+  border-radius: 22rpx;
+  box-sizing: border-box;
 }
 
 .input-wrap:focus-within {
-  border-color: #1A6EFF;
-  background: #f5f8ff;
+  background: #ffffff;
+  border-color: #cfd4dc;
 }
 
 .input-prefix {
+  margin-right: 18rpx;
+  padding-right: 18rpx;
+  border-right: 1rpx solid #e5e7eb;
+  color: #111827;
   font-size: 28rpx;
-  color: #333;
   font-weight: 600;
-  margin-right: 16rpx;
-  padding-right: 16rpx;
-  border-right: 1.5rpx solid #e8e8e8;
-  flex-shrink: 0;
-}
-
-.input-icon {
-  font-size: 30rpx;
-  margin-right: 16rpx;
   flex-shrink: 0;
 }
 
 .form-input {
   flex: 1;
-  font-size: 30rpx;
-  color: #1a1a1a;
   height: 96rpx;
-  line-height: 96rpx;
+  color: #111827;
+  font-size: 30rpx;
 }
 
 .form-placeholder {
-  color: #ccc;
+  color: #b6bcc6;
   font-size: 28rpx;
 }
 
 .input-eye {
-  font-size: 32rpx;
+  margin-left: 16rpx;
+  color: #8b95a1;
+  font-size: 24rpx;
   flex-shrink: 0;
-  padding-left: 16rpx;
 }
 
-/* ===== 提交按钮 ===== */
 .btn-submit {
   width: 100%;
-  height: 96rpx;
-  background: #1A6EFF;
-  border-radius: 50rpx;
+  height: 92rpx;
+  margin-top: 10rpx;
+  border-radius: 999rpx;
   border: none;
-  font-size: 32rpx;
-  font-weight: 700;
-  color: #fff;
+  background: #111827;
+  color: #ffffff;
+  font-size: 30rpx;
+  font-weight: 600;
   letter-spacing: 2rpx;
-  margin-bottom: 24rpx;
-  box-shadow: 0 8rpx 24rpx rgba(26,110,255,0.35);
 }
-.btn-submit::after { border: none; }
+
+.btn-submit::after {
+  border: none;
+}
 
 .btn-submit-loading {
-  background: #a0baff;
-  box-shadow: none;
+  background: #9ca3af;
 }
 
 .login-tip {
+  display: block;
+  margin-top: 22rpx;
+  color: #9ca3af;
   font-size: 21rpx;
-  color: #ccc;
+  line-height: 1.7;
   text-align: center;
-  margin-bottom: 8rpx;
 }
-
-/* ===== 演示入口 ===== */
-.demo-section { width: 100%; margin-top: 16rpx; }
-
-.demo-divider {
-  display: flex; align-items: center; gap: 16rpx; margin-bottom: 24rpx;
-}
-.demo-line { flex: 1; height: 1rpx; background: #f0f0f0; }
-.demo-label { font-size: 22rpx; color: #ccc; white-space: nowrap; }
-
-.demo-btns { display: flex; flex-direction: row; gap: 20rpx; }
-
-.demo-btn {
-  flex: 1;
-  display: flex; flex-direction: row; align-items: center; justify-content: center;
-  gap: 10rpx; padding: 22rpx 0; border-radius: 20rpx;
-}
-.demo-btn-icon { font-size: 32rpx; line-height: 1; }
-.demo-btn-text { font-size: 26rpx; font-weight: 600; }
-
-.demo-btn-blue { background: #eef3ff; }
-.demo-btn-blue .demo-btn-text { color: #1A6EFF; }
-.demo-btn-orange { background: #fff7ed; }
-.demo-btn-orange .demo-btn-text { color: #fa8c16; }

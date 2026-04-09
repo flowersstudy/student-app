@@ -2,7 +2,7 @@
 
   <!-- 提交成功状态 -->
   <view wx:if="{{submitted}}" class="success-wrap">
-    <text class="success-icon">📬</text>
+    <image class="success-icon" src="{{uiIcons.mailboxSent}}" mode="aspectFit" />
     <text class="success-title">已投递</text>
     <text class="success-desc">感谢你的反馈，校长将认真阅读每一封信。</text>
     <view class="btn-again" bindtap="reset">
@@ -14,7 +14,7 @@
   <view wx:else>
 
     <view class="mailbox-intro card">
-      <text class="mailbox-intro-icon">📮</text>
+      <image class="mailbox-intro-icon" src="{{uiIcons.mailbox}}" mode="aspectFit" />
       <view class="mailbox-intro-text">
         <text class="mailbox-intro-title">校长信箱</text>
         <text class="mailbox-intro-desc">你的意见将直接送达校长，支持匿名投递。</text>

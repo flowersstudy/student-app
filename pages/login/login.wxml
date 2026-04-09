@@ -1,116 +1,85 @@
 <view class="login-page">
+  <view class="login-shell">
+    <view class="brand-area">
+      <view class="brand-mark">步知</view>
+      <text class="brand-name">{{productName}}</text>
+      <text class="brand-slogan">{{slogan}}</text>
+    </view>
 
-  <!-- 渐变背景 + 装饰圆环 -->
-  <view class="login-bg">
-    <view class="deco-ring deco-ring-1"></view>
-    <view class="deco-ring deco-ring-2"></view>
-    <view class="deco-dot deco-dot-1"></view>
-    <view class="deco-dot deco-dot-2"></view>
-  </view>
-
-  <!-- 顶部品牌区 -->
-  <view class="brand-area">
-    <view class="logo-wrap">
-      <view class="logo-outer-ring">
-        <view class="logo-box">
-          <text class="logo-char">学</text>
+    <view class="login-card">
+      <view class="tab-row">
+        <view
+          class="tab-pill {{activeTab === 'login' ? 'tab-pill-active' : ''}}"
+          bindtap="switchTab"
+          data-tab="login"
+        >
+          <text class="tab-text {{activeTab === 'login' ? 'tab-text-active' : ''}}">登录</text>
+        </view>
+        <view
+          class="tab-pill {{activeTab === 'register' ? 'tab-pill-active' : ''}}"
+          bindtap="switchTab"
+          data-tab="register"
+        >
+          <text class="tab-text {{activeTab === 'register' ? 'tab-text-active' : ''}}">注册</text>
         </view>
       </view>
-    </view>
-    <text class="brand-name">{{productName}}</text>
-    <text class="brand-slogan">{{slogan}}</text>
-  </view>
 
-  <!-- 底部表单卡 -->
-  <view class="login-sheet">
-    <view class="sheet-handle"></view>
-
-    <!-- Tab 切换 -->
-    <view class="tab-row">
-      <view class="tab-item {{activeTab === 'login' ? 'tab-active' : ''}}" bindtap="switchTab" data-tab="login">
-        <text class="tab-text">登录</text>
-      </view>
-      <view class="tab-item {{activeTab === 'register' ? 'tab-active' : ''}}" bindtap="switchTab" data-tab="register">
-        <text class="tab-text">注册</text>
-      </view>
-    </view>
-
-    <!-- 表单 -->
-    <view class="form">
-
-      <!-- 手机号 -->
-      <view class="input-wrap">
-        <text class="input-prefix">+86</text>
-        <input
-          class="form-input"
-          type="number"
-          maxlength="11"
-          placeholder="请输入手机号"
-          placeholder-class="form-placeholder"
-          value="{{phone}}"
-          bindinput="onPhoneInput"
-        />
-      </view>
-
-      <!-- 密码 -->
-      <view class="input-wrap">
-        <text class="input-icon">🔒</text>
-        <input
-          class="form-input"
-          password="{{!showPassword}}"
-          placeholder="请输入密码（6位以上）"
-          placeholder-class="form-placeholder"
-          value="{{password}}"
-          bindinput="onPasswordInput"
-        />
-        <text class="input-eye" bindtap="togglePassword">{{showPassword ? '🙈' : '👁'}}</text>
-      </view>
-
-      <!-- 确认密码（仅注册） -->
-      <view wx:if="{{activeTab === 'register'}}" class="input-wrap">
-        <text class="input-icon">🔒</text>
-        <input
-          class="form-input"
-          password="{{!showPassword}}"
-          placeholder="再次输入密码"
-          placeholder-class="form-placeholder"
-          value="{{confirmPassword}}"
-          bindinput="onConfirmPasswordInput"
-        />
-      </view>
-
-    </view>
-
-    <!-- 提交按钮 -->
-    <button
-      class="btn-submit {{loading ? 'btn-submit-loading' : ''}}"
-      bindtap="submit"
-      disabled="{{loading}}"
-    >
-      <text>{{loading ? '请稍候…' : activeTab === 'login' ? '登录' : '注册'}}</text>
-    </button>
-
-    <text class="login-tip">登录或注册即代表同意《用户协议》和《隐私政策》</text>
-
-    <!-- 演示入口 -->
-    <view class="demo-section">
-      <view class="demo-divider">
-        <view class="demo-line"></view>
-        <text class="demo-label">演示入口</text>
-        <view class="demo-line"></view>
-      </view>
-      <view class="demo-btns">
-        <view class="demo-btn demo-btn-blue" bindtap="demoEnrolled">
-          <text class="demo-btn-icon">📚</text>
-          <text class="demo-btn-text">已购课演示</text>
+      <view class="form">
+        <view class="field-group">
+          <text class="field-label">手机号</text>
+          <view class="input-wrap">
+            <text class="input-prefix">+86</text>
+            <input
+              class="form-input"
+              type="number"
+              maxlength="11"
+              placeholder="请输入手机号"
+              placeholder-class="form-placeholder"
+              value="{{phone}}"
+              bindinput="onPhoneInput"
+            />
+          </view>
         </view>
-        <view class="demo-btn demo-btn-orange" bindtap="demoNew">
-          <text class="demo-btn-icon">👋</text>
-          <text class="demo-btn-text">新用户演示</text>
+
+        <view class="field-group">
+          <text class="field-label">密码</text>
+          <view class="input-wrap">
+            <input
+              class="form-input"
+              password="{{!showPassword}}"
+              placeholder="请输入密码（6位以上）"
+              placeholder-class="form-placeholder"
+              value="{{password}}"
+              bindinput="onPasswordInput"
+            />
+            <text class="input-eye" bindtap="togglePassword">{{showPassword ? '隐藏' : '显示'}}</text>
+          </view>
+        </view>
+
+        <view wx:if="{{activeTab === 'register'}}" class="field-group">
+          <text class="field-label">确认密码</text>
+          <view class="input-wrap">
+            <input
+              class="form-input"
+              password="{{!showPassword}}"
+              placeholder="再次输入密码"
+              placeholder-class="form-placeholder"
+              value="{{confirmPassword}}"
+              bindinput="onConfirmPasswordInput"
+            />
+          </view>
         </view>
       </view>
+
+      <button
+        class="btn-submit {{loading ? 'btn-submit-loading' : ''}}"
+        bindtap="submit"
+        disabled="{{loading}}"
+      >
+        <text>{{loading ? '请稍候…' : activeTab === 'login' ? '登录' : '注册'}}</text>
+      </button>
+
+      <text class="login-tip">登录或注册即代表同意《用户协议》和《隐私政策》</text>
     </view>
-
   </view>
-
 </view>

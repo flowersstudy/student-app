@@ -3,7 +3,7 @@
   <!-- 顶部触发原因卡 -->
   <view class="trigger-card trigger-{{triggerType}}">
     <view class="trigger-icon-wrap">
-      <text class="trigger-icon">{{triggerType === 'all_complete' ? '🎉' : '⏰'}}</text>
+      <image class="trigger-icon" src="{{triggerIcon}}" mode="aspectFit" />
     </view>
     <view class="trigger-info">
       <text class="trigger-label">{{triggerLabel}}</text>
@@ -11,14 +11,34 @@
     </view>
   </view>
 
+  <!-- 顶部复盘概览 -->
+  <view class="review-summary-row">
+    <view class="review-study-card">
+      <view class="review-summary-label-row">
+        <image class="review-summary-icon" src="{{uiIcons.calendar}}" mode="aspectFit" />
+        <text class="review-summary-label">累计学习时长</text>
+      </view>
+      <text class="review-study-value">{{totalStudyDisplay}}</text>
+    </view>
+
+    <view class="review-square-card" bindtap="goLearningSquare">
+      <text class="review-square-tag">累计积分</text>
+      <text class="review-square-value">{{totalPoints}}</text>
+      <view class="review-square-entry">
+        <text class="review-square-entry-text">学习广场</text>
+        <text class="review-square-entry-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
   <!-- 进度条 -->
   <view class="progress-section">
     <view class="progress-header-row">
       <text class="progress-title">复习进度</text>
-      <text class="progress-count">{{checkedCount}} / {{totalPoints}} 个知识点</text>
+      <text class="progress-count">{{checkedCount}} / {{totalReviewPoints}} 个知识点</text>
     </view>
     <view class="progress-bar-bg">
-      <view class="progress-bar-fill" style="width:{{totalPoints > 0 ? checkedCount / totalPoints * 100 : 0}}%"></view>
+      <view class="progress-bar-fill" style="width:{{totalReviewPoints > 0 ? checkedCount / totalReviewPoints * 100 : 0}}%"></view>
     </view>
   </view>
 
@@ -53,7 +73,7 @@
           data-pointid="{{kp.id}}"
         >
           <view class="kp-checkbox {{kp.checked ? 'kp-checkbox-checked' : ''}}">
-            <text wx:if="{{kp.checked}}" class="kp-check-icon">✓</text>
+            <image wx:if="{{kp.checked}}" class="kp-check-icon" src="{{uiIcons.check}}" mode="aspectFit" />
           </view>
           <text class="kp-title {{kp.checked ? 'kp-title-checked' : ''}}">{{kp.title}}</text>
         </view>
@@ -68,7 +88,7 @@
       bindtap="finishReview"
       disabled="{{!allChecked}}"
     >
-      {{allChecked ? '我已复习完成，查看老师讲解' : '请逐项勾选已复习的知识点（' + checkedCount + '/' + totalPoints + '）'}}
+      {{allChecked ? '我已复习完成，查看老师讲解' : '请逐项勾选已复习的知识点（' + checkedCount + '/' + totalReviewPoints + '）'}}
     </button>
   </view>
 
@@ -108,7 +128,7 @@
         <!-- 视频气泡 -->
         <view wx:if="{{item.type === 'video'}}" class="bubble bubble-video" bindtap="playVideo" data-title="{{item.title}}">
           <view class="video-thumb">
-            <text class="video-play-icon">▶</text>
+            <image class="video-play-icon" src="{{uiIcons.play}}" mode="aspectFit" />
           </view>
           <view class="video-info">
             <text class="video-title">{{item.title}}</text>

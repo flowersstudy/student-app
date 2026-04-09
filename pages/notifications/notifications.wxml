@@ -1,7 +1,7 @@
 <view class="notif-page">
 
   <view wx:if="{{notifications.length === 0}}" class="notif-empty">
-    <text class="notif-empty-icon">🔔</text>
+    <image class="notif-empty-icon" src="{{uiIcons.bell}}" mode="aspectFit" />
     <text class="notif-empty-text">暂无新通知</text>
   </view>
 
@@ -19,7 +19,7 @@
     >
       <view class="notif-item-bar notif-bar-{{item.type}}"></view>
       <view class="notif-item-icon-wrap notif-bg-{{item.type}}">
-        <text class="notif-item-icon">{{item.type === 'class' ? '📖' : '📝'}}</text>
+        <image class="notif-item-icon" src="{{item.type === 'class' ? uiIcons.class : uiIcons.exam}}" mode="aspectFit" />
       </view>
       <view class="notif-item-body">
         <text class="notif-item-label">{{item.label}}</text>
@@ -41,7 +41,7 @@
     >
       <view class="notif-item-bar notif-bar-{{item.type}}"></view>
       <view class="notif-item-icon-wrap notif-bg-{{item.type}}">
-        <text class="notif-item-icon">{{item.type === 'hw' ? '📋' : item.type === 'drill' ? '✏️' : '🎬'}}</text>
+        <image class="notif-item-icon" src="{{item.type === 'hw' ? uiIcons.homework : item.type === 'drill' ? uiIcons.drill : uiIcons.video}}" mode="aspectFit" />
       </view>
       <view class="notif-item-body">
         <text class="notif-item-label">{{item.label}}</text>

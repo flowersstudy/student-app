@@ -46,8 +46,9 @@
 }
 
 .video-icon {
-  font-size: 56rpx;
-  color: #1A6EFF;
+  width: 72rpx;
+  height: 72rpx;
+  filter: drop-shadow(0 10rpx 18rpx rgba(37, 99, 235, 0.14));
 }
 
 .video-tip {
@@ -88,8 +89,20 @@
 }
 
 .ask-icon {
-  font-size: 40rpx;
+  width: 44rpx;
+  height: 44rpx;
   margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.task-check-done {
+  background: transparent;
+  border-color: transparent;
+}
+
+.task-check-icon {
+  width: 28rpx;
+  height: 28rpx;
 }
 
 .ask-text {

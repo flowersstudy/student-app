@@ -1,0 +1,357 @@
+.square-page {
+  min-height: 100vh;
+  padding: 24rpx;
+  padding-bottom: 120rpx;
+  background:
+    radial-gradient(circle at top right, rgba(26, 110, 255, 0.08), transparent 28%),
+    linear-gradient(180deg, #f8fbff 0%, #f4f8fd 100%);
+}
+
+.hero-card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  padding: 30rpx;
+  border-radius: 34rpx;
+  background: linear-gradient(180deg, #eef6ff 0%, #ffffff 100%);
+  color: #0f172a;
+  border: 1rpx solid rgba(26, 110, 255, 0.1);
+  box-shadow: 0 14rpx 30rpx rgba(15, 23, 42, 0.05);
+}
+
+.hero-decor {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hero-decor-one {
+  top: -54rpx;
+  right: -30rpx;
+  width: 220rpx;
+  height: 220rpx;
+  background: radial-gradient(circle, rgba(96, 165, 250, 0.28) 0%, rgba(96, 165, 250, 0.02) 70%);
+}
+
+.hero-decor-two {
+  bottom: -70rpx;
+  right: 120rpx;
+  width: 180rpx;
+  height: 180rpx;
+  background: radial-gradient(circle, rgba(191, 219, 254, 0.38) 0%, rgba(191, 219, 254, 0.02) 72%);
+}
+
+.hero-main,
+.hero-stats {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-main {
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-badge {
+  align-self: flex-start;
+  padding: 8rpx 18rpx;
+  border-radius: 999rpx;
+  background: rgba(219, 234, 254, 0.9);
+  color: #1d4ed8;
+  font-size: 22rpx;
+  font-weight: 700;
+}
+
+.hero-title {
+  display: block;
+  margin-top: 18rpx;
+  font-size: 36rpx;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.hero-desc {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  line-height: 1.72;
+  color: #64748b;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 16rpx;
+}
+
+.hero-stat {
+  flex: 1;
+  padding: 18rpx;
+  border-radius: 24rpx;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1rpx solid rgba(148, 163, 184, 0.12);
+}
+
+.hero-stat-value {
+  display: block;
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.hero-stat-label {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: #64748b;
+}
+
+.section {
+  margin-top: 26rpx;
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20rpx;
+  margin-bottom: 16rpx;
+}
+
+.section-head-main {
+  display: flex;
+  flex-direction: column;
+}
+
+.section-kicker {
+  font-size: 20rpx;
+  letter-spacing: 2rpx;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.section-title {
+  margin-top: 6rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.section-sub {
+  font-size: 22rpx;
+  color: #94a3b8;
+}
+
+.feature-card,
+.panel-card,
+.comment-card,
+.team-card,
+.case-card,
+.compact-card {
+  position: relative;
+  padding: 26rpx;
+  border-radius: 28rpx;
+  background: rgba(255, 255, 255, 0.98);
+  border: 1rpx solid rgba(148, 163, 184, 0.14);
+  box-shadow: 0 10rpx 24rpx rgba(15, 23, 42, 0.04);
+}
+
+.feature-card + .feature-card,
+.panel-card + .panel-card,
+.comment-card + .comment-card,
+.case-card + .case-card,
+.compact-card + .compact-card {
+  margin-top: 14rpx;
+}
+
+.feature-accent {
+  position: absolute;
+  top: 0;
+  left: 24rpx;
+  width: 84rpx;
+  height: 8rpx;
+  border-radius: 0 0 999rpx 999rpx;
+  background: linear-gradient(90deg, #1a6eff 0%, #60a5fa 100%);
+}
+
+.team-grid,
+.compact-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+}
+
+.team-mark {
+  width: 56rpx;
+  height: 10rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, #bfdbfe 0%, #dbeafe 100%);
+}
+
+.card-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.card-desc,
+.sync-text,
+.card-meta,
+.compact-desc {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 23rpx;
+  line-height: 1.72;
+  color: #64748b;
+}
+
+.row-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.row-start {
+  align-items: flex-start;
+}
+
+.card-bottom {
+  margin-top: 18rpx;
+}
+
+.tag {
+  padding: 8rpx 16rpx;
+  border-radius: 999rpx;
+  background: #eaf2ff;
+  font-size: 22rpx;
+  color: #2563eb;
+  font-weight: 700;
+}
+
+.muted {
+  font-size: 22rpx;
+  color: #94a3b8;
+}
+
+.action-text,
+.points-text,
+.case-result {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.action-btn {
+  flex-shrink: 0;
+  padding: 14rpx 22rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(135deg, #1a6eff 0%, #3b82f6 100%);
+  box-shadow: 0 8rpx 18rpx rgba(37, 99, 235, 0.16);
+}
+
+.action-btn-text {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.ghost-btn {
+  padding: 12rpx 20rpx;
+  border-radius: 999rpx;
+  background: #eff6ff;
+}
+
+.ghost-btn-text {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #1d4ed8;
+}
+
+.meta-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 8rpx 16rpx;
+  border-radius: 999rpx;
+  background: #eff6ff;
+  font-size: 22rpx;
+  color: #1d4ed8;
+}
+
+.panel-topline {
+  width: 96rpx;
+  height: 8rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, #93c5fd 0%, #dbeafe 100%);
+}
+
+.sync-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14rpx;
+  margin-top: 18rpx;
+}
+
+.sync-dot {
+  width: 12rpx;
+  height: 12rpx;
+  margin-top: 12rpx;
+  border-radius: 50%;
+  background: #60a5fa;
+  flex-shrink: 0;
+}
+
+.comment-card {
+  display: flex;
+  gap: 18rpx;
+}
+
+.comment-avatar {
+  width: 68rpx;
+  height: 68rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  color: #1d4ed8;
+  font-size: 28rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.comment-main {
+  flex: 1;
+}
+
+.comment-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.comment-quote {
+  font-size: 34rpx;
+  line-height: 1;
+  color: #cbd5e1;
+}
+
+.case-result-badge {
+  flex-shrink: 0;
+  padding: 14rpx 18rpx;
+  border-radius: 22rpx;
+  background: linear-gradient(180deg, #eef6ff 0%, #dbeafe 100%);
+}
+
+.card-action-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18rpx;
+}
+
+.safe-bottom {
+  height: 24rpx;
+}

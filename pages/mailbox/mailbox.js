@@ -1,5 +1,8 @@
+const { uiIcons } = require('../../utils/ui-icons')
+
 Page({
   data: {
+    uiIcons,
     category: '教学建议',
     categories: ['教学建议', '课程安排', '老师反馈', '服务投诉', '其他'],
     content: '',

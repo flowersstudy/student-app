@@ -20,7 +20,7 @@
   <view class="card intro-section">
     <text class="intro-section-title">这门课帮你解决</text>
     <view wx:for="{{course.solutions}}" wx:key="index" class="solution-item">
-      <view class="solution-icon">✓</view>
+      <image class="solution-icon" src="{{uiIcons.check}}" mode="aspectFit" />
       <text class="solution-text">{{item}}</text>
     </view>
   </view>
@@ -29,7 +29,7 @@
   <view class="card intro-section">
     <text class="intro-section-title">课程包含</text>
     <view wx:for="{{course.includes}}" wx:key="index" class="include-item">
-      <text class="include-icon">{{item.icon}}</text>
+      <image class="include-icon" src="{{item.icon}}" mode="aspectFit" />
       <view class="include-info">
         <text class="include-name">{{item.name}}</text>
         <text class="include-desc">{{item.desc}}</text>

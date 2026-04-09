@@ -1,9 +1,22 @@
 const app = getApp()
 const { http } = require('../../utils/request')
 
+const BASE_POINTS = [
+  { id: 1, name: '游走式找点', status: '学习中', progress: 60 },
+  { id: 2, name: '提炼转述错误', status: '已完成', progress: 100, completedAt: '2026-03-10' },
+  { id: 3, name: '分析结构错误', status: '待解锁', progress: 0 },
+  { id: 4, name: '公文结构错误', status: '已完成', progress: 100, completedAt: '2026-03-18' },
+  { id: 5, name: '对策推导错误', status: '学习中', progress: 30 },
+  { id: 6, name: '作文立意错误', status: '已完成', progress: 100, completedAt: '2026-03-22' },
+  { id: 7, name: '作文逻辑不清晰', status: '待解锁', progress: 0 },
+  { id: 8, name: '作文表达不流畅', status: '待解锁', progress: 0 }
+]
+
 Page({
   data: {
     isEnrolled: false,
+    entryMode: '',
+    entryHero: null,
     // 复习提醒（由 _computeReviewReminder 动态计算，初始不显示）
     reviewReminder: { show: false, type: '', label: '', desc: '', days: 0, pointName: '' },
     // 学习时间数据（用于判断复习触发条件）
@@ -32,6 +45,9 @@ Page({
       { id: 4, name: '公文结构错误', status: '已完成', progress: 100, completedAt: '2026-03-18' },
       { id: 6, name: '作文立意错误', status: '已完成', progress: 100, completedAt: '2026-03-22' }
     ],
+    allPoints: BASE_POINTS,
+    pendingDisplayPoints: BASE_POINTS.filter((item) => item.status !== '已完成'),
+    resolvedDisplayPoints: BASE_POINTS.filter((item) => item.status === '已完成'),
     // 未购课数据
     courses: [
       { id: 1, name: '游走式找点', price: 1080, selected: false },
@@ -112,7 +128,17 @@ Page({
     examEditTime: '09:00'
   },
   onShow() {
-    this.setData({ isEnrolled: app.globalData.isEnrolled })
+    const entryMode = app.globalData.entryMode || wx.getStorageSync('entry_mode') || ''
+    const allPoints = this._buildAllPoints()
+    const grouped = this._groupPoints(allPoints)
+    this.setData({
+      isEnrolled: app.globalData.isEnrolled,
+      entryMode,
+      entryHero: this._buildEntryHero(entryMode),
+      allPoints,
+      pendingDisplayPoints: grouped.pendingDisplayPoints,
+      resolvedDisplayPoints: grouped.resolvedDisplayPoints
+    })
     this._startCarousel()
     if (app.globalData.isEnrolled) {
       const notifications = this._computeNotifications()
@@ -284,6 +310,90 @@ Page({
     this._loadFromServer()
   },
 
+  _buildEntryHero(entryMode) {
+    const scenes = {
+      diagnose: {
+        theme: 'diagnose',
+        badge: '精准诊断',
+        title: '先做诊断，再开始学习',
+        desc: '先看清你为什么失分，再决定下一步怎么学，让首页下面的学习内容更顺地承接上来。',
+        buttonText: '去诊断',
+        action: 'diagnose',
+        metrics: [
+          { value: '8', label: '诊断维度' },
+          { value: '1v1', label: '沟通方式' },
+          { value: '3', label: '核心输出' }
+        ],
+        scorePanel: {
+          current: this.data.diagnosis.diagnosisScore,
+          target: this.data.diagnosis.targetScore,
+          gap: this.data.diagnosis.scoreGap
+        },
+        highlights: [
+          { title: '优势基底', desc: '不是从零开始，而是在已有阅读理解基础上先找出真正拖分的位置。' },
+          { title: '核心卡点', desc: '重点会先落在结构、提炼和作文逻辑这些高频失分位。' }
+        ],
+        previewTitle: '诊断结果会先告诉你什么',
+        previewPoints: [
+          { tier: 'red', tierText: '红标优先', name: '提炼转述偏差', desc: '能看懂材料，但输出时容易照抄原文，提炼不够稳。' },
+          { tier: 'yellow', tierText: '黄标优先', name: '分析结构不清', desc: '分析题有点但没层次，论证关系展开不够完整。' },
+          { tier: 'blue', tierText: '蓝标跟进', name: '作文逻辑松散', desc: '有观点，但段落推进和总分结构还不够稳。' }
+        ],
+        basisRows: [
+          { label: '诊断方式', value: '老师批改 + 电话沟通 + 书面报告' },
+          { label: '输出结果', value: '失分依据、核心卡点、阶段规划' },
+          { label: '适用场景', value: '刷题很多但分数不动，或者不知道先补哪里' }
+        ],
+        helperTitle: '入口会先进入诊断详情页',
+        helperDesc: '保持昨天那种更偏报告感、更偏引导的进入方式。',
+        tags: ['老师手批', '问题定位', '学习建议']
+      },
+      trial: {
+        theme: 'trial',
+        badge: '刷题体验',
+        title: '先刷一组题，进入状态',
+        desc: '先体验题目、讲解和反馈节奏，再决定是继续刷题，还是回到诊断和卡点识别。',
+        buttonText: '去刷题',
+        action: 'trial',
+        metrics: [
+          { value: '15min', label: '进入门槛' },
+          { value: '1组', label: '体验题量' },
+          { value: '即时', label: '反馈节奏' }
+        ],
+        highlights: [
+          { title: '先感受节奏', desc: '不是直接塞满内容，而是先让用户进入做题状态。' },
+          { title: '再决定路线', desc: '刷完后再判断更适合诊断、刷题还是卡点学习。' }
+        ],
+        previewTitle: '',
+        helperTitle: '这是更轻量的入口',
+        helperDesc: '适合先体验一下，不需要先做重决策。',
+        tags: ['快速体验', '即时反馈', '轻量进入']
+      },
+      kpoint: {
+        theme: 'kpoint',
+        badge: '卡点识别',
+        title: '先看看自己卡在哪',
+        desc: '先建立问题地图，再决定下一步走诊断、刷题，还是直接进入对应卡点。',
+        buttonText: '看卡点',
+        action: 'kpoint',
+        metrics: [
+          { value: '8类', label: '卡点体系' },
+          { value: '高频', label: '失分场景' },
+          { value: '路径', label: '学习判断' }
+        ],
+        highlights: [
+          { title: '先识别类型', desc: '把“不会”和“卡错地方”区分开，后面学习才不绕路。' },
+          { title: '再匹配入口', desc: '识别完卡点后，再进入诊断或刷题会更自然。' }
+        ],
+        previewTitle: '',
+        helperTitle: '这是问题地图入口',
+        helperDesc: '更像一个前置判断，而不是直接进入学习。',
+        tags: ['八大卡点', '失分定位', '路径判断']
+      }
+    }
+    return scenes[entryMode] || null
+  },
+
   _loadFromServer() {
     http.get('/api/student/profile').then((data) => {
       if (!data) return
@@ -299,9 +409,42 @@ Page({
       const shenlunPoints = all.filter(c => c.subject === '申论').map(c => ({
         id: c.id, name: c.name, status: mapStatus(c.status), progress: c.progress
       }))
-      if (xingcePoints.length > 0) this.setData({ xingcePoints })
-      if (shenlunPoints.length > 0) this.setData({ shenlunPoints })
+      const nextData = {}
+      if (xingcePoints.length > 0) nextData.xingcePoints = xingcePoints
+      if (shenlunPoints.length > 0) nextData.shenlunPoints = shenlunPoints
+      const allPoints = this._buildAllPoints(all)
+      const grouped = this._groupPoints(allPoints)
+      this.setData({
+        ...nextData,
+        allPoints,
+        pendingDisplayPoints: grouped.pendingDisplayPoints,
+        resolvedDisplayPoints: grouped.resolvedDisplayPoints
+      })
     }).catch(() => {})
+  },
+
+  _buildAllPoints(serverPoints) {
+    const source = Array.isArray(serverPoints)
+      ? serverPoints
+      : [...this.data.xingcePoints, ...this.data.shenlunPoints]
+
+    const mapped = new Map(source.map((item) => [item.id, item]))
+    return BASE_POINTS.map((point) => {
+      const current = mapped.get(point.id)
+      return current
+        ? {
+            ...point,
+            ...current,
+          }
+        : { ...point }
+    }).sort((a, b) => a.id - b.id)
+  },
+
+  _groupPoints(points) {
+    return {
+      pendingDisplayPoints: points.filter((item) => item.status !== '已完成'),
+      resolvedDisplayPoints: points.filter((item) => item.status === '已完成')
+    }
   },
 
   _initCalendar() {
@@ -427,9 +570,25 @@ Page({
     const days = Math.ceil((target - today) / 86400000)
     if (days > 0) this.setData({ examDaysLeft: days })
   },
+
+  onEntryHeroAction(e) {
+    const action = e.currentTarget.dataset.action
+    if (action === 'diagnose') {
+      this.goDiagnose()
+      return
+    }
+    if (action === 'trial') {
+      wx.navigateTo({ url: '/pages/trial-experience/trial-experience' })
+      return
+    }
+    if (action === 'kpoint') {
+      wx.navigateTo({ url: '/pages/kpoint-list/kpoint-list' })
+    }
+  },
+
   // 已购课方法
   goDiagnose() {
-    wx.navigateTo({ url: '/pages/diagnose/diagnose' })
+    wx.navigateTo({ url: '/pages/diagnose-detail/diagnose-detail' })
   },
   goProgress(e) {
     wx.navigateTo({ url: `/pages/progress/progress?id=${e.currentTarget.dataset.id}` })

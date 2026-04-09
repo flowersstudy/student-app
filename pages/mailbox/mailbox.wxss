@@ -14,8 +14,9 @@
 }
 
 .success-icon {
-  font-size: 96rpx;
-  line-height: 1;
+  width: 108rpx;
+  height: 108rpx;
+  filter: drop-shadow(0 14rpx 18rpx rgba(37, 99, 235, 0.1));
 }
 
 .success-title {
@@ -55,9 +56,10 @@
 }
 
 .mailbox-intro-icon {
-  font-size: 56rpx;
+  width: 56rpx;
+  height: 56rpx;
   flex-shrink: 0;
-  line-height: 1;
+  filter: drop-shadow(0 10rpx 14rpx rgba(79, 70, 229, 0.08));
 }
 
 .mailbox-intro-text {

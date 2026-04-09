@@ -36,7 +36,7 @@
         <text class="phase-label">上课中</text>
         <view class="phase-card">
           <view class="video-placeholder">
-            <text class="video-icon">▶</text>
+            <image class="video-icon" src="{{uiIcons.play}}" mode="aspectFit" />
             <text class="video-tip">{{videoTitle}}</text>
           </view>
           <button class="btn-enter" bindtap="enterVideo">进入视频</button>
@@ -58,7 +58,7 @@
           </view>
           <view wx:for="{{recordedTasks}}" wx:key="id" class="task-item" bindtap="toggleRecordedTask" data-id="{{item.id}}">
             <view class="task-check {{item.done ? 'task-check-done' : ''}}">
-              <text class="task-check-icon" wx:if="{{item.done}}">✓</text>
+              <image wx:if="{{item.done}}" class="task-check-icon" src="{{uiIcons.check}}" mode="aspectFit" />
             </view>
             <view class="task-body">
               <text class="task-title {{item.done ? 'task-title-done' : ''}}">{{item.title}}</text>
@@ -92,13 +92,13 @@
           </view>
 
           <view class="video-placeholder" style="margin-bottom:16rpx;" bindtap="enterPostVideo">
-            <text class="video-icon">▶</text>
+            <image class="video-icon" src="{{uiIcons.play}}" mode="aspectFit" />
             <text class="video-tip">{{postVideoTitle}}</text>
           </view>
 
           <view class="ask-btn-row">
             <view class="ask-btn" bindtap="askTeacher">
-              <text class="ask-icon">💬</text>
+              <image class="ask-icon" src="{{uiIcons.chat}}" mode="aspectFit" />
               <text class="ask-text">向老师提问</text>
             </view>
           </view>

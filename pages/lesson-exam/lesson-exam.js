@@ -1,5 +1,9 @@
+const { uiIcons } = require('../../utils/ui-icons')
+const { completeLocalUpload, isOfflineMode } = require('../../utils/offline')
+
 Page({
   data: {
+    uiIcons,
     examInfo: {
       title: '科技是这个时代最大的公益',
       type: '大作文',
@@ -7,23 +11,19 @@ Page({
     },
     files: [
       { id: 1, name: '考试题目科技是这个时代最大的公益讲义.pdf', type: '题目讲义', url: '', opened: false },
-      { id: 2, name: '考试题目科技是这个时代最大公益解析.pdf', type: '解析', url: '', opened: false }
+      { id: 2, name: '考试题目科技是这个时代最大的公益解析.pdf', type: '解析', url: '', opened: false }
     ],
     videoId: '1e6eaa05af8d3a8b562c73baf58c0ec3_1',
-
-    // 计时器显示
-    timerDisplay: '60:00',   // 初始显示剩余时间
+    timerDisplay: '60:00',
     timerRunning: false,
-    timeLow: false,          // 剩余 ≤5 分钟，变红
-    timeUp: false,           // 已归零
-
+    timeLow: false,
+    timeUp: false,
     submitted: false,
     notes: '',
     showTimerEdit: false,
     editMinutes: '60'
   },
 
-  // 实例变量（不放 data，避免不必要的 setData）
   remainSeconds: 0,
   totalSeconds: 0,
   timerInterval: null,
@@ -39,7 +39,6 @@ Page({
     this.stop()
   },
 
-  // 格式化为 MM:SS（不足1小时）或 HH:MM:SS
   fmt(sec) {
     const h = Math.floor(sec / 3600)
     const m = Math.floor((sec % 3600) / 60)
@@ -61,11 +60,9 @@ Page({
     if (this.data.timeUp) return
 
     if (this.data.timerRunning) {
-      // 暂停
       this.stop()
       this.setData({ timerRunning: false })
     } else {
-      // 开始 / 继续
       this.timerInterval = setInterval(() => {
         this.remainSeconds--
 
@@ -87,7 +84,7 @@ Page({
           return
         }
 
-        const timeLow = this.remainSeconds <= 300  // 最后5分钟
+        const timeLow = this.remainSeconds <= 300
         this.setData({
           timerDisplay: this.fmt(this.remainSeconds),
           timeLow
@@ -167,24 +164,38 @@ Page({
       extension: ['pdf'],
       success: (res) => {
         const file = res.tempFiles[0]
-        wx.showLoading({ title: '上传中…', mask: true })
+        wx.showLoading({ title: '上传中...', mask: true })
 
-        const profile   = app.globalData.userProfile
-        const examInfo  = this.data.examInfo
-        // 判断是否正常提交：时间未到则为正常
+        const profile = app.globalData.userProfile
+        const examInfo = this.data.examInfo
         const submittedNormal = !this.data.timeUp
+
+        if (isOfflineMode()) {
+          completeLocalUpload({
+            fileName: file.name,
+            studentName: profile.name,
+            reviewType: 'checkpoint-exam',
+            checkpoint: examInfo.title,
+            submittedNormal,
+            sourcePath: file.path,
+          })
+          wx.hideLoading()
+          this.setData({ submitted: true })
+          wx.showToast({ title: '已保存到本地演示', icon: 'success' })
+          return
+        }
 
         wx.uploadFile({
           url: `${app.globalData.serverBase}/api/submissions`,
           filePath: file.path,
           name: 'file',
           formData: {
-            studentName:     profile.name,
-            studentId:       profile.name,
-            reviewType:      '卡点考试',
-            checkpoint:      examInfo.title,
-            deadline:        '今日 23:59',
-            priority:        submittedNormal ? 'normal' : 'urgent',
+            studentName: profile.name,
+            studentId: profile.name,
+            reviewType: '卡点考试',
+            checkpoint: examInfo.title,
+            deadline: '今日 23:59',
+            priority: submittedNormal ? 'normal' : 'urgent',
             submittedNormal: String(submittedNormal),
           },
           success: (uploadRes) => {

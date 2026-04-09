@@ -1,8 +1,10 @@
 const app = getApp()
+const { uiIcons } = require('../../utils/ui-icons')
 
 Page({
   data: {
-    notifications: []
+    notifications: [],
+    uiIcons
   },
 
   onLoad() {

@@ -1,5 +1,11 @@
+const { uiIcons } = require('../../utils/ui-icons')
+
 Page({
   data: {
+    uiIcons,
+    triggerIcon: uiIcons.bell,
+    totalStudyDisplay: '20h 40m',
+    totalPoints: 1260,
     // 触发类型：interrupted / cycle_end / all_complete
     triggerType: 'interrupted',
     triggerLabel: '学习中断提醒',
@@ -29,8 +35,7 @@ Page({
         ]
       }
     ],
-
-    totalPoints: 6,
+    totalReviewPoints: 6,
     checkedCount: 0,
     allChecked: false,
     showFeedback: false,
@@ -66,17 +71,17 @@ Page({
   onLoad(options) {
     const type = options.type || 'interrupted'
     const typeMap = {
-      interrupted: { label: '学习中断提醒', desc: '你已 ' + (options.days || 3) + ' 天未学习，及时复习可以防止遗忘' },
-      cycle_end:   { label: '阶段复习提醒', desc: '「' + (options.pointName || '') + '」学习结束已满 8 天，建议回顾巩固' },
-      all_complete:{ label: '全部完成复习', desc: '所有卡点学习完成已满 2 天，进行一次全面复习效果更佳' }
+      interrupted: { label: '学习中断提醒', desc: '你已 ' + (options.days || 3) + ' 天未学习，及时复习可以防止遗忘', icon: uiIcons.bell },
+      cycle_end:   { label: '阶段复习提醒', desc: '「' + (options.pointName || '') + '」学习结束已满 8 天，建议回顾巩固', icon: uiIcons.calendar },
+      all_complete:{ label: '全部完成复习', desc: '所有卡点学习完成已满 2 天，进行一次全面复习效果更佳', icon: uiIcons.check }
     }
     const info = typeMap[type] || typeMap['interrupted']
-    this.setData({ triggerType: type, triggerLabel: info.label, triggerDesc: info.desc })
+    this.setData({ triggerType: type, triggerLabel: info.label, triggerDesc: info.desc, triggerIcon: info.icon })
 
     // 统计总知识点数
     let total = 0
     this.data.reviewGroups.forEach(g => { total += g.knowledgePoints.length })
-    this.setData({ totalPoints: total })
+    this.setData({ totalReviewPoints: total })
   },
 
   toggleGroup(e) {
@@ -100,9 +105,13 @@ Page({
 
     let checkedCount = 0
     groups.forEach(g => g.knowledgePoints.forEach(p => { if (p.checked) checkedCount++ }))
-    const allChecked = checkedCount === this.data.totalPoints
+    const allChecked = checkedCount === this.data.totalReviewPoints
 
     this.setData({ reviewGroups: groups, checkedCount, allChecked })
+  },
+
+  goLearningSquare() {
+    wx.showToast({ title: '学习广场内容待补充', icon: 'none', duration: 1800 })
   },
 
   finishReview() {

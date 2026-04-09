@@ -85,7 +85,9 @@
   <view class="card">
     <text class="section-title">解析视频</text>
     <view class="video-banner" bindtap="watchAnalysis">
-      <view class="video-play-icon">▶</view>
+      <view class="video-play-icon">
+        <image class="video-play-icon-image" src="{{uiIcons.play}}" mode="aspectFit" />
+      </view>
       <view class="video-info">
         <text class="video-title">观看考题解析视频</text>
         <text class="video-sub">{{examInfo.title}}</text>
@@ -107,7 +109,7 @@
     />
     <view class="ask-btn-row" style="margin-top:16rpx;">
       <view class="ask-btn" bindtap="askTeacher">
-        <text class="ask-icon">💬</text>
+        <image class="ask-icon" src="{{uiIcons.chat}}" mode="aspectFit" />
         <text class="ask-text">向老师提问</text>
       </view>
     </view>

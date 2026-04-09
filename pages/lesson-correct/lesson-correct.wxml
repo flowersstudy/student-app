@@ -11,11 +11,11 @@
         <text class="phase-label">课前</text>
         <view class="phase-card">
           <view class="lesson-info-row">
-            <text class="info-icon">📅</text>
+            <image class="info-icon" src="{{uiIcons.calendar}}" mode="aspectFit" />
             <text class="info-text">{{lessonInfo.date}} {{lessonInfo.time}}</text>
           </view>
           <view class="lesson-info-row">
-            <text class="info-icon">👤</text>
+            <image class="info-icon" src="{{uiIcons.user}}" mode="aspectFit" />
             <text class="info-text">{{lessonInfo.teacher}} · {{lessonInfo.subject}}</text>
           </view>
           <view class="row-between" style="margin-top:20rpx;">
@@ -29,11 +29,11 @@
           <text class="sub-label">上传作业</text>
           <view class="upload-area">
             <view class="upload-box" bindtap="choosePhoto">
-              <text class="upload-icon">📷</text>
+              <image class="upload-icon" src="{{uiIcons.camera}}" mode="aspectFit" />
               <text class="upload-text">拍照上传</text>
             </view>
             <view class="upload-box" bindtap="chooseFile">
-              <text class="upload-icon">📄</text>
+              <image class="upload-icon" src="{{uiIcons.file}}" mode="aspectFit" />
               <text class="upload-text">文件上传</text>
             </view>
           </view>

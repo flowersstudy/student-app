@@ -1,7 +1,11 @@
+const { uiIcons } = require('../../utils/ui-icons')
+const { completeLocalUpload, isOfflineMode } = require('../../utils/offline')
+
 Page({
   data: {
+    uiIcons,
     lessonInfo: {
-      date: '2026年3月30日 周一',
+      date: '2026年4月20日 周一',
       time: '15:00 - 16:00',
       teacher: '李老师',
       subject: '1v1纠偏 - 提炼转述错误',
@@ -41,23 +45,38 @@ Page({
     })
   },
   _doUpload(filePath, fileName) {
-    const app    = getApp()
+    const app = getApp()
     const profile = app.globalData.userProfile
-    const lesson  = this.data.lessonInfo
-    const topic   = this.data.topicOptions.find(t => t.selected) || {}
+    const lesson = this.data.lessonInfo
+    const topic = this.data.topicOptions.find(t => t.selected) || {}
 
-    wx.showLoading({ title: '上传中…', mask: true })
+    wx.showLoading({ title: '上传中...', mask: true })
+    if (isOfflineMode()) {
+      const result = completeLocalUpload({
+        fileName,
+        studentName: profile.name,
+        reviewType: 'checkpoint-correct',
+        checkpoint: topic.name || lesson.subject,
+        sourcePath: filePath,
+      })
+      wx.hideLoading()
+      const uploadedFiles = [...this.data.uploadedFiles, { name: fileName, id: result.id }]
+      this.setData({ uploadedFiles })
+      wx.showToast({ title: '已保存到本地演示', icon: 'success' })
+      return
+    }
+
     wx.uploadFile({
       url: `${app.globalData.serverBase}/api/submissions`,
       filePath,
       name: 'file',
       formData: {
-        studentName:     profile.name,
-        studentId:       profile.name,
-        reviewType:      '卡点练习题',
-        checkpoint:      topic.name || lesson.subject,
-        deadline:        '今日 23:59',
-        priority:        'normal',
+        studentName: profile.name,
+        studentId: profile.name,
+        reviewType: '卡点练习题',
+        checkpoint: topic.name || lesson.subject,
+        deadline: '今日 23:59',
+        priority: 'normal',
         submittedNormal: 'true',
       },
       success: (res) => {

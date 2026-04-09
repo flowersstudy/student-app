@@ -1,5 +1,8 @@
+const { uiIcons } = require('../../utils/ui-icons')
+
 Page({
   data: {
+    uiIcons,
     preFiles: [
       { id: 1, name: '理论课论证思路不合理讲义.pdf', url: '', opened: false }
     ],

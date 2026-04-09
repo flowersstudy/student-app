@@ -163,15 +163,17 @@
 .video-play-icon {
   width: 80rpx;
   height: 80rpx;
-  border-radius: 50%;
-  background: #1A6EFF;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28rpx;
-  color: #fff;
   flex-shrink: 0;
   margin-right: 20rpx;
+}
+
+.video-play-icon-image {
+  width: 80rpx;
+  height: 80rpx;
+  filter: drop-shadow(0 10rpx 18rpx rgba(37, 99, 235, 0.2));
 }
 
 .video-info { flex: 1; }
@@ -211,7 +213,11 @@
   border-radius: 12rpx;
 }
 
-.ask-icon { font-size: 32rpx; }
+.ask-icon {
+  width: 38rpx;
+  height: 38rpx;
+  flex-shrink: 0;
+}
 
 .ask-text {
   font-size: 26rpx;

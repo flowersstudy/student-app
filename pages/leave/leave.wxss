@@ -30,7 +30,8 @@
 }
 
 .type-icon {
-  font-size: 48rpx;
+  width: 56rpx;
+  height: 56rpx;
 }
 
 .type-label {
@@ -239,7 +240,8 @@
 }
 
 .warn-icon {
-  font-size: 32rpx;
+  width: 36rpx;
+  height: 36rpx;
   flex-shrink: 0;
   margin-top: 2rpx;
 }
@@ -295,24 +297,15 @@
 .status-icon {
   width: 100rpx;
   height: 100rpx;
-  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.status-icon-pending {
-  background: linear-gradient(135deg, #1A6EFF, #4a9eff);
-}
-
-.status-icon-approved {
-  background: linear-gradient(135deg, #52c41a, #73d13d);
-}
-
 .status-icon-text {
-  color: #fff;
-  font-size: 48rpx;
-  font-weight: 700;
+  width: 100rpx;
+  height: 100rpx;
+  filter: drop-shadow(0 14rpx 24rpx rgba(37, 99, 235, 0.16));
 }
 
 .status-main-text {

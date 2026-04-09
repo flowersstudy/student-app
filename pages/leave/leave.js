@@ -1,4 +1,5 @@
 const app = getApp()
+const { uiIcons } = require('../../utils/ui-icons')
 
 
 function getStepsForPoint() {
@@ -16,6 +17,7 @@ function fmtTime(date) {
 
 Page({
   data: {
+    uiIcons,
     leaveType: 'single',
 
     purchasedPoints: [],

@@ -6,7 +6,7 @@
 
       <view class="status-icon-wrap">
         <view class="status-icon {{approvalStatus === 'approved' ? 'status-icon-approved' : 'status-icon-pending'}}">
-          <text class="status-icon-text">{{approvalStatus === 'approved' ? '✓' : '…'}}</text>
+          <image class="status-icon-text" src="{{approvalStatus === 'approved' ? uiIcons.check : uiIcons.pending}}" mode="aspectFit" />
         </view>
       </view>
 
@@ -59,12 +59,12 @@
       <text class="section-title">请假类型</text>
       <view class="type-row">
         <view class="type-item {{leaveType === 'single' ? 'type-item-active' : ''}}" bindtap="selectType" data-type="single">
-          <text class="type-icon">📅</text>
+          <image class="type-icon" src="{{uiIcons.calendar}}" mode="aspectFit" />
           <text class="type-label">单节课请假</text>
           <text class="type-desc">针对某一节具体课程</text>
         </view>
         <view class="type-item {{leaveType === 'all' ? 'type-item-active' : ''}}" bindtap="selectType" data-type="all">
-          <text class="type-icon">🗓️</text>
+          <image class="type-icon" src="{{uiIcons.leave}}" mode="aspectFit" />
           <text class="type-label">整体请假</text>
           <text class="type-desc">近期无法正常学习</text>
         </view>
@@ -85,7 +85,7 @@
 
       <!-- 已达上限提醒 -->
       <view wx:if="{{warnMaxLeaves}}" class="warn-banner warn-ban-red">
-        <text class="warn-icon">⚠️</text>
+        <image class="warn-icon" src="{{uiIcons.warning}}" mode="aspectFit" />
         <view class="warn-info">
           <text class="warn-title">该卡点已申请 {{currentPointLeaveCount}} 次请假，已达上限（每卡点最多2次）</text>
           <text class="warn-sub">如需继续请假，请联系学管处理</text>
@@ -95,7 +95,7 @@
 
       <!-- 剩余次数提示 -->
       <view wx:elif="{{currentPointLeaveCount === 1}}" class="warn-banner warn-ban-orange">
-        <text class="warn-icon">ℹ️</text>
+        <image class="warn-icon" src="{{uiIcons.info}}" mode="aspectFit" />
         <view class="warn-info">
           <text class="warn-title">该卡点本次为第 2 次（最后一次）请假机会</text>
           <text class="warn-sub">每个卡点最多允许请假 2 次，请合理使用</text>
@@ -123,7 +123,7 @@
 
       <!-- 7天以上警告 -->
       <view wx:if="{{warnLongLeave}}" class="warn-banner warn-ban-orange" style="margin-top:20rpx;">
-        <text class="warn-icon">⚠️</text>
+        <image class="warn-icon" src="{{uiIcons.warning}}" mode="aspectFit" />
         <view class="warn-info">
           <text class="warn-title">请假 7 天及以上，需提前与学管沟通</text>
           <text class="warn-sub">请联系学管确认后再提交申请，否则无法正常审批</text>

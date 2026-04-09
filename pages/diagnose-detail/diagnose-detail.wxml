@@ -1,0 +1,108 @@
+<view class="diagnose-detail-page">
+  <view class="dd-hero card">
+    <text class="dd-badge">1v1申论诊断</text>
+    <text class="dd-title">先看清你为什么失分，再决定下一步怎么学</text>
+    <text class="dd-desc">参考完整诊断报告结构，先给你看到诊断会输出什么、怎么判断、最后怎么形成学习路径。看完再进入正式诊断流程。</text>
+
+    <view class="dd-metrics">
+      <view class="dd-metric">
+        <text class="dd-metric-value">{{overview.dimensions}}</text>
+        <text class="dd-metric-label">诊断维度</text>
+      </view>
+      <view class="dd-metric">
+        <text class="dd-metric-value">{{overview.serviceType}}</text>
+        <text class="dd-metric-label">沟通方式</text>
+      </view>
+      <view class="dd-metric">
+        <text class="dd-metric-value">{{overview.outputCount}}</text>
+        <text class="dd-metric-label">核心输出</text>
+      </view>
+    </view>
+
+    <view class="dd-tag-row">
+      <text wx:for="{{quickTags}}" wx:key="*this" class="dd-tag">{{item}}</text>
+    </view>
+  </view>
+
+  <view class="dd-score card">
+    <view class="dd-student-row">
+      <view class="dd-avatar">
+        <text class="dd-avatar-text">{{student.name[0]}}</text>
+      </view>
+      <view class="dd-student-info">
+        <text class="dd-student-name">{{student.name}}</text>
+        <text class="dd-student-meta">{{student.exam}}</text>
+        <text class="dd-student-meta">示例诊断日期：{{student.diagnosisDate}}</text>
+      </view>
+    </view>
+
+    <view class="dd-score-panel">
+      <view class="dd-score-item">
+        <text class="dd-score-value dd-score-warn">{{overview.currentScore}}</text>
+        <text class="dd-score-label">当前诊断分</text>
+      </view>
+      <text class="dd-score-arrow">→</text>
+      <view class="dd-score-item">
+        <text class="dd-score-value dd-score-target">{{overview.targetScore}}</text>
+        <text class="dd-score-label">目标分</text>
+      </view>
+      <view class="dd-score-item">
+        <text class="dd-score-gap">+{{overview.scoreGap}}</text>
+        <text class="dd-score-label">提分空间</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="dd-summary-grid">
+    <view wx:for="{{highlights}}" wx:key="title" class="dd-summary-card card">
+      <text class="dd-section-kicker">{{item.title}}</text>
+      <text class="dd-summary-desc">{{item.desc}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <text class="dd-section-title">诊断结果会先告诉你什么</text>
+    <view wx:for="{{previewPoints}}" wx:key="name" class="dd-point-card dd-point-card-{{item.tier}}">
+      <view class="dd-point-head">
+        <text class="dd-point-tier dd-point-tier-{{item.tier}}">{{item.tierText}}</text>
+        <text class="dd-point-name">{{item.name}}</text>
+      </view>
+      <text class="dd-point-desc">{{item.desc}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <text class="dd-section-title">诊断依据与输出</text>
+    <view wx:for="{{basisRows}}" wx:key="label" class="dd-basis-row">
+      <text class="dd-basis-label">{{item.label}}</text>
+      <text class="dd-basis-value">{{item.value}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <text class="dd-section-title">学习规划 · 阶段闯关路径</text>
+    <view wx:for="{{phases}}" wx:key="tag" class="dd-phase-card">
+      <view class="dd-phase-head">
+        <text class="dd-phase-tag">{{item.tag}}</text>
+        <text class="dd-phase-title">{{item.title}}</text>
+      </view>
+      <text class="dd-phase-desc">{{item.desc}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <text class="dd-section-title">适合先来做诊断的人</text>
+    <view wx:for="{{suitableList}}" wx:key="*this" class="dd-fit-row">
+      <text class="dd-fit-dot"></text>
+      <text class="dd-fit-text">{{item}}</text>
+    </view>
+  </view>
+
+  <view class="dd-footer card">
+    <text class="dd-footer-title">先看清问题，再进入正式诊断流程</text>
+    <text class="dd-footer-desc">点下面这个按钮，才会进入你现在已有的“诊断流程”页面。</text>
+    <view class="dd-footer-btn" bindtap="goStartDiagnose">
+      <text class="dd-footer-btn-text">去诊断</text>
+    </view>
+  </view>
+</view>

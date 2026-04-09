@@ -13,8 +13,9 @@
 }
 
 .notif-empty-icon {
-  font-size: 80rpx;
-  line-height: 1;
+  width: 88rpx;
+  height: 88rpx;
+  filter: drop-shadow(0 12rpx 18rpx rgba(37, 99, 235, 0.08));
 }
 
 .notif-empty-text {
@@ -76,8 +77,8 @@
 .notif-bg-video { background: rgba(123,97,255,0.10); }
 
 .notif-item-icon {
-  font-size: 36rpx;
-  line-height: 1;
+  width: 38rpx;
+  height: 38rpx;
 }
 
 .notif-item-body {

@@ -11,11 +11,11 @@
         <text class="phase-label">课前</text>
         <view class="phase-card">
           <view class="lesson-info-row">
-            <text class="info-icon">📅</text>
+            <image class="info-icon" src="{{uiIcons.calendar}}" mode="aspectFit" />
             <text class="info-text">{{lessonInfo.date}} {{lessonInfo.time}}</text>
           </view>
           <view class="lesson-info-row">
-            <text class="info-icon">👤</text>
+            <image class="info-icon" src="{{uiIcons.user}}" mode="aspectFit" />
             <text class="info-text">{{lessonInfo.teacher}} · {{lessonInfo.subject}}</text>
           </view>
           <view class="row-between" style="margin-top:20rpx;">

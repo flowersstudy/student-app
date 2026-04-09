@@ -1,5 +1,8 @@
+const { uiIcons } = require('../../utils/ui-icons')
+
 Page({
   data: {
+    uiIcons,
     drillQuestions: [
       {
         id: 1,

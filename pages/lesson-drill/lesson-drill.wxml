@@ -80,7 +80,9 @@
       <text wx:else class="tag tag-gray">暂未上传</text>
     </view>
     <view class="video-banner" style="margin-top:16rpx;" bindtap="watchAnalysis" data-videoid="{{drillQuestions[0].videoId}}">
-      <view class="video-play-icon">▶</view>
+      <view class="video-play-icon">
+        <image class="video-play-icon-image" src="{{uiIcons.play}}" mode="aspectFit" />
+      </view>
       <view class="video-info">
         <text class="video-title">视频解析</text>
         <text class="video-sub">第一题：追寻长期价值</text>
@@ -115,7 +117,9 @@
       <text wx:else class="tag tag-gray">暂未上传</text>
     </view>
     <view class="video-banner" style="margin-top:16rpx;" bindtap="watchAnalysis" data-videoid="{{drillQuestions[1].videoId}}">
-      <view class="video-play-icon">▶</view>
+      <view class="video-play-icon">
+        <image class="video-play-icon-image" src="{{uiIcons.play}}" mode="aspectFit" />
+      </view>
       <view class="video-info">
         <text class="video-title">视频解析</text>
         <text class="video-sub">第二题：流动与新生</text>
@@ -150,7 +154,9 @@
       <text wx:else class="tag tag-gray">暂未上传</text>
     </view>
     <view class="video-banner" style="margin-top:16rpx;" bindtap="watchAnalysis" data-videoid="{{drillQuestions[2].videoId}}">
-      <view class="video-play-icon">▶</view>
+      <view class="video-play-icon">
+        <image class="video-play-icon-image" src="{{uiIcons.play}}" mode="aspectFit" />
+      </view>
       <view class="video-info">
         <text class="video-title">视频解析</text>
         <text class="video-sub">第三题：思维播种</text>

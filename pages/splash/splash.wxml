@@ -1,37 +1,9 @@
 <view class="splash">
+  <view class="bg-glow bg-glow-top"></view>
+  <view class="bg-glow bg-glow-bottom"></view>
 
-  <view class="deco dc1"></view>
-  <view class="deco dc2"></view>
-
-  <!-- 品牌 -->
-  <view class="brand">
-    <text class="brand-name">申论智训</text>
+  <view class="welcome-card">
+    <text class="brand-title">步知1v1</text>
+    <text class="brand-subtitle">做更好的申论在线教育平台</text>
   </view>
-
-  <!-- 主视觉 -->
-  <view class="hero">
-    <text class="hero-num">8</text>
-    <text class="hero-title">大申论卡点</text>
-    <text class="hero-sub">你属于哪种失分类型？</text>
-  </view>
-
-  <!-- 8个卡点标签 -->
-  <view class="tags">
-    <text class="tag t1">游走式找点</text>
-    <text class="tag t2">提炼转述错误</text>
-    <text class="tag t3">分析结构错误</text>
-    <text class="tag t4">公文结构错误</text>
-    <text class="tag t5">对策推导错误</text>
-    <text class="tag t6">作文立意错误</text>
-    <text class="tag t7">作文逻辑不清晰</text>
-    <text class="tag t8">作文表达不流畅</text>
-  </view>
-
-  <!-- 底部 -->
-  <view class="footer">
-    <view class="cta" bindtap="skip">
-      <text class="cta-text">开始诊断</text>
-    </view>
-  </view>
-
 </view>

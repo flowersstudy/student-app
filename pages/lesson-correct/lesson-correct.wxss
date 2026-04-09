@@ -28,8 +28,10 @@
 }
 
 .info-icon {
-  font-size: 28rpx;
+  width: 30rpx;
+  height: 30rpx;
   margin-right: 12rpx;
+  flex-shrink: 0;
 }
 
 .info-text {
@@ -78,7 +80,8 @@
 }
 
 .upload-icon {
-  font-size: 48rpx;
+  width: 46rpx;
+  height: 46rpx;
   margin-bottom: 8rpx;
 }
 

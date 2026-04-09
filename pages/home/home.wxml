@@ -103,6 +103,84 @@
 
   <!-- ===== 已购课视图 ===== -->
   <block wx:else>
+  <view wx:if="{{entryHero}}" class="entry-top-scene entry-top-scene-{{entryHero.theme}}">
+    <view class="entry-scene-main {{entryHero.theme === 'diagnose' ? 'entry-scene-main-diagnose-compact' : ''}}">
+      <view class="entry-scene-head">
+        <text class="entry-scene-badge">{{entryHero.badge}}</text>
+        <text class="entry-scene-title">{{entryHero.title}}</text>
+        <text class="entry-scene-desc">{{entryHero.desc}}</text>
+      </view>
+
+      <view wx:if="{{entryHero.theme !== 'diagnose'}}" class="entry-scene-metrics">
+        <view wx:for="{{entryHero.metrics}}" wx:key="label" class="entry-scene-metric">
+          <text class="entry-scene-metric-value">{{item.value}}</text>
+          <text class="entry-scene-metric-label">{{item.label}}</text>
+        </view>
+      </view>
+
+      <view wx:if="{{entryHero.scorePanel}}" class="entry-scene-score">
+        <view class="entry-scene-score-item">
+          <text class="entry-scene-score-value entry-scene-score-warn">{{entryHero.scorePanel.current}}</text>
+          <text class="entry-scene-score-label">当前诊断分</text>
+        </view>
+        <text class="entry-scene-score-arrow">→</text>
+        <view class="entry-scene-score-item">
+          <text class="entry-scene-score-value entry-scene-score-target">{{entryHero.scorePanel.target}}</text>
+          <text class="entry-scene-score-label">目标分</text>
+        </view>
+        <view class="entry-scene-score-item">
+          <text class="entry-scene-score-gap">+{{entryHero.scorePanel.gap}}</text>
+          <text class="entry-scene-score-label">提分空间</text>
+        </view>
+      </view>
+
+      <view wx:if="{{entryHero.theme === 'diagnose'}}" class="entry-scene-diagnose-note">
+        <text class="entry-scene-diagnose-note-title">先做诊断，再安排后续学习</text>
+        <text class="entry-scene-diagnose-note-desc">老师手批分析，定位核心卡点，给出对应提分建议</text>
+      </view>
+
+      <block wx:else>
+        <view class="entry-scene-summary">
+          <view wx:for="{{entryHero.highlights}}" wx:key="title" class="entry-scene-summary-card">
+            <text class="entry-scene-summary-kicker">{{item.title}}</text>
+            <text class="entry-scene-summary-desc">{{item.desc}}</text>
+          </view>
+        </view>
+
+        <view wx:if="{{entryHero.previewPoints}}" class="entry-scene-preview">
+          <text class="entry-scene-preview-title">{{entryHero.previewTitle}}</text>
+          <view wx:for="{{entryHero.previewPoints}}" wx:key="name" class="entry-scene-point-card entry-scene-point-card-{{item.tier}}">
+            <view class="entry-scene-point-head">
+              <text class="entry-scene-point-tier">{{item.tierText}}</text>
+              <text class="entry-scene-point-name">{{item.name}}</text>
+            </view>
+            <text class="entry-scene-point-desc">{{item.desc}}</text>
+          </view>
+        </view>
+
+        <view wx:if="{{entryHero.basisRows}}" class="entry-scene-basis">
+          <view wx:for="{{entryHero.basisRows}}" wx:key="label" class="entry-scene-basis-row">
+            <text class="entry-scene-basis-label">{{item.label}}</text>
+            <text class="entry-scene-basis-value">{{item.value}}</text>
+          </view>
+        </view>
+
+        <view class="entry-scene-tags">
+          <text wx:for="{{entryHero.tags}}" wx:key="*this" class="entry-scene-tag">{{item}}</text>
+        </view>
+      </block>
+
+      <view class="entry-scene-footer {{entryHero.theme === 'diagnose' ? 'entry-scene-footer-compact' : ''}}">
+        <view wx:if="{{entryHero.theme !== 'diagnose'}}" class="entry-scene-helper">
+          <text class="entry-scene-helper-title">{{entryHero.helperTitle}}</text>
+          <text class="entry-scene-helper-desc">{{entryHero.helperDesc}}</text>
+        </view>
+        <view class="entry-scene-action" bindtap="onEntryHeroAction" data-action="{{entryHero.action}}">
+          <text class="entry-scene-action-text">{{entryHero.buttonText}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
 
   <!-- 置顶课程提醒 Banner -->
   <view wx:if="{{topReminder}}" class="top-reminder top-reminder-{{topReminder.type}}">
@@ -211,14 +289,13 @@
     </view>
   </view>
 
-  <!-- 待解决模块 -->
   <view class="module-section">
     <view class="module-header">
       <text class="module-title pending-title">待解决</text>
     </view>
     <view class="point-list">
       <view
-        wx:for="{{xingcePoints}}"
+        wx:for="{{pendingDisplayPoints}}"
         wx:key="id"
         class="point-card"
         bindtap="goProgress"
@@ -238,14 +315,13 @@
     </view>
   </view>
 
-  <!-- 已解决模块 -->
   <view class="module-section">
     <view class="module-header">
       <text class="module-title resolved-title">已解决</text>
     </view>
     <view class="point-list">
       <view
-        wx:for="{{shenlunPoints}}"
+        wx:for="{{resolvedDisplayPoints}}"
         wx:key="id"
         class="point-card"
         bindtap="goProgress"
