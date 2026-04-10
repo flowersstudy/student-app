@@ -1,82 +1,78 @@
 <view class="purchase-page">
+  <view class="hero-card">
+    <text class="hero-badge">课程详情</text>
+    <text class="hero-title">{{productName}}</text>
+    <text class="hero-desc">{{coreSummary}}</text>
+    <text class="hero-price">{{priceDesc}}</text>
+  </view>
 
-  <!-- 卡点说明 -->
-  <view class="card">
-    <view class="row" style="margin-bottom:16rpx;">
-      <text class="point-name">{{pointInfo.name}}</text>
-      <text class="tag tag-blue" style="margin-left:16rpx;">{{pointInfo.type}}</text>
-    </view>
-    <text class="point-desc">{{pointInfo.desc}}</text>
-
-    <view class="divider" style="margin:20rpx 0;"></view>
-
-    <text class="section-title">课程包含</text>
-    <view wx:for="{{pointInfo.details}}" wx:key="index" class="detail-item">
-      <text class="detail-dot">·</text>
-      <text class="detail-text">{{item}}</text>
+  <view class="section-card">
+    <text class="section-title">卖点</text>
+    <view wx:for="{{sellingPoints}}" wx:key="title" class="point-card point-card-{{item.tone}}">
+      <text class="point-title">{{item.title}}</text>
+      <text class="point-desc">{{item.desc}}</text>
     </view>
   </view>
 
-  <!-- 学习团队 -->
-  <view class="card">
-    <text class="section-title" style="margin-bottom:20rpx;">我的学习团队</text>
+  <view class="section-card">
+    <text class="section-title">学习流程</text>
+    <view class="process-list">
+      <view wx:for="{{processSteps}}" wx:key="index" class="process-item">
+        <view class="process-index">{{index + 1}}</view>
+        <text class="process-text">{{item}}</text>
+      </view>
+    </view>
+  </view>
 
-    <view wx:for="{{team}}" wx:key="role" class="team-member-card">
-      <!-- 已分配 -->
-      <view wx:if="{{item.status === 'assigned'}}" class="team-member-inner">
-        <view class="team-avatar team-avatar-assigned">
-          <text class="team-avatar-text">{{item.avatar}}</text>
+  <view class="section-card">
+    <text class="section-title">产品权益</text>
+    <view wx:for="{{rights}}" wx:key="index" class="rights-item">
+      <text class="rights-dot"></text>
+      <text class="rights-text">{{item}}</text>
+    </view>
+  </view>
+
+  <view class="section-card deposit-card">
+    <text class="section-title">押金</text>
+    <text class="deposit-price">99 元 / 月</text>
+    <text class="deposit-desc">跟完 4 次直播即返押金 99 元。</text>
+  </view>
+
+  <view class="section-card">
+    <text class="section-title">月度直播课表（4 月）</text>
+    <view wx:for="{{scheduleWeeks}}" wx:key="label" class="schedule-week">
+      <text class="schedule-week-title">{{item.label}}</text>
+      <view wx:for="{{item.days}}" wx:key="index" wx:for-item="day" class="schedule-item">
+        <view class="schedule-date">
+          <text class="schedule-date-num">{{day.date}}</text>
+          <text class="schedule-date-week">{{day.weekday}}</text>
         </view>
-        <view class="team-info">
-          <view class="team-name-row">
-            <text class="team-name">{{item.name}}</text>
-            <text class="team-tag">{{item.tag}}</text>
+        <view class="schedule-content">
+          <view class="schedule-head">
+            <text class="schedule-tag">{{day.tag}}</text>
           </view>
-          <text class="team-role">{{item.role}}</text>
-          <text class="team-desc">{{item.desc}}</text>
-        </view>
-        <view class="team-status-badge team-badge-assigned">
-          <text class="team-badge-icon">🔒</text>
-          <text class="team-badge-text">已分配</text>
-        </view>
-      </view>
-
-      <!-- 待分配 -->
-      <view wx:if="{{item.status === 'pending'}}" class="team-member-inner team-member-pending">
-        <view class="team-avatar team-avatar-pending">
-          <text class="team-avatar-pending-icon">?</text>
-        </view>
-        <view class="team-info">
-          <view class="team-name-row">
-            <text class="team-name team-name-pending">待分配</text>
-            <text class="team-tag">{{item.tag}}</text>
-          </view>
-          <text class="team-role">{{item.role}}</text>
-          <text class="team-desc">{{item.desc}}</text>
-        </view>
-        <view class="team-status-badge team-badge-pending">
-          <text class="team-badge-icon">⏳</text>
-          <text class="team-badge-text">待分配</text>
+          <text class="schedule-title">{{day.title}}</text>
+          <text wx:if="{{day.note}}" class="schedule-note">{{day.note}}</text>
         </view>
       </view>
     </view>
   </view>
 
-  <!-- 价格展示 -->
-  <view class="card price-card">
-    <view class="price-detail">
-      <text class="price-formula">¥{{unitPrice}} / 节</text>
-      <view class="price-total-row">
-        <text class="price-total-label">合计</text>
-        <text class="price-total">¥{{totalPrice}}</text>
-      </view>
+  <view class="section-card">
+    <text class="section-title">注意事项</text>
+    <view wx:for="{{noticeList}}" wx:key="index" class="notice-item">
+      <text class="notice-index">{{index + 1}}</text>
+      <text class="notice-text">{{item}}</text>
     </view>
   </view>
 
-  <!-- 付款按钮 -->
-  <view class="pay-area">
-    <button class="btn-primary pay-btn" bindtap="goPayment">去付款</button>
-  </view>
+  <view class="bottom-space"></view>
+</view>
 
-  <view class="safe-bottom"></view>
+<view class="pay-bar">
+  <view class="pay-info">
+    <text class="pay-label">押金</text>
+    <text class="pay-price">¥{{price}}</text>
+  </view>
+  <button class="pay-btn" bindtap="goPayment">支付 99 元并生成计划</button>
 </view>

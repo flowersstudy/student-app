@@ -72,7 +72,7 @@ Page({
     app.globalData.token = data.token
     app.globalData.isEnrolled = data.status !== 'new'
     app.globalData.userProfile.name = data.name
-    wx.redirectTo({ url: '/pages/entry-hub/entry-hub' })
+    wx.switchTab({ url: '/pages/home/home' })
   },
 
   _devLogin(studentId) {

@@ -1,214 +1,354 @@
 .purchase-page {
   min-height: 100vh;
-  background: #f5f6fa;
-  padding-bottom: 200rpx;
+  background: #f4f7fb;
+  padding: 24rpx 24rpx 0;
+  box-sizing: border-box;
 }
 
-.point-name {
-  font-size: 36rpx;
+.hero-card,
+.section-card {
+  background: #ffffff;
+  border-radius: 32rpx;
+  padding: 28rpx 24rpx;
+  box-sizing: border-box;
+  box-shadow: 0 16rpx 40rpx rgba(15, 23, 42, 0.06);
+  margin-bottom: 20rpx;
+}
+
+.hero-card {
+  background: linear-gradient(135deg, #111827 0%, #1e3a8a 100%);
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8rpx 18rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  font-size: 22rpx;
   font-weight: 700;
-  color: #333333;
+}
+
+.hero-title {
+  display: block;
+  margin-top: 18rpx;
+  color: #ffffff;
+  font-size: 42rpx;
+  line-height: 1.35;
+  font-weight: 800;
+}
+
+.hero-desc {
+  display: block;
+  margin-top: 14rpx;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 24rpx;
+  line-height: 1.75;
+}
+
+.hero-price {
+  display: block;
+  margin-top: 16rpx;
+  color: #facc15;
+  font-size: 26rpx;
+  font-weight: 700;
+}
+
+.section-title {
+  display: block;
+  color: #0f172a;
+  font-size: 32rpx;
+  font-weight: 800;
+  margin-bottom: 20rpx;
+}
+
+.point-card {
+  border-radius: 24rpx;
+  padding: 22rpx 20rpx;
+  margin-bottom: 16rpx;
+}
+
+.point-card:last-child {
+  margin-bottom: 0;
+}
+
+.point-card-primary {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+}
+
+.point-card-blue {
+  background: #f8fbff;
+}
+
+.point-card-orange {
+  background: #fff7ed;
+}
+
+.point-card-green {
+  background: #f0fdf4;
+}
+
+.point-title {
+  display: block;
+  color: #0f172a;
+  font-size: 28rpx;
+  line-height: 1.5;
+  font-weight: 700;
 }
 
 .point-desc {
-  font-size: 28rpx;
-  color: #666666;
-  line-height: 1.7;
   display: block;
+  margin-top: 10rpx;
+  color: #475569;
+  font-size: 23rpx;
+  line-height: 1.75;
 }
 
-.detail-item {
+.process-list {
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  margin-bottom: 12rpx;
+  flex-direction: column;
+  gap: 16rpx;
 }
 
-.detail-dot {
-  font-size: 28rpx;
-  color: #1A6EFF;
-  margin-right: 12rpx;
-  font-weight: 700;
-  line-height: 1.6;
-}
-
-.detail-text {
-  font-size: 26rpx;
-  color: #555555;
-  line-height: 1.6;
-  flex: 1;
-}
-
-.team-member-card {
-  border-radius: 16rpx;
-  border: 2rpx solid #eeeeee;
-  margin-bottom: 16rpx;
-  background: #fafafa;
-  overflow: hidden;
-}
-
-.team-member-inner {
+.process-item {
   display: flex;
-  flex-direction: row;
   align-items: center;
-  padding: 24rpx;
+  gap: 16rpx;
+  padding: 20rpx;
+  border-radius: 22rpx;
+  background: #f8fafc;
 }
 
-.team-member-pending {
-  background: #fffbe6;
-  border-color: #ffe58f;
-}
-
-.team-avatar {
-  width: 80rpx;
-  height: 80rpx;
+.process-index {
+  width: 48rpx;
+  height: 48rpx;
   border-radius: 50%;
+  background: #1a6eff;
+  color: #ffffff;
+  font-size: 22rpx;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  margin-right: 20rpx;
 }
 
-.team-avatar-assigned {
-  background: linear-gradient(135deg, #1A6EFF, #4a9eff);
-}
-
-.team-avatar-pending {
-  background: #e8e8e8;
-}
-
-.team-avatar-text {
-  color: #ffffff;
-  font-size: 32rpx;
-  font-weight: 700;
-}
-
-.team-avatar-pending-icon {
-  color: #aaaaaa;
-  font-size: 40rpx;
-  font-weight: 700;
-}
-
-.team-info {
+.process-text {
   flex: 1;
-  min-width: 0;
+  color: #1e293b;
+  font-size: 25rpx;
+  font-weight: 600;
 }
 
-.team-name-row {
+.rights-item {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: 4rpx;
+  align-items: flex-start;
+  gap: 14rpx;
+  margin-bottom: 16rpx;
 }
 
-.team-name {
-  font-size: 30rpx;
-  font-weight: 700;
-  color: #333333;
-  margin-right: 12rpx;
+.rights-item:last-child {
+  margin-bottom: 0;
 }
 
-.team-name-pending {
-  color: #aaaaaa;
-}
-
-.team-tag {
-  font-size: 20rpx;
-  color: #1A6EFF;
-  background: #e8f0ff;
-  padding: 4rpx 12rpx;
-  border-radius: 8rpx;
-}
-
-.team-role {
-  font-size: 22rpx;
-  color: #aaaaaa;
-  display: block;
-  margin-bottom: 6rpx;
-}
-
-.team-desc {
-  font-size: 24rpx;
-  color: #999999;
-  line-height: 1.5;
-  display: block;
-}
-
-.team-status-badge {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6rpx;
+.rights-dot {
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  background: #1a6eff;
+  margin-top: 10rpx;
   flex-shrink: 0;
-  margin-left: 16rpx;
 }
 
-.team-badge-assigned {
-  opacity: 0.6;
+.rights-text {
+  flex: 1;
+  color: #475569;
+  font-size: 24rpx;
+  line-height: 1.75;
 }
 
-.team-badge-pending {
-  opacity: 0.8;
+.deposit-card {
+  background: linear-gradient(135deg, #fffdf3, #fff7d6);
 }
 
-.team-badge-icon {
-  font-size: 32rpx;
+.deposit-price {
+  display: block;
+  color: #d97706;
+  font-size: 44rpx;
+  font-weight: 800;
 }
 
-.team-badge-text {
-  font-size: 20rpx;
-  color: #999999;
+.deposit-desc {
+  display: block;
+  margin-top: 10rpx;
+  color: #92400e;
+  font-size: 24rpx;
+  line-height: 1.7;
 }
 
-.price-card {
-  background: linear-gradient(135deg, #f0f4ff, #ffffff);
-  border: 2rpx solid #e8f0ff;
+.schedule-week {
+  margin-top: 24rpx;
 }
 
-.price-detail {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
+.schedule-week:first-child {
+  margin-top: 0;
 }
 
-.price-formula {
+.schedule-week-title {
+  display: block;
+  margin-bottom: 14rpx;
+  color: #1d4ed8;
   font-size: 26rpx;
-  color: #999999;
-}
-
-.price-total-row {
-  display: flex;
-  flex-direction: row;
-  align-items: baseline;
-}
-
-.price-total-label {
-  font-size: 26rpx;
-  color: #666666;
-  margin-right: 12rpx;
-}
-
-.price-total {
-  font-size: 52rpx;
   font-weight: 700;
-  color: #ff4d4f;
 }
 
-.pay-area {
+.schedule-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+  padding: 20rpx 18rpx;
+  border-radius: 22rpx;
+  background: #f8fafc;
+  margin-bottom: 14rpx;
+}
+
+.schedule-date {
+  width: 88rpx;
+  flex-shrink: 0;
+}
+
+.schedule-date-num {
+  display: block;
+  color: #0f172a;
+  font-size: 28rpx;
+  font-weight: 800;
+}
+
+.schedule-date-week {
+  display: block;
+  margin-top: 6rpx;
+  color: #64748b;
+  font-size: 20rpx;
+}
+
+.schedule-content {
+  flex: 1;
+}
+
+.schedule-head {
+  margin-bottom: 10rpx;
+}
+
+.schedule-tag {
+  display: inline-flex;
+  padding: 6rpx 14rpx;
+  border-radius: 999rpx;
+  background: #e8f0ff;
+  color: #1d4ed8;
+  font-size: 20rpx;
+  font-weight: 700;
+}
+
+.schedule-title {
+  display: block;
+  color: #1e293b;
+  font-size: 24rpx;
+  line-height: 1.7;
+  font-weight: 600;
+}
+
+.schedule-note {
+  display: block;
+  margin-top: 8rpx;
+  color: #64748b;
+  font-size: 21rpx;
+  line-height: 1.6;
+}
+
+.notice-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14rpx;
+  margin-bottom: 16rpx;
+}
+
+.notice-item:last-child {
+  margin-bottom: 0;
+}
+
+.notice-index {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 20rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.notice-text {
+  flex: 1;
+  color: #475569;
+  font-size: 23rpx;
+  line-height: 1.75;
+}
+
+.bottom-space {
+  height: 180rpx;
+}
+
+.pay-bar {
   position: fixed;
-  bottom: 0;
   left: 0;
   right: 0;
-  padding: 24rpx 32rpx;
-  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+  bottom: 0;
   background: #ffffff;
-  box-shadow: 0 -2rpx 16rpx rgba(0,0,0,0.08);
+  box-shadow: 0 -8rpx 24rpx rgba(15, 23, 42, 0.08);
+  padding: 20rpx 24rpx;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+}
+
+.pay-info {
+  flex-shrink: 0;
+}
+
+.pay-label {
+  display: block;
+  color: #64748b;
+  font-size: 20rpx;
+}
+
+.pay-price {
+  display: block;
+  margin-top: 4rpx;
+  color: #ef4444;
+  font-size: 42rpx;
+  font-weight: 800;
 }
 
 .pay-btn {
-  width: 100%;
-  padding: 28rpx 0;
-  font-size: 32rpx;
+  flex: 1;
+  height: 84rpx;
+  border-radius: 999rpx;
+  background: #1a6eff;
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: 700;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pay-btn::after {
+  border: none;
 }

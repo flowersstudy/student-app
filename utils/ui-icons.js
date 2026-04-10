@@ -179,6 +179,126 @@ const uiIcons = {
     <circle cx="9.2" cy="10.9" r="1" fill="#2563EB"/>
     <circle cx="12" cy="10.9" r="1" fill="#60A5FA"/>
     <circle cx="14.8" cy="10.9" r="1" fill="#2563EB"/>
+  `),
+  oceanSeagull: svg(`
+    <defs>
+      <linearGradient id="seagullBg" x1="5" y1="5" x2="19" y2="19" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#F8FBFF"/>
+        <stop offset="1" stop-color="#DBEAFE"/>
+      </linearGradient>
+      <linearGradient id="seagullWing" x1="7" y1="8" x2="17" y2="14" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#60A5FA"/>
+        <stop offset="1" stop-color="#2563EB"/>
+      </linearGradient>
+    </defs>
+    <circle cx="12" cy="12" r="8" fill="url(#seagullBg)" stroke="#BFDBFE" stroke-width="1.2"/>
+    <path d="M6.5 12.1C8 9.8 9.5 8.9 12 8.9C14.5 8.9 16 9.8 17.5 12.1" stroke="url(#seagullWing)" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M8.1 12.1C9.1 10.8 10.2 10.1 12 10.1C13.8 10.1 14.9 10.8 15.9 12.1" stroke="#93C5FD" stroke-width="1.35" stroke-linecap="round"/>
+    <path d="M8 15.1H16" stroke="#7DD3FC" stroke-width="1.35" stroke-linecap="round"/>
+  `),
+  oceanDolphin: svg(`
+    <defs>
+      <linearGradient id="dolphinBg" x1="5" y1="5" x2="19" y2="19" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#EFF6FF"/>
+        <stop offset="1" stop-color="#DBEAFE"/>
+      </linearGradient>
+      <linearGradient id="dolphinBody" x1="7" y1="7" x2="17" y2="17" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#60A5FA"/>
+        <stop offset="1" stop-color="#2563EB"/>
+      </linearGradient>
+    </defs>
+    <circle cx="12" cy="12" r="8" fill="url(#dolphinBg)" stroke="#BFDBFE" stroke-width="1.2"/>
+    <path d="M7 12.8C8.6 9.8 11.6 8.6 14.6 9.2C15.3 9.35 16.2 9.75 17.2 10.6L15.9 11.05L15.65 12.35C14.6 13.7 13.25 14.45 11.9 14.55C10.15 14.68 8.45 13.82 7 12.8Z" fill="url(#dolphinBody)"/>
+    <path d="M10.1 9.7L11.15 8.15L12.55 9.2" stroke="#1D4ED8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="13.55" cy="10.95" r=".55" fill="#FFFFFF"/>
+    <path d="M7.3 15.4H16.7" stroke="#93C5FD" stroke-width="1.3" stroke-linecap="round"/>
+  `),
+  oceanWhale: svg(`
+    <defs>
+      <linearGradient id="whaleBg" x1="5" y1="5" x2="19" y2="19" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#ECFEFF"/>
+        <stop offset="1" stop-color="#CFFAFE"/>
+      </linearGradient>
+      <linearGradient id="whaleBody" x1="7" y1="8" x2="17" y2="16" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#67E8F9"/>
+        <stop offset="1" stop-color="#0891B2"/>
+      </linearGradient>
+    </defs>
+    <circle cx="12" cy="12" r="8" fill="url(#whaleBg)" stroke="#A5F3FC" stroke-width="1.2"/>
+    <path d="M7 12.8C7.9 10.1 10.1 8.8 12.8 8.8C14.9 8.8 16.4 9.4 17.2 10.4V13.4C16.3 14.85 14.55 15.7 12.15 15.7C9.8 15.7 8.05 14.8 7 12.8Z" fill="url(#whaleBody)"/>
+    <path d="M12 8.8C12 7.9 12.55 7.15 13.4 6.8" stroke="#0891B2" stroke-width="1.15" stroke-linecap="round"/>
+    <circle cx="13.8" cy="11" r=".55" fill="#FFFFFF"/>
+    <path d="M8.15 15.3H15.85" stroke="#67E8F9" stroke-width="1.3" stroke-linecap="round"/>
+  `),
+  oceanStarfish: svg(`
+    <defs>
+      <linearGradient id="starBg" x1="5" y1="5" x2="19" y2="19" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#F0FDF4"/>
+        <stop offset="1" stop-color="#DCFCE7"/>
+      </linearGradient>
+      <linearGradient id="starBody" x1="8" y1="7" x2="16" y2="17" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#4ADE80"/>
+        <stop offset="1" stop-color="#16A34A"/>
+      </linearGradient>
+    </defs>
+    <circle cx="12" cy="12" r="8" fill="url(#starBg)" stroke="#BBF7D0" stroke-width="1.2"/>
+    <path d="M12 7.2L13.2 9.8L16 10.1L13.95 12.05L14.45 14.8L12 13.45L9.55 14.8L10.05 12.05L8 10.1L10.8 9.8L12 7.2Z" fill="url(#starBody)"/>
+    <circle cx="12" cy="11.85" r="1.05" fill="#DCFCE7"/>
+    <circle cx="10.15" cy="10.8" r=".45" fill="#DCFCE7"/>
+    <circle cx="13.85" cy="10.8" r=".45" fill="#DCFCE7"/>
+  `),
+  oceanTurtle: svg(`
+    <defs>
+      <linearGradient id="turtleBg" x1="5" y1="5" x2="19" y2="19" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#F0FDFA"/>
+        <stop offset="1" stop-color="#CCFBF1"/>
+      </linearGradient>
+      <linearGradient id="turtleShell" x1="8" y1="8" x2="16" y2="16" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#5EEAD4"/>
+        <stop offset="1" stop-color="#0F766E"/>
+      </linearGradient>
+    </defs>
+    <circle cx="12" cy="12" r="8" fill="url(#turtleBg)" stroke="#99F6E4" stroke-width="1.2"/>
+    <ellipse cx="12" cy="12" rx="4.1" ry="3.3" fill="url(#turtleShell)"/>
+    <circle cx="16.3" cy="12" r="1.1" fill="#14B8A6"/>
+    <path d="M8.1 10.2L6.7 9.2" stroke="#14B8A6" stroke-width="1.15" stroke-linecap="round"/>
+    <path d="M8.1 13.8L6.7 14.8" stroke="#14B8A6" stroke-width="1.15" stroke-linecap="round"/>
+    <path d="M13.8 9.35L14.9 8.2" stroke="#5EEAD4" stroke-width="1.15" stroke-linecap="round"/>
+    <path d="M13.8 14.65L14.9 15.8" stroke="#5EEAD4" stroke-width="1.15" stroke-linecap="round"/>
+    <path d="M10.2 10.3H13.8M10.2 13.7H13.8M12 8.9V15.1" stroke="#CCFBF1" stroke-width=".95" stroke-linecap="round"/>
+  `),
+  oceanShell: svg(`
+    <defs>
+      <linearGradient id="shellBg" x1="5" y1="5" x2="19" y2="19" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#FFFDF2"/>
+        <stop offset="1" stop-color="#FEF3C7"/>
+      </linearGradient>
+      <linearGradient id="shellBody" x1="8" y1="8" x2="16" y2="16" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#FDE68A"/>
+        <stop offset="1" stop-color="#D97706"/>
+      </linearGradient>
+    </defs>
+    <circle cx="12" cy="12" r="8" fill="url(#shellBg)" stroke="#FDE68A" stroke-width="1.2"/>
+    <path d="M8 14.8C8 11.8 9.8 9.2 12 9.2C14.2 9.2 16 11.8 16 14.8H8Z" fill="url(#shellBody)"/>
+    <path d="M12 9.3V14.8M10.1 9.8L10.1 14.8M13.9 9.8V14.8M8.9 10.9V14.8M15.1 10.9V14.8" stroke="#FFF7ED" stroke-width=".9" stroke-linecap="round"/>
+    <circle cx="12" cy="8.15" r="1.15" fill="#F8FAFC" stroke="#F59E0B" stroke-width=".8"/>
+  `),
+  oceanJellyfish: svg(`
+    <defs>
+      <linearGradient id="jellyBg" x1="5" y1="5" x2="19" y2="19" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#F5F3FF"/>
+        <stop offset="1" stop-color="#EDE9FE"/>
+      </linearGradient>
+      <linearGradient id="jellyBody" x1="8" y1="8" x2="16" y2="16" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#A78BFA"/>
+        <stop offset="1" stop-color="#7C3AED"/>
+      </linearGradient>
+    </defs>
+    <circle cx="12" cy="12" r="8" fill="url(#jellyBg)" stroke="#DDD6FE" stroke-width="1.2"/>
+    <path d="M8.1 12.25C8.1 9.7 9.85 8 12 8C14.15 8 15.9 9.7 15.9 12.25V12.55H8.1V12.25Z" fill="url(#jellyBody)"/>
+    <path d="M9.4 12.9V15.6M11.2 12.9V16.15M12.8 12.9V15.7M14.5 12.9V15.2" stroke="#8B5CF6" stroke-width="1.05" stroke-linecap="round"/>
+    <circle cx="10.7" cy="10.8" r=".45" fill="#F5F3FF"/>
+    <circle cx="13.3" cy="10.8" r=".45" fill="#F5F3FF"/>
   `)
 }
 

@@ -1,7 +1,7 @@
 App({
   globalData: {
     userInfo: null,
-    isEnrolled: true,
+    isEnrolled: false,
     serverBase: 'http://localhost:3001',  // 开发环境后端地址
     // 请假状态（leave.js 提交后写入，progress.js 销假时清除）
     leaveStatus: {

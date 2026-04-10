@@ -212,10 +212,6 @@ Page({
 
   noop() {},
 
-  goEntryHub() {
-    wx.navigateTo({ url: '/pages/entry-hub/entry-hub' })
-  },
-
   goCourseDetail(e) {
     const courseId = e.currentTarget.dataset.courseId
     if (!courseId) return

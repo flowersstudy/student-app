@@ -1,706 +1,352 @@
-const app = getApp()
-const { http } = require('../../utils/request')
+const DIAGNOSE_PROGRESS_KEY = 'diagnose_progress_state'
 
-const BASE_POINTS = [
-  { id: 1, name: '游走式找点', status: '学习中', progress: 60 },
-  { id: 2, name: '提炼转述错误', status: '已完成', progress: 100, completedAt: '2026-03-10' },
-  { id: 3, name: '分析结构错误', status: '待解锁', progress: 0 },
-  { id: 4, name: '公文结构错误', status: '已完成', progress: 100, completedAt: '2026-03-18' },
-  { id: 5, name: '对策推导错误', status: '学习中', progress: 30 },
-  { id: 6, name: '作文立意错误', status: '已完成', progress: 100, completedAt: '2026-03-22' },
-  { id: 7, name: '作文逻辑不清晰', status: '待解锁', progress: 0 },
-  { id: 8, name: '作文表达不流畅', status: '待解锁', progress: 0 }
-]
+function getDefaultCurrentTask() {
+  return {
+    label: '当前待上',
+    title: '1v1诊断课',
+  }
+}
+
+function resolveCurrentTask(progressState = {}) {
+  const step2 = progressState.step2 || {}
+  const step3 = progressState.step3 || {}
+  const step4 = progressState.step4 || {}
+  const step5 = progressState.step5 || {}
+
+  if (step5.status === '待上课') {
+    return { label: '当前待上', title: '1v1诊断课' }
+  }
+
+  if (step5.status === '待约课') {
+    return { label: '当前待约', title: '1v1诊断课' }
+  }
+
+  if (step4.status === '去反馈' && !step4.feedbackSubmitted) {
+    return { label: '当前待完成', title: '听讲反馈' }
+  }
+
+  if (step3.status === '去答题' && !step3.answerUploaded) {
+    return { label: '当前待完成', title: '诊断卷' }
+  }
+
+  if (step2.status === '待电话沟通') {
+    return { label: '当前待上', title: '1v1电话沟通' }
+  }
+
+  return { label: '当前任务', title: '底层卡点学习' }
+}
+
+function makeDetailItems(items) {
+  return items.map((text, index) => ({
+    text,
+    showLine: index !== items.length - 1,
+  }))
+}
+
+function createPathNodes() {
+  return [
+    {
+      id: 'diagnose',
+      title: '诊断',
+      status: 'done',
+      note: '已完成',
+      icon: '诊',
+      action: '/pages/diagnose/diagnose',
+      showCurve: false,
+      showHighlight: false,
+      hasDetail: false,
+      expanded: false,
+      detailVisible: false,
+      detailClosing: false,
+      expandText: '',
+      detailStateClass: 'close',
+      detailSections: [],
+    },
+    {
+      id: 'final-card',
+      title: '底层卡点',
+      status: 'current',
+      note: '当前卡点',
+      icon: '学',
+      action: '',
+      showCurve: true,
+      showHighlight: true,
+      hasDetail: true,
+      expanded: false,
+      detailVisible: false,
+      detailClosing: false,
+      expandText: '展开',
+      detailStateClass: 'close',
+      detailSections: [
+        { items: makeDetailItems(['游走式找点', '总结转述']) },
+      ],
+    },
+    {
+      id: 'yellow-card',
+      title: '专项卡点',
+      status: 'locked',
+      note: '未解锁',
+      icon: '专',
+      action: '',
+      showCurve: true,
+      showHighlight: false,
+      hasDetail: true,
+      expanded: false,
+      detailVisible: false,
+      detailClosing: false,
+      expandText: '展开',
+      detailStateClass: 'close',
+      detailSections: [
+        { items: makeDetailItems(['对策推导', '分析结构', '公文结构']) },
+      ],
+    },
+    {
+      id: 'blue-card',
+      title: '靶向卡点',
+      status: 'locked',
+      note: '未解锁',
+      icon: '靶',
+      action: '',
+      showCurve: true,
+      showHighlight: false,
+      hasDetail: true,
+      expanded: false,
+      detailVisible: false,
+      detailClosing: false,
+      expandText: '展开',
+      detailStateClass: 'close',
+      detailSections: [
+        { items: makeDetailItems(['作文立意', '作文逻辑', '作文表达']) },
+      ],
+    },
+  ]
+}
+
+function getBranchDisplay(expanded) {
+  if (expanded) {
+    return {
+      state: 'expanded',
+      subtitle: '学习搭子',
+      slogan: '沿着当前主线，继续拆开看。',
+    }
+  }
+
+  return {
+    state: 'default',
+    subtitle: '学习搭子',
+    slogan: '思路不打卡，上岸稳一点。',
+  }
+}
+
+function updateNodeState(node, nextState) {
+  return {
+    ...node,
+    expanded: nextState.expanded,
+    detailVisible: nextState.detailVisible,
+    detailClosing: nextState.detailClosing,
+    expandText: nextState.expanded ? '收起' : node.hasDetail ? '展开' : '',
+    detailStateClass: nextState.expanded ? 'open' : 'close',
+  }
+}
 
 Page({
   data: {
-    isEnrolled: false,
-    entryMode: '',
-    entryHero: null,
-    // 复习提醒（由 _computeReviewReminder 动态计算，初始不显示）
-    reviewReminder: { show: false, type: '', label: '', desc: '', days: 0, pointName: '' },
-    // 学习时间数据（用于判断复习触发条件）
-    lastStudyDate: '2026-03-28',   // 最后一次学习日期；有学习行为时更新
-    allCompletedDate: null,        // 所有卡点全部完成的日期；未全完成时为 null
-    // 已购课数据
-    userProfile: {
-      name: '张三', gender: '男', grade: '2026届',
-      hometown: '湖南省', examStatus: '备考中', examTime: '2026年4月',
-      education: '本科', major: '汉语言文学'
+    examInfo: {
+      subjectLabel: '科目考试',
+      subjectValue: '申论',
+      targetLabel: '提分目标',
+      targetValue: '+20分',
+      deadlineLabel: '截止时间',
+      deadlineValue: '04/25',
     },
-    diagnosis: {
-      targetExam: '国考行测申论', targetScore: 130,
-      diagnosisScore: 108, scoreGap: 22
+    topTagText: '定制专属学习计划',
+    currentTaskLabel: getDefaultCurrentTask().label,
+    currentTaskTitle: getDefaultCurrentTask().title,
+    currentTaskText: '当前待上 · 1v1诊断课',
+    currentCardProgress: 36,
+    branchState: 'default',
+    branchNode: {
+      title: '布卡',
+      subtitle: '学习搭子',
+      slogan: '思路不打卡，上岸稳一点。',
+      action: '',
     },
-    examDaysLeft: 0,
-    xingcePoints: [
-      { id: 1, name: '游走式找点', status: '学习中', progress: 60 },
-      { id: 5, name: '对策推导错误', status: '学习中', progress: 30 },
-      { id: 3, name: '分析结构错误', status: '待解锁', progress: 0 },
-      { id: 7, name: '作文逻辑不清晰', status: '待解锁', progress: 0 },
-      { id: 8, name: '作文表达不流畅', status: '待解锁', progress: 0 }
-    ],
-    shenlunPoints: [
-      { id: 2, name: '提炼转述错误', status: '已完成', progress: 100, completedAt: '2026-03-10' },
-      { id: 4, name: '公文结构错误', status: '已完成', progress: 100, completedAt: '2026-03-18' },
-      { id: 6, name: '作文立意错误', status: '已完成', progress: 100, completedAt: '2026-03-22' }
-    ],
-    allPoints: BASE_POINTS,
-    pendingDisplayPoints: BASE_POINTS.filter((item) => item.status !== '已完成'),
-    resolvedDisplayPoints: BASE_POINTS.filter((item) => item.status === '已完成'),
-    // 未购课数据
-    courses: [
-      { id: 1, name: '游走式找点', price: 1080, selected: false },
-      { id: 2, name: '提炼转述错误', price: 1080, selected: false },
-      { id: 3, name: '分析结构错误', price: 1080, selected: false },
-      { id: 4, name: '公文结构错误', price: 1080, selected: false },
-      { id: 5, name: '对策推导错误', price: 1080, selected: false },
-      { id: 6, name: '作文立意错误', price: 1080, selected: false },
-      { id: 7, name: '作文逻辑不清晰', price: 1080, selected: false },
-      { id: 8, name: '作文表达不流畅', price: 1080, selected: false }
-    ],
-    selectedCount: 0,
-    totalPrice: 0,
-    carouselIndex: 0,
-    carouselCards: [
-      { name: '游走式找点', symptom: '读了三遍材料，还是不知道要点在哪里' },
-      { name: '提炼转述错误', symptom: '觉得自己看懂了，写出来老师说跑题了' },
-      { name: '分析结构错误', symptom: '材料里的逻辑关系永远理不清楚' },
-      { name: '公文结构错误', symptom: '公文格式背了又背，换个题型就不会套' },
-      { name: '对策推导错误', symptom: '看到"提出对策"就发慌，脑子一片空白' },
-      { name: '作文立意错误', symptom: '作文审题时觉得懂了，落笔就开始跑偏' },
-      { name: '作文逻辑不清晰', symptom: '写了很多，老师说"没有论证，全是堆砌"' },
-      { name: '作文表达不流畅', symptom: '答案写得明白，就是像在聊天而非答题' }
-    ],
-    provinces: ['国考', '北京', '上海', '广东', '浙江', '江苏', '湖南', '湖北', '四川', '河南', '山东', '陕西', '河北', '安徽', '福建', '江西', '重庆', '云南', '贵州', '辽宁'],
-    provinceIndex: 6,
-    selectedProvince: '湖南',
-    calendarView: 'month',
-    calendarYear: 2026,
-    calendarMonth: 4,
-    calendarSelectedDate: '2026-04-03',
-    calendarWeeks: [],
-    calendarWeekDays: [],
-    calendarWeekTitle: '',
-    calendarSelectedTasks: [],
-    todayDateStr: '',
-    todayTasks: [],
-    todaySpans: [],
-    scheduleData: {
-      '2026-03-30': [{ label: '1v1共识课', type: 'class', done: true,  url: '/pages/lesson-live/lesson-live' }],
-      '2026-03-31': [{ label: '看录播课',  type: 'video', done: true,  url: '/pages/lesson-recorded/lesson-recorded' }],
-      '2026-04-01': [{ label: '1v1纠偏课', type: 'class', done: true,  url: '/pages/lesson-correct/lesson-correct' }],
-      '2026-04-02': [{ label: '刷题',      type: 'drill', done: true,  url: '/pages/lesson-drill/lesson-drill' }],
-      '2026-04-03': [{ label: '刷题',      type: 'drill', done: false, url: '/pages/lesson-drill/lesson-drill' }],
-      '2026-04-04': [{ label: '刷题',      type: 'drill', done: false, url: '/pages/lesson-drill/lesson-drill' }],
-      '2026-04-05': [{ label: '阶段考试',  type: 'exam',  done: false, url: '/pages/lesson-exam/lesson-exam' }],
-      '2026-04-07': [{ label: '1v1共识课', type: 'class', done: false, url: '/pages/lesson-live/lesson-live' }],
-      '2026-04-08': [{ label: '看录播课',  type: 'video', done: false, url: '/pages/lesson-recorded/lesson-recorded' }],
-      '2026-04-09': [{ label: '1v1纠偏课', type: 'class', done: false, url: '/pages/lesson-correct/lesson-correct' }],
-      '2026-04-10': [{ label: '刷题',      type: 'drill', done: false, url: '/pages/lesson-drill/lesson-drill' }],
-      '2026-04-11': [{ label: '刷题',      type: 'drill', done: false, url: '/pages/lesson-drill/lesson-drill' }],
-      '2026-04-12': [{ label: '刷题',      type: 'drill', done: false, url: '/pages/lesson-drill/lesson-drill' }],
-      '2026-04-13': [{ label: '阶段考试',  type: 'exam',  done: false, url: '/pages/lesson-exam/lesson-exam' }],
-      '2026-04-14': [{ label: '1v1共识课', type: 'class', done: false, url: '/pages/lesson-live/lesson-live' }],
-      '2026-04-15': [{ label: '看录播课',  type: 'video', done: false, url: '/pages/lesson-recorded/lesson-recorded' }],
-      '2026-04-16': [{ label: '1v1纠偏课', type: 'class', done: false, url: '/pages/lesson-correct/lesson-correct' }],
-      '2026-04-17': [{ label: '刷题',      type: 'drill', done: false, url: '/pages/lesson-drill/lesson-drill' }],
-      '2026-04-18': [{ label: '刷题',      type: 'drill', done: false, url: '/pages/lesson-drill/lesson-drill' }],
-      '2026-04-19': [{ label: '刷题',      type: 'drill', done: false, url: '/pages/lesson-drill/lesson-drill' }],
-      '2026-04-20': [{ label: '阶段考试',  type: 'exam',  done: false, url: '/pages/lesson-exam/lesson-exam' }],
-    },
-    spanEvents: [
-      { label: '写诊断试卷', type: 'hw', start: '2026-04-03', end: '2026-04-05', url: '/pages/diagnose/diagnose' },
-      { label: '交刷题记录', type: 'hw', start: '2026-04-02', end: '2026-04-04', url: '/pages/lesson-drill/lesson-drill' },
-      { label: '交刷题记录', type: 'hw', start: '2026-04-10', end: '2026-04-12', url: '/pages/lesson-drill/lesson-drill' },
-      { label: '交刷题记录', type: 'hw', start: '2026-04-17', end: '2026-04-19', url: '/pages/lesson-drill/lesson-drill' },
-    ],
-    examples: [
-      { id: 1, name: '李同学', exam: '国考', grade: '2025届', major: '汉语言文学', score: 18, comment: '以前申论总跑题，现在审题准确率高了很多，申论稳定在75分以上。' },
-      { id: 2, name: '王同学', exam: '省考', grade: '2026届', major: '行政管理', score: 24, comment: '材料分析终于有逻辑了，不再是把材料抄一遍，老师反馈进步很大。' }
-    ],
-    notifications: [],
-    notificationCount: 0,
-    topReminder: null,
-    examCountdown: '',
-    showExamEdit: false,
-    examEditDate: '',
-    examEditTime: '09:00'
+    pathNodes: createPathNodes(),
   },
-  onShow() {
-    const entryMode = app.globalData.entryMode || wx.getStorageSync('entry_mode') || ''
-    const allPoints = this._buildAllPoints()
-    const grouped = this._groupPoints(allPoints)
-    this.setData({
-      isEnrolled: app.globalData.isEnrolled,
-      entryMode,
-      entryHero: this._buildEntryHero(entryMode),
-      allPoints,
-      pendingDisplayPoints: grouped.pendingDisplayPoints,
-      resolvedDisplayPoints: grouped.resolvedDisplayPoints
-    })
-    this._startCarousel()
-    if (app.globalData.isEnrolled) {
-      const notifications = this._computeNotifications()
-      const topReminder = notifications.find(n => n.pinned) || null
-      this.setData({ notifications, notificationCount: notifications.length, topReminder })
-      if (topReminder && topReminder.type === 'exam') {
-        this._startExamCountdown(topReminder.dateStr)
-      }
-    }
-  },
-  onHide() {
-    this._stopCarousel()
-    this._stopExamCountdown()
-  },
-  onUnload() {
-    this._stopCarousel()
-    this._stopExamCountdown()
-  },
-  _startCarousel() {
-    this._stopCarousel()
-    this._carouselTimer = setInterval(() => {
-      const next = (this.data.carouselIndex + 1) % this.data.carouselCards.length
-      this.setData({ carouselIndex: next })
-    }, 2500)
-  },
-  _stopCarousel() {
-    if (this._carouselTimer) {
-      clearInterval(this._carouselTimer)
-      this._carouselTimer = null
-    }
-  },
-  // ── 通知计算 ───────────────────────────────────────────────
-  // 置顶：待上课 / 阶段考试提醒；其次：截止日期预警（≤3天）；最后：今日未完成任务
-  _computeNotifications() {
-    const today = new Date(); today.setHours(0, 0, 0, 0)
-    const todayStr = this._calDateStr(today)
-
-    function daysUntil(dateStr) {
-      const d = new Date(dateStr); d.setHours(0, 0, 0, 0)
-      return Math.round((d - today) / 86400000)
-    }
-
-    const items = []
-
-    // 1. 置顶：最近7天内待上课 / 阶段考试（按日期升序）
-    const upcomingDays = 7
-    for (let i = 0; i <= upcomingDays; i++) {
-      const d = new Date(today.getTime() + i * 86400000)
-      const ds = this._calDateStr(d)
-      const tasks = this.data.scheduleData[ds] || []
-      for (const t of tasks) {
-        if (t.done) continue
-        if (t.type === 'class' || t.type === 'exam') {
-          const label = i === 0 ? `今天 · ${t.label}` : i === 1 ? `明天 · ${t.label}` : `${ds} · ${t.label}`
-          items.push({ pinned: true, type: t.type, label, desc: i === 0 ? '今天上课，点击进入' : `还有 ${i} 天`, url: t.url, dateStr: ds })
-        }
-      }
-    }
-
-    // 2. 截止日期预警：spanEvents 中 end 日期距今 ≤3 天（且未过期）
-    for (const se of (this.data.spanEvents || [])) {
-      const diff = daysUntil(se.end)
-      if (diff >= 0 && diff <= 3) {
-        const desc = diff === 0 ? '今天截止！' : `还有 ${diff} 天截止`
-        items.push({ pinned: false, type: se.type, label: se.label, desc, url: se.url, dateStr: se.end })
-      }
-    }
-
-    // 3. 今日未完成的普通任务（drill / video / hw）
-    const todayTasks = this.data.scheduleData[todayStr] || []
-    for (const t of todayTasks) {
-      if (!t.done && t.type !== 'class' && t.type !== 'exam') {
-        items.push({ pinned: false, type: t.type, label: `今日待办 · ${t.label}`, desc: '今天还未完成', url: t.url, dateStr: todayStr })
-      }
-    }
-
-    // 置顶项排前，同类按 dateStr 升序
-    items.sort((a, b) => {
-      if (a.pinned !== b.pinned) return a.pinned ? -1 : 1
-      return a.dateStr.localeCompare(b.dateStr)
-    })
-
-    return items
-  },
-  // ────────────────────────────────────────────────────────
-
-  // ── 考试倒计时 ─────────────────────────────────────────
-  _getExamTargetTs(dateStr) {
-    const app = getApp()
-    const saved = app.globalData.examDatetime  // 'YYYY-MM-DD HH:MM'
-    if (saved && saved.startsWith(dateStr)) {
-      const [, time] = saved.split(' ')
-      return new Date(`${dateStr}T${time}:00`).getTime()
-    }
-    return new Date(`${dateStr}T09:00:00`).getTime()
-  },
-
-  _fmtCountdown(ms) {
-    if (ms <= 0) return '已结束'
-    const totalSec = Math.floor(ms / 1000)
-    const d = Math.floor(totalSec / 86400)
-    const h = Math.floor((totalSec % 86400) / 3600)
-    const m = Math.floor((totalSec % 3600) / 60)
-    const s = totalSec % 60
-    const p = n => String(n).padStart(2, '0')
-    if (d > 0) return `${d}天 ${p(h)}:${p(m)}:${p(s)}`
-    return `${p(h)}:${p(m)}:${p(s)}`
-  },
-
-  _startExamCountdown(dateStr) {
-    this._stopExamCountdown()
-    const defaultTime = '09:00'
-    const app = getApp()
-    const saved = app.globalData.examDatetime
-    const time = (saved && saved.startsWith(dateStr)) ? saved.split(' ')[1] : defaultTime
-    this.setData({ examEditDate: dateStr, examEditTime: time })
-    const update = () => {
-      const targetTs = this._getExamTargetTs(dateStr)
-      const ms = targetTs - Date.now()
-      this.setData({ examCountdown: this._fmtCountdown(ms) })
-      if (ms <= 0) this._stopExamCountdown()
-    }
-    update()
-    this._examCdTimer = setInterval(update, 1000)
-  },
-
-  _stopExamCountdown() {
-    if (this._examCdTimer) {
-      clearInterval(this._examCdTimer)
-      this._examCdTimer = null
-    }
-  },
-
-  openExamEdit() {
-    this.setData({ showExamEdit: true })
-  },
-
-  onExamEditDateChange(e) {
-    this.setData({ examEditDate: e.detail.value })
-  },
-
-  onExamEditTimeChange(e) {
-    this.setData({ examEditTime: e.detail.value })
-  },
-
-  confirmExamEdit() {
-    const { examEditDate, examEditTime } = this.data
-    const app = getApp()
-    app.globalData.examDatetime = `${examEditDate} ${examEditTime}`
-    const topReminder = this.data.topReminder
-    if (topReminder && topReminder.type === 'exam') {
-      this._startExamCountdown(topReminder.dateStr)
-    }
-    this.setData({ showExamEdit: false })
-  },
-
-  cancelExamEdit() {
-    this.setData({ showExamEdit: false })
-  },
-  // ────────────────────────────────────────────────────────
 
   onLoad() {
-    const profile = app.globalData.userProfile
-    const diagnosis = app.globalData.diagnosis
-    if (profile) this.setData({ userProfile: profile })
-    if (diagnosis) this.setData({ diagnosis })
-    this._computeExamDaysLeft()
-    this._initCalendar()
-    this._loadFromServer()
+    this._detailTimers = {}
+    this.syncExamInfo()
+    this.syncCurrentTask()
+    this.syncBranchDisplay()
   },
 
-  _buildEntryHero(entryMode) {
-    const scenes = {
-      diagnose: {
-        theme: 'diagnose',
-        badge: '精准诊断',
-        title: '先做诊断，再开始学习',
-        desc: '先看清你为什么失分，再决定下一步怎么学，让首页下面的学习内容更顺地承接上来。',
-        buttonText: '去诊断',
-        action: 'diagnose',
-        metrics: [
-          { value: '8', label: '诊断维度' },
-          { value: '1v1', label: '沟通方式' },
-          { value: '3', label: '核心输出' }
-        ],
-        scorePanel: {
-          current: this.data.diagnosis.diagnosisScore,
-          target: this.data.diagnosis.targetScore,
-          gap: this.data.diagnosis.scoreGap
-        },
-        highlights: [
-          { title: '优势基底', desc: '不是从零开始，而是在已有阅读理解基础上先找出真正拖分的位置。' },
-          { title: '核心卡点', desc: '重点会先落在结构、提炼和作文逻辑这些高频失分位。' }
-        ],
-        previewTitle: '诊断结果会先告诉你什么',
-        previewPoints: [
-          { tier: 'red', tierText: '红标优先', name: '提炼转述偏差', desc: '能看懂材料，但输出时容易照抄原文，提炼不够稳。' },
-          { tier: 'yellow', tierText: '黄标优先', name: '分析结构不清', desc: '分析题有点但没层次，论证关系展开不够完整。' },
-          { tier: 'blue', tierText: '蓝标跟进', name: '作文逻辑松散', desc: '有观点，但段落推进和总分结构还不够稳。' }
-        ],
-        basisRows: [
-          { label: '诊断方式', value: '老师批改 + 电话沟通 + 书面报告' },
-          { label: '输出结果', value: '失分依据、核心卡点、阶段规划' },
-          { label: '适用场景', value: '刷题很多但分数不动，或者不知道先补哪里' }
-        ],
-        helperTitle: '入口会先进入诊断详情页',
-        helperDesc: '保持昨天那种更偏报告感、更偏引导的进入方式。',
-        tags: ['老师手批', '问题定位', '学习建议']
-      },
-      trial: {
-        theme: 'trial',
-        badge: '刷题体验',
-        title: '先刷一组题，进入状态',
-        desc: '先体验题目、讲解和反馈节奏，再决定是继续刷题，还是回到诊断和卡点识别。',
-        buttonText: '去刷题',
-        action: 'trial',
-        metrics: [
-          { value: '15min', label: '进入门槛' },
-          { value: '1组', label: '体验题量' },
-          { value: '即时', label: '反馈节奏' }
-        ],
-        highlights: [
-          { title: '先感受节奏', desc: '不是直接塞满内容，而是先让用户进入做题状态。' },
-          { title: '再决定路线', desc: '刷完后再判断更适合诊断、刷题还是卡点学习。' }
-        ],
-        previewTitle: '',
-        helperTitle: '这是更轻量的入口',
-        helperDesc: '适合先体验一下，不需要先做重决策。',
-        tags: ['快速体验', '即时反馈', '轻量进入']
-      },
-      kpoint: {
-        theme: 'kpoint',
-        badge: '卡点识别',
-        title: '先看看自己卡在哪',
-        desc: '先建立问题地图，再决定下一步走诊断、刷题，还是直接进入对应卡点。',
-        buttonText: '看卡点',
-        action: 'kpoint',
-        metrics: [
-          { value: '8类', label: '卡点体系' },
-          { value: '高频', label: '失分场景' },
-          { value: '路径', label: '学习判断' }
-        ],
-        highlights: [
-          { title: '先识别类型', desc: '把“不会”和“卡错地方”区分开，后面学习才不绕路。' },
-          { title: '再匹配入口', desc: '识别完卡点后，再进入诊断或刷题会更自然。' }
-        ],
-        previewTitle: '',
-        helperTitle: '这是问题地图入口',
-        helperDesc: '更像一个前置判断，而不是直接进入学习。',
-        tags: ['八大卡点', '失分定位', '路径判断']
-      }
-    }
-    return scenes[entryMode] || null
+  onShow() {
+    this.syncExamInfo()
+    this.syncCurrentTask()
+    this.syncBranchDisplay()
   },
 
-  _loadFromServer() {
-    http.get('/api/student/profile').then((data) => {
-      if (!data) return
-      function mapStatus(s) {
-        if (s === 'completed') return '已完成'
-        if (s === 'in_progress') return '学习中'
-        return '待解锁'
-      }
-      const all = [...(data.inProgress || []), ...(data.completed || [])]
-      const xingcePoints = all.filter(c => c.subject === '行测').map(c => ({
-        id: c.id, name: c.name, status: mapStatus(c.status), progress: c.progress
-      }))
-      const shenlunPoints = all.filter(c => c.subject === '申论').map(c => ({
-        id: c.id, name: c.name, status: mapStatus(c.status), progress: c.progress
-      }))
-      const nextData = {}
-      if (xingcePoints.length > 0) nextData.xingcePoints = xingcePoints
-      if (shenlunPoints.length > 0) nextData.shenlunPoints = shenlunPoints
-      const allPoints = this._buildAllPoints(all)
-      const grouped = this._groupPoints(allPoints)
-      this.setData({
-        ...nextData,
-        allPoints,
-        pendingDisplayPoints: grouped.pendingDisplayPoints,
-        resolvedDisplayPoints: grouped.resolvedDisplayPoints
-      })
-    }).catch(() => {})
-  },
-
-  _buildAllPoints(serverPoints) {
-    const source = Array.isArray(serverPoints)
-      ? serverPoints
-      : [...this.data.xingcePoints, ...this.data.shenlunPoints]
-
-    const mapped = new Map(source.map((item) => [item.id, item]))
-    return BASE_POINTS.map((point) => {
-      const current = mapped.get(point.id)
-      return current
-        ? {
-            ...point,
-            ...current,
-          }
-        : { ...point }
-    }).sort((a, b) => a.id - b.id)
-  },
-
-  _groupPoints(points) {
-    return {
-      pendingDisplayPoints: points.filter((item) => item.status !== '已完成'),
-      resolvedDisplayPoints: points.filter((item) => item.status === '已完成')
-    }
-  },
-
-  _initCalendar() {
-    const today = new Date()
-    const year = today.getFullYear()
-    const month = today.getMonth() + 1
-    const todayStr = this._calDateStr(today)
-    const todaySpans = (this.data.spanEvents || []).filter(se => se.start <= todayStr && se.end >= todayStr)
-    const weekData = this._buildWeekDays(todayStr)
-    this.setData({
-      calendarYear: year,
-      calendarMonth: month,
-      calendarSelectedDate: todayStr,
-      calendarWeeks: this._buildMonthWeeks(year, month),
-      calendarWeekDays: weekData,
-      calendarWeekTitle: weekData.title,
-      calendarSelectedTasks: this.data.scheduleData[todayStr] || [],
-      todayDateStr: todayStr,
-      todayTasks: this.data.scheduleData[todayStr] || [],
-      todaySpans
+  onUnload() {
+    Object.keys(this._detailTimers || {}).forEach((key) => {
+      clearTimeout(this._detailTimers[key])
     })
   },
 
-  _buildMonthWeeks(year, month) {
-    const days = this._buildMonthDays(year, month)
-    const weeks = []
-    for (let i = 0; i < days.length; i += 7) {
-      const weekDays = days.slice(i, i + 7)
-      weeks.push({ days: weekDays, spans: this._computeWeekSpans(weekDays) })
-    }
-    return weeks
-  },
-
-  _computeWeekSpans(weekDays) {
-    const spanEvents = this.data.spanEvents || []
-    const weekStart = weekDays[0].dateStr
-    const weekEnd = weekDays[6].dateStr
-    const spans = []
-    for (const se of spanEvents) {
-      if (se.end < weekStart || se.start > weekEnd) continue
-      const clampedStart = se.start < weekStart ? weekStart : se.start
-      const clampedEnd   = se.end   > weekEnd   ? weekEnd   : se.end
-      const col    = weekDays.findIndex(d => d.dateStr === clampedStart)
-      const endCol = weekDays.findIndex(d => d.dateStr === clampedEnd)
-      if (col < 0 || endCol < 0) continue
-      const spanCount = endCol - col + 1
-      spans.push({
-        label: se.label, type: se.type,
-        leftPct: col / 7 * 100,
-        widthPct: spanCount / 7 * 100
-      })
-    }
-    return spans
-  },
-
-  _calDateStr(d) {
-    const p = n => String(n).padStart(2, '0')
-    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`
-  },
-
-  _buildMonthDays(year, month) {
-    const p = n => String(n).padStart(2, '0')
-    const sd = this.data.scheduleData
-    const today = new Date(); today.setHours(0, 0, 0, 0)
-    const todayStr = this._calDateStr(today)
-    const firstDow = (new Date(year, month - 1, 1).getDay() + 6) % 7  // Mon=0
-    const daysInMonth = new Date(year, month, 0).getDate()
-    const prevMonthDays = new Date(year, month - 1, 0).getDate()
-    const days = []
-    // 上月补位
-    for (let i = firstDow - 1; i >= 0; i--) {
-      const d = prevMonthDays - i
-      const m = month === 1 ? 12 : month - 1
-      const y = month === 1 ? year - 1 : year
-      const ds = `${y}-${p(m)}-${p(d)}`
-      days.push({ dateStr: ds, dayNum: d, isCurrentMonth: false, isToday: false, tasks: sd[ds] || [] })
-    }
-    // 本月
-    for (let d = 1; d <= daysInMonth; d++) {
-      const ds = `${year}-${p(month)}-${p(d)}`
-      days.push({ dateStr: ds, dayNum: d, isCurrentMonth: true, isToday: ds === todayStr, tasks: sd[ds] || [] })
-    }
-    // 下月补位
-    const rem = days.length % 7
-    if (rem > 0) {
-      const nm = month === 12 ? 1 : month + 1
-      const ny = month === 12 ? year + 1 : year
-      for (let d = 1; d <= 7 - rem; d++) {
-        const ds = `${ny}-${p(nm)}-${p(d)}`
-        days.push({ dateStr: ds, dayNum: d, isCurrentMonth: false, isToday: false, tasks: sd[ds] || [] })
-      }
-    }
-    return days
-  },
-
-  _buildWeekDays(selectedDateStr) {
-    const sd = this.data.scheduleData
-    const today = new Date(); today.setHours(0, 0, 0, 0)
-    const todayStr = this._calDateStr(today)
-    const d = new Date(selectedDateStr)
-    const dow = (d.getDay() + 6) % 7
-    const monday = new Date(d.getTime() - dow * 86400000)
-    const sunday = new Date(monday.getTime() + 6 * 86400000)
-    const labels = ['一', '二', '三', '四', '五', '六', '日']
-    const days = []
-    for (let i = 0; i < 7; i++) {
-      const day = new Date(monday.getTime() + i * 86400000)
-      const ds = this._calDateStr(day)
-      days.push({ dateStr: ds, dayNum: day.getDate(), label: labels[i], isToday: ds === todayStr, tasks: sd[ds] || [] })
-    }
-    const fmt = d => `${d.getMonth() + 1}月${d.getDate()}日`
-    const title = `${fmt(monday)} - ${fmt(sunday)}`
-    return { days, spans: this._computeWeekSpans(days), title }
-  },
-
-  _computeExamDaysLeft() {
-    const examTime = this.data.userProfile.examTime || ''
-    const m = examTime.match(/(\d{4})年(\d{1,2})月/)
-    if (!m) return
-    const target = new Date(parseInt(m[1]), parseInt(m[2]), 0) // 该月最后一天
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    const days = Math.ceil((target - today) / 86400000)
-    if (days > 0) this.setData({ examDaysLeft: days })
-  },
-
-  onEntryHeroAction(e) {
-    const action = e.currentTarget.dataset.action
-    if (action === 'diagnose') {
-      this.goDiagnose()
-      return
-    }
-    if (action === 'trial') {
-      wx.navigateTo({ url: '/pages/trial-experience/trial-experience' })
-      return
-    }
-    if (action === 'kpoint') {
-      wx.navigateTo({ url: '/pages/kpoint-list/kpoint-list' })
-    }
-  },
-
-  // 已购课方法
-  goDiagnose() {
-    wx.navigateTo({ url: '/pages/diagnose-detail/diagnose-detail' })
-  },
-  goProgress(e) {
-    wx.navigateTo({ url: `/pages/progress/progress?id=${e.currentTarget.dataset.id}` })
-  },
-  goNotifications() {
+  syncExamInfo() {
     const app = getApp()
-    app.globalData.notifications = this.data.notifications
-    wx.navigateTo({ url: '/pages/notifications/notifications' })
-  },
-  goTopReminder() {
-    const r = this.data.topReminder
-    if (r && r.url) wx.navigateTo({ url: r.url })
-  },
-  goProfile() {
-    wx.showToast({ title: '个人中心开发中', icon: 'none' })
-  },
-  onCalDayTap(e) {
-    const dateStr = e.currentTarget.dataset.date
-    const tasks = this.data.scheduleData[dateStr] || []
-    const weekData = this._buildWeekDays(dateStr)
-    this.setData({ calendarSelectedDate: dateStr, calendarSelectedTasks: tasks, calendarWeekDays: weekData, calendarWeekTitle: weekData.title })
+    const diagnosis = app.globalData && app.globalData.diagnosis ? app.globalData.diagnosis : null
+    const nextExamInfo = { ...this.data.examInfo }
+
+    if (diagnosis && diagnosis.targetExam) {
+      nextExamInfo.subjectValue = diagnosis.targetExam
+    }
+
+    if (diagnosis && typeof diagnosis.scoreGap === 'number') {
+      nextExamInfo.targetValue = `+${diagnosis.scoreGap}分`
+    }
+
+    this.setData({ examInfo: nextExamInfo })
   },
 
-  onCalPrev() {
-    if (this.data.calendarView === 'week') {
-      const d = new Date(this.data.calendarSelectedDate)
-      d.setDate(d.getDate() - 7)
-      const ds = this._calDateStr(d)
-      const weekData = this._buildWeekDays(ds)
-      this.setData({
-        calendarSelectedDate: ds,
-        calendarSelectedTasks: this.data.scheduleData[ds] || [],
-        calendarWeekDays: weekData,
-        calendarWeekTitle: weekData.title
-      })
-    } else {
-      let { calendarYear, calendarMonth } = this.data
-      if (--calendarMonth < 1) { calendarMonth = 12; calendarYear-- }
-      this.setData({ calendarYear, calendarMonth, calendarWeeks: this._buildMonthWeeks(calendarYear, calendarMonth) })
-    }
-  },
+  syncCurrentTask() {
+    const savedProgress = wx.getStorageSync(DIAGNOSE_PROGRESS_KEY) || {}
+    const currentTask = resolveCurrentTask(savedProgress)
 
-  onCalNext() {
-    if (this.data.calendarView === 'week') {
-      const d = new Date(this.data.calendarSelectedDate)
-      d.setDate(d.getDate() + 7)
-      const ds = this._calDateStr(d)
-      const weekData = this._buildWeekDays(ds)
-      this.setData({
-        calendarSelectedDate: ds,
-        calendarSelectedTasks: this.data.scheduleData[ds] || [],
-        calendarWeekDays: weekData,
-        calendarWeekTitle: weekData.title
-      })
-    } else {
-      let { calendarYear, calendarMonth } = this.data
-      if (++calendarMonth > 12) { calendarMonth = 1; calendarYear++ }
-      this.setData({ calendarYear, calendarMonth, calendarWeeks: this._buildMonthWeeks(calendarYear, calendarMonth) })
-    }
-  },
-
-  onTodayTaskTap(e) {
-    const { url, done } = e.currentTarget.dataset
-    if (done) {
-      wx.showToast({ title: '该任务已完成', icon: 'none' })
-      return
-    }
-    if (url) wx.navigateTo({ url })
-  },
-
-  onCalToggleView() {
-    if (this.data.calendarView === 'month') {
-      const weekData = this._buildWeekDays(this.data.calendarSelectedDate)
-      this.setData({ calendarView: 'week', calendarWeekDays: weekData, calendarWeekTitle: weekData.title })
-    } else {
-      this.setData({ calendarView: 'month' })
-    }
-  },
-
-  onCalTouchStart(e) {
-    if (e.touches.length === 2) {
-      const dx = e.touches[0].clientX - e.touches[1].clientX
-      const dy = e.touches[0].clientY - e.touches[1].clientY
-      this._calPinchDist = Math.sqrt(dx * dx + dy * dy)
-    } else {
-      this._calPinchDist = 0
-    }
-  },
-
-  onCalTouchMove(e) {
-    if (e.touches.length !== 2 || !this._calPinchDist) return
-    const dx = e.touches[0].clientX - e.touches[1].clientX
-    const dy = e.touches[0].clientY - e.touches[1].clientY
-    const ratio = Math.sqrt(dx * dx + dy * dy) / this._calPinchDist
-    if (ratio > 1.3 && this.data.calendarView === 'month') {
-      this.setData({ calendarView: 'week', calendarWeekDays: this._buildWeekDays(this.data.calendarSelectedDate) })
-      this._calPinchDist = 0
-    } else if (ratio < 0.75 && this.data.calendarView === 'week') {
-      this.setData({ calendarView: 'month' })
-      this._calPinchDist = 0
-    }
-  },
-  // 未购课方法
-  onProvinceChange(e) {
-    const index = e.detail.value
     this.setData({
-      provinceIndex: index,
-      selectedProvince: this.data.provinces[index]
+      currentTaskLabel: currentTask.label,
+      currentTaskTitle: currentTask.title,
+      currentTaskText: `${currentTask.label} · ${currentTask.title}`,
     })
   },
-  goCourseDetail(e) {
-    const id = e.currentTarget.dataset.id
-    wx.navigateTo({ url: `/pages/course-intro/course-intro?id=${id}` })
-  }
+
+  syncBranchDisplay(pathNodes = this.data.pathNodes) {
+    const expanded = pathNodes.some((item) => item.expanded)
+    const branchDisplay = getBranchDisplay(expanded)
+
+    this.setData({
+      branchState: branchDisplay.state,
+      'branchNode.subtitle': branchDisplay.subtitle,
+      'branchNode.slogan': branchDisplay.slogan,
+    })
+  },
+
+  handleNodeTap(e) {
+    const { id } = e.currentTarget.dataset
+    const node = this.data.pathNodes.find((item) => item.id === id)
+
+    if (!node) return
+
+    if (node.hasDetail) {
+      this.toggleDetailNode(id)
+      return
+    }
+
+    if (node.status === 'locked') {
+      wx.showToast({
+        title: '当前卡点完成后解锁',
+        icon: 'none',
+      })
+      return
+    }
+
+    if (node.action) {
+      wx.navigateTo({ url: node.action })
+    }
+  },
+
+  handleBranchTap() {
+    wx.showToast({
+      title: this.data.branchNode.slogan,
+      icon: 'none',
+    })
+  },
+
+  handlePlanTap() {
+    wx.navigateTo({
+      url: '/pages/diagnose-detail/diagnose-detail',
+    })
+  },
+
+  handleShellTap() {
+    wx.showToast({
+      title: '刷题入口保留在这里，完成主线路径后开启',
+      icon: 'none',
+    })
+  },
+
+  handleWhelkTap() {
+    wx.showToast({
+      title: '行测刷题入口保留在这里，完成主线路径后开启',
+      icon: 'none',
+    })
+  },
+
+  toggleDetailNode(id) {
+    const clickedNode = this.data.pathNodes.find((item) => item.id === id)
+    if (!clickedNode) return
+
+    if (clickedNode.expanded) {
+      this.closeDetailNode(id)
+      return
+    }
+
+    Object.keys(this._detailTimers || {}).forEach((key) => {
+      clearTimeout(this._detailTimers[key])
+      delete this._detailTimers[key]
+    })
+
+    const nextNodes = this.data.pathNodes.map((item) => {
+      if (item.id === id) {
+        return updateNodeState(item, {
+          expanded: true,
+          detailVisible: true,
+          detailClosing: false,
+        })
+      }
+
+      if (item.hasDetail) {
+        return updateNodeState(item, {
+          expanded: false,
+          detailVisible: false,
+          detailClosing: false,
+        })
+      }
+
+      return item
+    })
+
+    this.setData({ pathNodes: nextNodes }, () => this.syncBranchDisplay(nextNodes))
+  },
+
+  closeDetailNode(id) {
+    const nextNodes = this.data.pathNodes.map((item) => {
+      if (item.id === id) {
+        return updateNodeState(item, {
+          expanded: false,
+          detailVisible: true,
+          detailClosing: true,
+        })
+      }
+      return item
+    })
+
+    this.setData({ pathNodes: nextNodes }, () => this.syncBranchDisplay(nextNodes))
+
+    this._detailTimers[id] = setTimeout(() => {
+      const closedNodes = this.data.pathNodes.map((item) => {
+        if (item.id === id) {
+          return updateNodeState(item, {
+            expanded: false,
+            detailVisible: false,
+            detailClosing: false,
+          })
+        }
+        return item
+      })
+
+      this.setData({ pathNodes: closedNodes })
+      delete this._detailTimers[id]
+    }, 240)
+  },
 })

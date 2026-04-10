@@ -32,13 +32,6 @@
             </view>
           </view>
 
-          <view class="summary-square" bindtap="goStudySquare">
-            <view class="summary-square-content">
-              <image class="summary-square-icon" src="{{uiIcons.plaza}}" mode="aspectFit" />
-              <text class="summary-square-title">学习广场</text>
-              <text class="summary-square-arrow">></text>
-            </view>
-          </view>
         </view>
 
         <view class="summary-bottom-row">

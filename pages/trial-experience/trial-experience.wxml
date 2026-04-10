@@ -1,155 +1,70 @@
 <view class="trial-page">
-  <view class="trial-hero card">
-    <text class="trial-badge">限时体验</text>
-    <text class="trial-title">免费刷题课体验</text>
-    <text class="trial-desc">不再盲目刷题，先找卡点，再开药方。先体验一轮完整节奏，再决定是不是继续。</text>
+  <view class="hero-card">
+    <text class="hero-badge">学习路径</text>
+    <text class="hero-title">{{productName}}</text>
+    <text class="hero-desc">不再盲目刷题——先找卡点，再开药方。先把你的学习主线跑通，再进入每周日程安排。</text>
+    <text class="hero-deposit">{{depositText}}</text>
   </view>
 
-  <view class="trial-metrics">
-    <view class="trial-metric card">
-      <text class="trial-metric-value">8</text>
-      <text class="trial-metric-label">核心卡点</text>
-    </view>
-    <view class="trial-metric card">
-      <text class="trial-metric-value">4</text>
-      <text class="trial-metric-label">场直播拆题</text>
-    </view>
-    <view class="trial-metric card">
-      <text class="trial-metric-value">99</text>
-      <text class="trial-metric-label">全勤可返</text>
-    </view>
-  </view>
-
-  <view class="trial-section card card-pain">
-    <text class="trial-pain-title">“你已经刷了很多题，分数却还在原地。”</text>
-    <text class="trial-pain-desc">问题往往不在于不努力，而在于一直在用“对答案”代替“找失分点”。没有诊断的训练，只是在重复错误。</text>
-    <view class="trial-pain-box">
-      <text class="trial-pain-box-text">这套体验课的核心逻辑是：先诊断失分根源，再对症开方，然后用纠偏 + 刷题去验证改变。</text>
-    </view>
-  </view>
-
-  <view class="trial-section card card-warm">
-    <text class="trial-section-title">这不是普通刷题</text>
-    <text class="trial-section-copy">很多人刷了很多题，分数却一直在原地。问题不在于不努力，而在于一直没有找到真正的失分点。</text>
-  </view>
-
-  <view class="trial-section card">
-    <text class="trial-section-title">八大卡点体系</text>
-    <view class="trial-point-block trial-point-block-red">
-      <view class="trial-point-head">
-        <text class="trial-point-badge trial-point-badge-red">红标卡点</text>
-        <text class="trial-point-head-note">不解决很难真正起分</text>
-      </view>
-      <view class="trial-point-item">
-        <text class="trial-point-name">游走式找点</text>
-        <text class="trial-point-desc">解决“读了很多遍材料，还是抓不到真正要点”的底层问题。</text>
-      </view>
-      <view class="trial-point-item">
-        <text class="trial-point-name">提炼转述错误</text>
-        <text class="trial-point-desc">解决“看懂了却写不出来，或者总在照抄原文”的失分问题。</text>
-      </view>
+  <view class="section-card">
+    <view class="section-head">
+      <text class="section-title">学习路径</text>
+      <text class="section-subtitle">4 步跑通一轮完整提分闭环</text>
     </view>
 
-    <view class="trial-point-block trial-point-block-yellow">
-      <view class="trial-point-head">
-        <text class="trial-point-badge trial-point-badge-yellow">黄标卡点</text>
-        <text class="trial-point-head-note">解决之后提分会更快</text>
-      </view>
-      <view class="trial-point-grid">
-        <text class="trial-point-grid-item">对策推导错误</text>
-        <text class="trial-point-grid-item">分析结构错误</text>
-        <text class="trial-point-grid-item">公文结构错误</text>
-        <text class="trial-point-grid-item">作文立意错误</text>
-        <text class="trial-point-grid-item">作文逻辑不清晰</text>
-        <text class="trial-point-grid-item">作文表达不流畅</text>
-      </view>
-    </view>
-
-    <view class="trial-point-block trial-point-block-blue">
-      <view class="trial-point-head">
-        <text class="trial-point-badge trial-point-badge-blue">蓝标卡点</text>
-        <text class="trial-point-head-note">后期冲刺时最适合发力</text>
-      </view>
-      <text class="trial-point-summary">对应目标考试的特殊考法和拔高要求，属于后置位优化，但对冲刺高分很关键。</text>
-    </view>
-  </view>
-
-  <view class="trial-section card">
-    <text class="trial-section-title">你会体验到什么</text>
-    <view class="trial-step">
-      <text class="trial-step-index">01</text>
-      <view class="trial-step-copy">
-        <text class="trial-step-title">先识别失分卡点</text>
-        <text class="trial-step-desc">不是对答案，而是先判断你到底卡在找点、结构，还是作文表达。</text>
-      </view>
-    </view>
-    <view class="trial-step">
-      <text class="trial-step-index">02</text>
-      <view class="trial-step-copy">
-        <text class="trial-step-title">直播剖作业 + 追问式反馈</text>
-        <text class="trial-step-desc">每一轮刷题都会拆到“为什么错”，不是只给标准答案。</text>
-      </view>
-    </view>
-    <view class="trial-step">
-      <text class="trial-step-index">03</text>
-      <view class="trial-step-copy">
-        <text class="trial-step-title">形成完整提分闭环</text>
-        <text class="trial-step-desc">共识、学习、纠偏、刷题、测验、验证，体验一套真正能提分的节奏。</text>
+    <view class="path-list">
+      <view wx:for="{{pathSteps}}" wx:key="id" class="path-item">
+        <view class="path-index">{{index + 1}}</view>
+        <view class="path-content">
+          <text class="path-title">{{item.title}}</text>
+          <text class="path-desc">{{item.desc}}</text>
+        </view>
       </view>
     </view>
   </view>
 
-  <view class="trial-section card">
-    <text class="trial-section-title">适合谁先来体验</text>
-    <view class="trial-tag-row">
-      <text class="trial-tag">申论分数一直卡住</text>
-      <text class="trial-tag">不确定问题在哪</text>
-      <text class="trial-tag">想先试试再决定</text>
-    </view>
-  </view>
+  <block wx:if="{{isEnrolled}}">
+    <view class="section-card">
+      <view class="section-head">
+        <text class="section-title">日程安排</text>
+        <text class="section-subtitle">买课用户可按计划完成任务、作业、复盘和直播</text>
+      </view>
 
-  <view class="trial-section card">
-    <text class="trial-section-title">真实提分案例</text>
-    <view class="trial-case-grid">
-      <view class="trial-case-card">
-        <text class="trial-case-badge">在职学员</text>
-        <text class="trial-case-score">57.5 → 78</text>
-        <text class="trial-case-copy">长周期备考里，先补红标底层卡点，再做黄标题型突破，最后完成考前冲刺。</text>
-      </view>
-      <view class="trial-case-card">
-        <text class="trial-case-badge">精准诊断</text>
-        <text class="trial-case-score">63.5 → 75.5</text>
-        <text class="trial-case-copy">先识别“游走式找点”和“作文立意错误”，再围绕这两个点完成完整纠偏闭环。</text>
-      </view>
-    </view>
-  </view>
+      <view wx:for="{{scheduleWeeks}}" wx:key="label" class="schedule-week">
+        <text class="schedule-week-title">{{item.label}}</text>
 
-  <view class="trial-section card">
-    <text class="trial-section-title">这套体验课的三个核心点</text>
-    <view class="trial-core-grid">
-      <view class="trial-core-card">
-        <image class="trial-core-icon" src="{{uiIcons.spark}}" mode="aspectFit" />
-        <text class="trial-core-title">追问式自评</text>
-        <text class="trial-core-desc">一层层追问你的真实思路，把错误暴露出来，而不是只看结果对错。</text>
-      </view>
-      <view class="trial-core-card">
-        <image class="trial-core-icon" src="{{uiIcons.video}}" mode="aspectFit" />
-        <text class="trial-core-title">直播剖作业</text>
-        <text class="trial-core-desc">不是泛泛讲题，而是当场拆“为什么会错”，逼出真正的卡点。</text>
-      </view>
-      <view class="trial-core-card trial-core-card-highlight">
-        <image class="trial-core-icon" src="{{uiIcons.check}}" mode="aspectFit" />
-        <text class="trial-core-title">全勤可返</text>
-        <text class="trial-core-desc">4 场体验完整跟下来，押金可返，相当于用行动换一套提分方法论。</text>
+        <view wx:for="{{item.days}}" wx:key="index" wx:for-item="day" class="schedule-item schedule-item-{{day.type}}">
+          <view class="schedule-date">
+            <text class="schedule-date-num">{{day.date}}</text>
+            <text class="schedule-date-week">{{day.weekday}}</text>
+          </view>
+          <view class="schedule-content">
+            <text class="schedule-title">{{day.title}}</text>
+            <text wx:if="{{day.note}}" class="schedule-note">{{day.note}}</text>
+          </view>
+        </view>
       </view>
     </view>
-  </view>
 
-  <view class="trial-footer card card-dark">
-    <text class="trial-footer-title">先体验，再判断</text>
-    <text class="trial-footer-desc">你不需要先相信全部，只需要先体验一轮，看看这套方法是不是适合你。</text>
-    <view class="trial-btn" bindtap="goStartTrial">
-      <text class="trial-btn-text">进入体验课</text>
+    <view class="section-card">
+      <view class="section-head">
+        <text class="section-title">注意事项</text>
+      </view>
+
+      <view wx:for="{{noticeList}}" wx:key="index" class="notice-item">
+        <text class="notice-index">{{index + 1}}</text>
+        <text class="notice-text">{{item}}</text>
+      </view>
     </view>
-  </view>
+  </block>
+
+  <block wx:else>
+    <view class="section-card cta-card">
+      <text class="cta-title">你还没有生成专属学习计划</text>
+      <text class="cta-desc">购买课程后，这里会自动展示你的月度日程安排、直播时间和每日任务节点。</text>
+      <view class="cta-button" bindtap="goToPurchase">
+        <text class="cta-button-text">去生成我的学习计划</text>
+      </view>
+    </view>
+  </block>
 </view>

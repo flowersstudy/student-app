@@ -2,8 +2,6 @@
   "pages": [
     "pages/splash/splash",
     "pages/login/login",
-    "pages/register/register",
-    "pages/entry-hub/entry-hub",
     "pages/kpoint-list/kpoint-list",
     "pages/diagnose-detail/diagnose-detail",
     "pages/home/home",
@@ -36,15 +34,27 @@
     "list": [
       {
         "pagePath": "pages/home/home",
-        "text": "首页"
+        "text": "首页",
+        "iconPath": "assets/tabbar/home-normal.png",
+        "selectedIconPath": "assets/tabbar/home-active.png"
       },
       {
         "pagePath": "pages/chat/chat",
-        "text": "找老师"
+        "text": "找老师",
+        "iconPath": "assets/tabbar/teacher-normal.png",
+        "selectedIconPath": "assets/tabbar/teacher-active.png"
+      },
+      {
+        "pagePath": "pages/study-square/study-square",
+        "text": "一起学",
+        "iconPath": "assets/tabbar/together-normal.png",
+        "selectedIconPath": "assets/tabbar/together-active.png"
       },
       {
         "pagePath": "pages/results/results",
-        "text": "复盘"
+        "text": "复盘",
+        "iconPath": "assets/tabbar/review-normal.png",
+        "selectedIconPath": "assets/tabbar/review-active.png"
       }
     ]
   },

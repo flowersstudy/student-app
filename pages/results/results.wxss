@@ -30,13 +30,12 @@
 
 .summary-top-row {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14rpx;
 }
 
 .summary-main,
-.summary-points,
-.summary-square {
+.summary-points {
   min-width: 0;
   padding: 20rpx 16rpx;
   position: relative;
@@ -124,47 +123,6 @@
   font-size: 18rpx;
   font-weight: 600;
   color: #78716c;
-}
-
-.summary-square {
-  position: relative;
-  background: linear-gradient(180deg, #f8fbff 0%, #f1f6ff 100%);
-  border-color: rgba(96, 165, 250, 0.14);
-}
-
-.summary-square-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 116rpx;
-  padding-right: 16rpx;
-}
-
-.summary-square-icon {
-  width: 50rpx;
-  height: 50rpx;
-  flex-shrink: 0;
-  filter: drop-shadow(0 8rpx 12rpx rgba(37, 99, 235, 0.14));
-}
-
-.summary-square-title {
-  margin-top: 12rpx;
-  font-size: 22rpx;
-  font-weight: 600;
-  color: #475569;
-  line-height: 1.2;
-  text-align: center;
-}
-
-.summary-square-arrow {
-  position: absolute;
-  right: 14rpx;
-  bottom: 12rpx;
-  font-size: 22rpx;
-  line-height: 1;
-  color: #94a3b8;
-  font-weight: 500;
 }
 
 .summary-bottom-row {

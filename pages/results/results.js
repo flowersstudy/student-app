@@ -70,10 +70,6 @@ Page({
     wx.switchTab({ url: '/pages/home/home' })
   },
 
-  goStudySquare() {
-    wx.navigateTo({ url: '/pages/study-square/study-square' })
-  },
-
   goCardDetail(e) {
     const id = e.currentTarget.dataset.id
     wx.navigateTo({ url: `/pages/card-detail/card-detail?id=${id}` })
