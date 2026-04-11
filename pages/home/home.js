@@ -1,49 +1,124 @@
-const DIAGNOSE_PROGRESS_KEY = 'diagnose_progress_state'
+const { uiIcons } = require('../../utils/ui-icons')
 
-function getDefaultCurrentTask() {
+const CURRENT_LEARNING_TASK_KEY = 'current_learning_task'
+
+const DEFAULT_CURRENT_TASK = {
+  pointId: 2,
+  pointName: '总结转述难',
+  day: 'Day 1',
+  taskLabel: '1v1共识课',
+}
+
+const LEARNING_POINT_ORDER = [1, 2, 5, 3, 4, 6, 7, 8]
+
+const SUBPATH_STATUS_META = {
+  completed: {
+    label: '已完成',
+    className: 'completed',
+    locked: false,
+  },
+  active: {
+    label: '学习中',
+    className: 'active',
+    locked: false,
+  },
+  locked: {
+    label: '待解锁',
+    className: 'locked',
+    locked: true,
+  },
+}
+
+const POINT_NAME_BY_ID = {
+  1: '游走式找点',
+  2: '总结转述难',
+  3: '分析结构不清',
+  4: '公文结构不清',
+  5: '对策推导难',
+  6: '作文立意不准',
+  7: '作文逻辑不清',
+  8: '作文表达不畅',
+}
+
+function getPointIdByName(pointName = '') {
+  return Number(
+    Object.keys(POINT_NAME_BY_ID).find((id) => POINT_NAME_BY_ID[id] === pointName) || DEFAULT_CURRENT_TASK.pointId
+  )
+}
+
+function resolveCurrentTask(taskState = {}) {
+  const pointId = Number(taskState.pointId) || getPointIdByName(taskState.pointName)
   return {
-    label: '当前待上',
-    title: '1v1诊断课',
+    pointId,
+    pointName: taskState.pointName || POINT_NAME_BY_ID[pointId] || DEFAULT_CURRENT_TASK.pointName,
+    day: taskState.day || DEFAULT_CURRENT_TASK.day,
+    taskLabel: taskState.taskLabel || DEFAULT_CURRENT_TASK.taskLabel,
   }
 }
 
-function resolveCurrentTask(progressState = {}) {
-  const step2 = progressState.step2 || {}
-  const step3 = progressState.step3 || {}
-  const step4 = progressState.step4 || {}
-  const step5 = progressState.step5 || {}
-
-  if (step5.status === '待上课') {
-    return { label: '当前待上', title: '1v1诊断课' }
-  }
-
-  if (step5.status === '待约课') {
-    return { label: '当前待约', title: '1v1诊断课' }
-  }
-
-  if (step4.status === '去反馈' && !step4.feedbackSubmitted) {
-    return { label: '当前待完成', title: '听讲反馈' }
-  }
-
-  if (step3.status === '去答题' && !step3.answerUploaded) {
-    return { label: '当前待完成', title: '诊断卷' }
-  }
-
-  if (step2.status === '待电话沟通') {
-    return { label: '当前待上', title: '1v1电话沟通' }
-  }
-
-  return { label: '当前任务', title: '底层卡点学习' }
+function getDefaultCurrentTaskText() {
+  return `${DEFAULT_CURRENT_TASK.pointName} · ${DEFAULT_CURRENT_TASK.day} ${DEFAULT_CURRENT_TASK.taskLabel}`
 }
 
-function makeDetailItems(items) {
-  return items.map((text, index) => ({
-    text,
-    showLine: index !== items.length - 1,
-  }))
+function getCurrentTaskText(taskState = {}) {
+  const pointName = taskState.pointName || ''
+  const day = taskState.day || ''
+  const taskLabel = taskState.taskLabel || ''
+
+  if (pointName && day && taskLabel) {
+    return `${pointName} · ${day} ${taskLabel}`
+  }
+
+  if (pointName && taskLabel) {
+    return `${pointName} · ${taskLabel}`
+  }
+
+  if (taskLabel) {
+    return taskLabel
+  }
+
+  return getDefaultCurrentTaskText()
 }
 
-function createPathNodes() {
+function getPointStatus(pointId, currentPointId) {
+  const pointIndex = LEARNING_POINT_ORDER.indexOf(pointId)
+  const currentIndex = LEARNING_POINT_ORDER.indexOf(currentPointId)
+
+  if (pointIndex === -1 || currentIndex === -1) {
+    return 'locked'
+  }
+
+  if (pointIndex < currentIndex) {
+    return 'completed'
+  }
+
+  if (pointIndex === currentIndex) {
+    return 'active'
+  }
+
+  return 'locked'
+}
+
+function buildDetailItems(items, currentPointId) {
+  return items.map((item, index) => {
+    const status = getPointStatus(item.pointId, currentPointId)
+    const statusMeta = SUBPATH_STATUS_META[status]
+
+    return {
+      ...item,
+      status,
+      statusLabel: statusMeta.label,
+      statusClass: statusMeta.className,
+      locked: statusMeta.locked,
+      showLine: index !== items.length - 1,
+    }
+  })
+}
+
+function createPathNodes(currentPointId = DEFAULT_CURRENT_TASK.pointId) {
+  const isInBasicStage = [1, 2].includes(currentPointId)
+  const isInSpecialStage = [5, 3, 4, 6, 7, 8].includes(currentPointId)
+
   return [
     {
       id: 'diagnose',
@@ -51,302 +126,214 @@ function createPathNodes() {
       status: 'done',
       note: '已完成',
       icon: '诊',
-      action: '/pages/diagnose/diagnose',
+      action: '/pages/diagnose-detail/diagnose-detail',
       showCurve: false,
       showHighlight: false,
       hasDetail: false,
       expanded: false,
       detailVisible: false,
-      detailClosing: false,
-      expandText: '',
       detailStateClass: 'close',
+      expandText: '',
       detailSections: [],
     },
     {
       id: 'final-card',
       title: '底层卡点',
-      status: 'current',
-      note: '当前卡点',
-      icon: '学',
+      status: isInBasicStage ? 'current' : 'done',
+      note: isInBasicStage ? '当前在学' : '已完成',
+      icon: '底',
       action: '',
       showCurve: true,
-      showHighlight: true,
+      showHighlight: isInBasicStage,
       hasDetail: true,
       expanded: false,
       detailVisible: false,
-      detailClosing: false,
-      expandText: '展开',
       detailStateClass: 'close',
+      expandText: '展开',
       detailSections: [
-        { items: makeDetailItems(['游走式找点', '总结转述']) },
+        {
+          items: buildDetailItems(
+            [
+              { pointId: 1, text: '游走式找点' },
+              { pointId: 2, text: '总结转述难' },
+            ],
+            currentPointId
+          ),
+        },
       ],
     },
     {
       id: 'yellow-card',
       title: '专项卡点',
-      status: 'locked',
-      note: '未解锁',
+      status: isInSpecialStage ? 'current' : 'browse',
+      note: isInSpecialStage ? '当前在学' : '下一阶段',
       icon: '专',
       action: '',
       showCurve: true,
-      showHighlight: false,
+      showHighlight: isInSpecialStage,
       hasDetail: true,
       expanded: false,
       detailVisible: false,
-      detailClosing: false,
-      expandText: '展开',
       detailStateClass: 'close',
+      expandText: '展开',
       detailSections: [
-        { items: makeDetailItems(['对策推导', '分析结构', '公文结构']) },
+        {
+          items: buildDetailItems(
+            [
+              { pointId: 5, text: '对策推导难' },
+              { pointId: 3, text: '分析结构不清' },
+              { pointId: 4, text: '公文结构不清' },
+              { pointId: 6, text: '作文立意不准' },
+              { pointId: 7, text: '作文逻辑不清' },
+              { pointId: 8, text: '作文表达不畅' },
+            ],
+            currentPointId
+          ),
+        },
       ],
     },
     {
       id: 'blue-card',
       title: '靶向卡点',
       status: 'locked',
-      note: '未解锁',
+      note: '后续解锁',
       icon: '靶',
       action: '',
       showCurve: true,
       showHighlight: false,
-      hasDetail: true,
+      hasDetail: false,
       expanded: false,
       detailVisible: false,
-      detailClosing: false,
-      expandText: '展开',
       detailStateClass: 'close',
-      detailSections: [
-        { items: makeDetailItems(['作文立意', '作文逻辑', '作文表达']) },
-      ],
+      expandText: '',
+      detailSections: [],
     },
   ]
 }
 
 function getBranchDisplay(expanded) {
-  if (expanded) {
-    return {
-      state: 'expanded',
-      subtitle: '学习搭子',
-      slogan: '沿着当前主线，继续拆开看。',
-    }
-  }
-
   return {
-    state: 'default',
-    subtitle: '学习搭子',
-    slogan: '思路不打卡，上岸稳一点。',
+    state: expanded ? 'expanded' : 'default',
+    title: '布卡',
+    subtitle: '',
+    slogan: '思路不卡，上岸稳了！',
   }
 }
 
-function updateNodeState(node, nextState) {
+function updateNodeState(node, expanded) {
   return {
     ...node,
-    expanded: nextState.expanded,
-    detailVisible: nextState.detailVisible,
-    detailClosing: nextState.detailClosing,
-    expandText: nextState.expanded ? '收起' : node.hasDetail ? '展开' : '',
-    detailStateClass: nextState.expanded ? 'open' : 'close',
+    expanded,
+    detailVisible: expanded,
+    detailStateClass: expanded ? 'open' : 'close',
+    expandText: node.hasDetail ? (expanded ? '收起' : '展开') : '',
   }
+}
+
+function getSubpathTarget(pointId, status) {
+  if (status === 'completed') {
+    return `/pages/card-detail/card-detail?id=${pointId}`
+  }
+
+  if (status === 'active') {
+    return `/pages/progress/progress?id=${pointId}`
+  }
+
+  return `/pages/course-intro/course-intro?id=${pointId}`
 }
 
 Page({
   data: {
+    notificationIcon: uiIcons.bell,
+    unreadNotificationCount: 0,
     examInfo: {
-      subjectLabel: '科目考试',
+      subjectIcon: uiIcons.class,
       subjectValue: '申论',
-      targetLabel: '提分目标',
+      targetIcon: uiIcons.target,
       targetValue: '+20分',
-      deadlineLabel: '截止时间',
+      deadlineIcon: uiIcons.calendar,
       deadlineValue: '04/25',
     },
-    topTagText: '定制专属学习计划',
-    currentTaskLabel: getDefaultCurrentTask().label,
-    currentTaskTitle: getDefaultCurrentTask().title,
-    currentTaskText: '当前待上 · 1v1诊断课',
+    topTagText: '生成我的专属学习报告',
+    currentTaskText: getDefaultCurrentTaskText(),
     currentCardProgress: 36,
     branchState: 'default',
-    branchNode: {
-      title: '布卡',
-      subtitle: '学习搭子',
-      slogan: '思路不打卡，上岸稳一点。',
-      action: '',
-    },
+    branchNode: getBranchDisplay(false),
     pathNodes: createPathNodes(),
   },
 
   onLoad() {
-    this._detailTimers = {}
-    this.syncExamInfo()
     this.syncCurrentTask()
-    this.syncBranchDisplay()
+    this.syncNotifications()
   },
 
   onShow() {
-    this.syncExamInfo()
-    this.syncCurrentTask()
-    this.syncBranchDisplay()
-  },
-
-  onUnload() {
-    Object.keys(this._detailTimers || {}).forEach((key) => {
-      clearTimeout(this._detailTimers[key])
-    })
-  },
-
-  syncExamInfo() {
-    const app = getApp()
-    const diagnosis = app.globalData && app.globalData.diagnosis ? app.globalData.diagnosis : null
-    const nextExamInfo = { ...this.data.examInfo }
-
-    if (diagnosis && diagnosis.targetExam) {
-      nextExamInfo.subjectValue = diagnosis.targetExam
-    }
-
-    if (diagnosis && typeof diagnosis.scoreGap === 'number') {
-      nextExamInfo.targetValue = `+${diagnosis.scoreGap}分`
-    }
-
-    this.setData({ examInfo: nextExamInfo })
+    this.syncNotifications()
   },
 
   syncCurrentTask() {
-    const savedProgress = wx.getStorageSync(DIAGNOSE_PROGRESS_KEY) || {}
-    const currentTask = resolveCurrentTask(savedProgress)
+    const savedTask = wx.getStorageSync(CURRENT_LEARNING_TASK_KEY) || {}
+    const currentTask = resolveCurrentTask(savedTask)
 
     this.setData({
-      currentTaskLabel: currentTask.label,
-      currentTaskTitle: currentTask.title,
-      currentTaskText: `${currentTask.label} · ${currentTask.title}`,
+      currentTaskText: getCurrentTaskText(currentTask),
+      pathNodes: createPathNodes(currentTask.pointId),
     })
   },
 
-  syncBranchDisplay(pathNodes = this.data.pathNodes) {
-    const expanded = pathNodes.some((item) => item.expanded)
-    const branchDisplay = getBranchDisplay(expanded)
+  syncNotifications() {
+    const app = getApp()
+    const notifications = (app && app.globalData && app.globalData.notifications) || []
+    const unreadNotificationCount = notifications.filter((item) => item.read !== true).length
 
     this.setData({
-      branchState: branchDisplay.state,
-      'branchNode.subtitle': branchDisplay.subtitle,
-      'branchNode.slogan': branchDisplay.slogan,
+      unreadNotificationCount,
     })
+  },
+
+  handlePlanTap() {
+    wx.navigateTo({ url: '/pages/diagnose-detail/diagnose-detail' })
+  },
+
+  handleNotificationsTap() {
+    wx.navigateTo({ url: '/pages/notifications/notifications' })
+  },
+
+  handleBranchTap() {
+    return
   },
 
   handleNodeTap(e) {
     const { id } = e.currentTarget.dataset
     const node = this.data.pathNodes.find((item) => item.id === id)
-
     if (!node) return
 
-    if (node.hasDetail) {
-      this.toggleDetailNode(id)
+    if (!node.hasDetail) {
+      if (node.action) {
+        wx.navigateTo({ url: node.action })
+      }
       return
     }
-
-    if (node.status === 'locked') {
-      wx.showToast({
-        title: '当前卡点完成后解锁',
-        icon: 'none',
-      })
-      return
-    }
-
-    if (node.action) {
-      wx.navigateTo({ url: node.action })
-    }
-  },
-
-  handleBranchTap() {
-    wx.showToast({
-      title: this.data.branchNode.slogan,
-      icon: 'none',
-    })
-  },
-
-  handlePlanTap() {
-    wx.navigateTo({
-      url: '/pages/diagnose-detail/diagnose-detail',
-    })
-  },
-
-  handleShellTap() {
-    wx.showToast({
-      title: '刷题入口保留在这里，完成主线路径后开启',
-      icon: 'none',
-    })
-  },
-
-  handleWhelkTap() {
-    wx.showToast({
-      title: '行测刷题入口保留在这里，完成主线路径后开启',
-      icon: 'none',
-    })
-  },
-
-  toggleDetailNode(id) {
-    const clickedNode = this.data.pathNodes.find((item) => item.id === id)
-    if (!clickedNode) return
-
-    if (clickedNode.expanded) {
-      this.closeDetailNode(id)
-      return
-    }
-
-    Object.keys(this._detailTimers || {}).forEach((key) => {
-      clearTimeout(this._detailTimers[key])
-      delete this._detailTimers[key]
-    })
 
     const nextNodes = this.data.pathNodes.map((item) => {
       if (item.id === id) {
-        return updateNodeState(item, {
-          expanded: true,
-          detailVisible: true,
-          detailClosing: false,
-        })
+        return updateNodeState(item, !item.expanded)
       }
-
-      if (item.hasDetail) {
-        return updateNodeState(item, {
-          expanded: false,
-          detailVisible: false,
-          detailClosing: false,
-        })
-      }
-
-      return item
+      if (!item.hasDetail) return item
+      return updateNodeState(item, false)
     })
 
-    this.setData({ pathNodes: nextNodes }, () => this.syncBranchDisplay(nextNodes))
+    const activeNode = nextNodes.find((item) => item.id === id)
+    this.setData({
+      pathNodes: nextNodes,
+      branchState: activeNode && activeNode.expanded ? 'expanded' : 'default',
+      branchNode: getBranchDisplay(activeNode && activeNode.expanded),
+    })
   },
 
-  closeDetailNode(id) {
-    const nextNodes = this.data.pathNodes.map((item) => {
-      if (item.id === id) {
-        return updateNodeState(item, {
-          expanded: false,
-          detailVisible: true,
-          detailClosing: true,
-        })
-      }
-      return item
-    })
-
-    this.setData({ pathNodes: nextNodes }, () => this.syncBranchDisplay(nextNodes))
-
-    this._detailTimers[id] = setTimeout(() => {
-      const closedNodes = this.data.pathNodes.map((item) => {
-        if (item.id === id) {
-          return updateNodeState(item, {
-            expanded: false,
-            detailVisible: false,
-            detailClosing: false,
-          })
-        }
-        return item
-      })
-
-      this.setData({ pathNodes: closedNodes })
-      delete this._detailTimers[id]
-    }, 240)
+  handleSubpathTap(e) {
+    const { pointId, status } = e.currentTarget.dataset
+    if (!pointId) return
+    wx.navigateTo({ url: getSubpathTarget(pointId, status) })
   },
 })

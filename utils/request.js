@@ -27,7 +27,7 @@ function request(options) {
           resolve(res.data)
         } else if (res.statusCode === 401) {
           wx.clearStorageSync()
-          wx.redirectTo({ url: '/pages/login/login' })
+          wx.switchTab({ url: '/pages/home/home' })
           reject(new Error('未登录'))
         } else {
           const msg = res.data?.message || res.data?.error || '请求失败'

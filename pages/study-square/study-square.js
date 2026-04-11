@@ -4,97 +4,91 @@ const stations = [
   {
     key: 'activity',
     title: '活动发布',
-    badge: '',
+    badge: '新',
     icon: uiIcons.oceanSeagull,
     position: 'activity',
-    tone: 'blue',
+    size: 'normal',
+    tone: 'sky',
     action: { type: 'navigateTo', url: '/pages/notifications/notifications' },
   },
   {
     key: 'team',
     title: '组队学习',
-    badge: '',
+    badge: '搭子',
     icon: uiIcons.oceanDolphin,
     position: 'team',
-    tone: 'cyan',
+    size: 'normal',
+    tone: 'blue',
     action: { type: 'switchTab', url: '/pages/chat/chat' },
   },
   {
-    key: 'sync',
-    title: '信息同步',
-    badge: '',
-    icon: uiIcons.oceanWhale,
-    position: 'sync',
-    tone: 'blue',
-    action: { type: 'navigateTo', url: '/pages/notifications/notifications' },
+    key: 'drill',
+    title: '刷题',
+    badge: '主岛',
+    icon: uiIcons.drill,
+    position: 'drill',
+    size: 'primary',
+    tone: 'gold',
+    action: { type: 'navigateTo', url: '/pages/lesson-drill/lesson-drill' },
   },
   {
     key: 'comment',
     title: '用户评论',
-    badge: '',
+    badge: '评论',
     icon: uiIcons.oceanStarfish,
     position: 'comment',
-    tone: 'pink',
+    size: 'normal',
+    tone: 'green',
     action: { type: 'switchTab', url: '/pages/chat/chat' },
   },
   {
     key: 'case',
     title: '学生案例',
-    badge: '',
+    badge: '案例',
     icon: uiIcons.oceanTurtle,
     position: 'case',
+    size: 'normal',
     tone: 'teal',
     action: { type: 'switchTab', url: '/pages/results/results' },
   },
   {
     key: 'points',
     title: '积分兑换',
-    badge: '',
+    badge: '奖励',
     icon: uiIcons.oceanShell,
     position: 'points',
-    tone: 'gold',
+    size: 'small',
+    tone: 'amber',
     action: { type: 'navigateTo', url: '/pages/purchase/purchase' },
   },
   {
     key: 'share',
     title: '经验分享',
-    badge: '',
+    badge: '分享',
     icon: uiIcons.oceanJellyfish,
     position: 'share',
+    size: 'small',
     tone: 'purple',
     action: { type: 'navigateTo', url: '/pages/review/review' },
   },
 ]
 
-const routeGuides = [
-  { id: 'g1', icon: uiIcons.oceanDolphin, position: 'a' },
-  { id: 'g2', icon: uiIcons.oceanSeagull, position: 'b' },
-  { id: 'g3', icon: uiIcons.oceanTurtle, position: 'c' },
-  { id: 'g4', icon: uiIcons.oceanJellyfish, position: 'd' },
-]
-
 Page({
   data: {
-    uiIcons,
     stations,
-    routeGuides,
+    mapTips: ['中心主岛：刷题', '其余入口围绕学习展开'],
   },
 
   handleStationTap(e) {
     const { key } = e.currentTarget.dataset
     const station = stations.find((item) => item.key === key)
     if (!station) return
-    this.navigateByAction(station.action)
-  },
 
-  navigateByAction(action) {
-    if (!action || !action.url) return
-
-    if (action.type === 'switchTab') {
-      wx.switchTab({ url: action.url })
+    if (station.action.type === 'switchTab') {
+      wx.switchTab({ url: station.action.url })
       return
     }
 
-    wx.navigateTo({ url: action.url })
+    wx.navigateTo({ url: station.action.url })
   },
 })

@@ -62,19 +62,19 @@ function buildTasks(pointName, extra) {
 const contentMap = {
   1: { pointName: '游走式找点',    extra: null,
        teacher: { assigned: true,  id: 1, name: '李老师', title: '申论主讲',   avatar: '李', years: 5, specialty: ['归纳概括','综合分析'] } },
-  2: { pointName: '提炼转述错误',  extra: '背诵规范词',
+  2: { pointName: '总结转述难',  extra: '背诵规范词',
        teacher: { assigned: true,  id: 1, name: '李老师', title: '申论主讲',   avatar: '李', years: 5, specialty: ['归纳概括','综合分析'] } },
-  3: { pointName: '分析结构错误',  extra: null,
+  3: { pointName: '分析结构不清',  extra: null,
        teacher: { assigned: false } },
-  4: { pointName: '公文结构错误',  extra: null,
+  4: { pointName: '公文结构不清',  extra: null,
        teacher: { assigned: true,  id: 2, name: '王老师', title: '公文写作专项', avatar: '王', years: 7, specialty: ['公文写作','应用文'] } },
-  5: { pointName: '对策推导错误',  extra: '常规对策积累',
+  5: { pointName: '对策推导难',  extra: '常规对策积累',
        teacher: { assigned: true,  id: 1, name: '李老师', title: '申论主讲',   avatar: '李', years: 5, specialty: ['归纳概括','综合分析'] } },
-  6: { pointName: '作文立意错误',  extra: null,
+  6: { pointName: '作文立意不准',  extra: null,
        teacher: { assigned: true,  id: 3, name: '陈老师', title: '大作文专项',  avatar: '陈', years: 6, specialty: ['大作文立意','文章结构'] } },
-  7: { pointName: '作文逻辑不清晰', extra: '论据背诵',
+  7: { pointName: '作文逻辑不清', extra: '论据背诵',
        teacher: { assigned: false } },
-  8: { pointName: '作文表达不流畅', extra: '语言积累背诵',
+  8: { pointName: '作文表达不畅', extra: '语言积累背诵',
        teacher: { assigned: false } }
 }
 

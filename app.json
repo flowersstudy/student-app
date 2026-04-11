@@ -1,7 +1,6 @@
 {
   "pages": [
     "pages/splash/splash",
-    "pages/login/login",
     "pages/kpoint-list/kpoint-list",
     "pages/diagnose-detail/diagnose-detail",
     "pages/home/home",

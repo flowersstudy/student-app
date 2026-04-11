@@ -80,6 +80,18 @@
   </view>
 
   <view class="card">
+    <text class="dd-section-title">卡点体系拆解结果</text>
+    <text class="dd-section-subtitle">根据解释文档同步补充：当前这套申论体系共拆出 8 个卡点、23 条学习路径、5 类用户阻力、12 套干预动作。</text>
+    <view class="dd-fact-grid">
+      <view wx:for="{{systemFacts}}" wx:key="label" class="dd-fact-card">
+        <text class="dd-fact-value">{{item.value}}</text>
+        <text class="dd-fact-label">{{item.label}}</text>
+        <text class="dd-fact-desc">{{item.desc}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
     <text class="dd-section-title">学习规划 · 阶段闯关路径</text>
     <view wx:for="{{phases}}" wx:key="tag" class="dd-phase-card">
       <view class="dd-phase-head">

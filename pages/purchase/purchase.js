@@ -1,7 +1,7 @@
 const SELLING_POINTS = [
   {
     title: '核心卖点：不再盲目刷题——先找卡点，再开药方',
-    desc: '别人让你刷 100 道，我让你先找到你专属的“八大卡点”是哪几个，刷 1 道顶 10 道。',
+    desc: '别人让你刷 100 道，我让你先找到你专属的“八大卡点”是哪几个，再按 23 条学习路径往下拆，刷 1 道顶 10 道。',
     tone: 'primary',
   },
   {
@@ -39,7 +39,7 @@ const SCHEDULE_WEEKS = [
   {
     label: '4 月第 1 周',
     days: [
-      { date: '13', weekday: '日', title: '完成 1 道游走式找点 + 提炼转述错误的刷题', tag: '任务' },
+      { date: '13', weekday: '日', title: '完成 1 道游走式找点 + 总结转述难的刷题', tag: '任务' },
       { date: '14', weekday: '一', title: '提交刷题作业', note: 'AI 批改', tag: '提交' },
       { date: '15', weekday: '二', title: '根据指导完成刷题复盘', tag: '复盘' },
       { date: '16', weekday: '三', title: '提交刷题复盘', tag: '提交' },
@@ -51,7 +51,7 @@ const SCHEDULE_WEEKS = [
   {
     label: '4 月第 2 周',
     days: [
-      { date: '20', weekday: '日', title: '完成 1 道对策推导错误的刷题', tag: '任务' },
+      { date: '20', weekday: '日', title: '完成 1 道对策推导难的刷题', tag: '任务' },
       { date: '21', weekday: '一', title: '提交刷题作业', note: 'AI 批改', tag: '提交' },
       { date: '22', weekday: '二', title: '根据指导完成刷题复盘', tag: '复盘' },
       { date: '23', weekday: '三', title: '提交刷题复盘', tag: '提交' },
@@ -63,8 +63,8 @@ const SCHEDULE_WEEKS = [
   {
     label: '4 月第 3 周',
     days: [
-      { date: '27', weekday: '日', title: '完成 1 道分析结构错误的刷题', tag: '任务' },
-      { date: '28', weekday: '一', title: '完成 1 道公文结构错误的刷题 + 提交作业', note: 'AI 批改', tag: '提交' },
+      { date: '27', weekday: '日', title: '完成 1 道分析结构不清的刷题', tag: '任务' },
+      { date: '28', weekday: '一', title: '完成 1 道公文结构不清的刷题 + 提交作业', note: 'AI 批改', tag: '提交' },
       { date: '30', weekday: '三', title: '根据指导完成刷题复盘并提交', tag: '复盘' },
       { date: '30', weekday: '三', title: '直播 3：讲解结构正确的方法', note: '19:00-20:30', tag: '直播' },
       { date: '1', weekday: '四', title: '休息', note: '5 月 1 日', tag: '休息' },
@@ -75,8 +75,8 @@ const SCHEDULE_WEEKS = [
   {
     label: '5 月第 1 周',
     days: [
-      { date: '4', weekday: '日', title: '完成 1 道作文立意错误的刷题', note: '完成立意', tag: '任务' },
-      { date: '5', weekday: '一', title: '完成 1 道作文逻辑不清晰 + 表达不流畅的刷题', note: '完成开头 + 1 个分论点论证 + 结尾', tag: '任务' },
+      { date: '4', weekday: '日', title: '完成 1 道作文立意不准的刷题', note: '完成立意', tag: '任务' },
+      { date: '5', weekday: '一', title: '完成 1 道作文逻辑不清 + 作文表达不畅的刷题', note: '完成开头 + 1 个分论点论证 + 结尾', tag: '任务' },
       { date: '6', weekday: '二', title: '提交刷题作业', note: 'AI 批改', tag: '提交' },
       { date: '7', weekday: '三', title: '根据指导完成刷题复盘并提交', tag: '复盘' },
       { date: '8', weekday: '四', title: '直播 4：探讨写好作文的技巧', note: '19:00-21:00', tag: '直播' },
@@ -97,7 +97,7 @@ Page({
     productName: '《申论八大卡点·破局刷题营》',
     price: 99,
     priceDesc: '99 元 / 月 —— 跟完 4 次直播即返押金 99 元',
-    coreSummary: '先找卡点，再开药方，把刷题、作业、复盘、直播串成一条真正能提分的主线。',
+    coreSummary: '先找卡点，再开药方：以 8 个卡点为骨架，往下拆出 23 条学习路径，并配套 12 套干预动作，把刷题、作业、复盘、直播串成真正能提分的主线。',
     sellingPoints: SELLING_POINTS,
     processSteps: PROCESS_STEPS,
     rights: RIGHTS,

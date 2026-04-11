@@ -1,45 +1,50 @@
 <view class="study-square-page">
-  <view class="sea-glow glow-left"></view>
-  <view class="sea-glow glow-right"></view>
-  <view class="sea-bubble bubble-a"></view>
-  <view class="sea-bubble bubble-b"></view>
-  <view class="sea-bubble bubble-c"></view>
-
-  <view class="ocean-stage">
-    <view class="wave-track track-1"></view>
-    <view class="wave-track track-2"></view>
-    <view class="wave-track track-3"></view>
-    <view class="wave-track track-4"></view>
-    <view class="wave-track track-5"></view>
-    <view class="wave-track track-6"></view>
-
-    <view class="pearl pearl-1"></view>
-    <view class="pearl pearl-2"></view>
-    <view class="pearl pearl-3"></view>
-    <view class="pearl pearl-4"></view>
-    <view class="pearl pearl-5"></view>
-    <view class="pearl pearl-6"></view>
-
-    <image
-      wx:for="{{routeGuides}}"
-      wx:key="id"
-      class="route-guide guide-{{item.position}}"
-      src="{{item.icon}}"
-      mode="aspectFit"
-    />
+  <view class="map-shell">
+    <view class="foam foam-1"></view>
+    <view class="foam foam-2"></view>
+    <view class="foam foam-3"></view>
+    <view class="foam foam-4"></view>
 
     <view
       wx:for="{{stations}}"
       wx:key="key"
-      class="station station-{{item.position}}"
+      class="station station-{{item.position}} station-{{item.size}}"
       bindtap="handleStationTap"
       data-key="{{item.key}}"
+      hover-class="station-press"
+      hover-stay-time="90"
     >
-      <view class="station-body tone-{{item.tone}}">
-        <text wx:if="{{item.badge}}" class="station-badge">{{item.badge}}</text>
-        <image class="station-icon" src="{{item.icon}}" mode="aspectFit" />
-        <text class="station-title">{{item.title}}</text>
+      <view wx:if="{{item.size === 'primary'}}" class="station-aura"></view>
+      <view class="island island-{{item.tone}} island-{{item.size}} island-shape-{{item.position}}">
+        <view class="island-shore island-shore-{{item.size}} island-shore-{{item.position}}"></view>
+        <view class="island-land island-land-{{item.size}} island-land-{{item.position}}">
+          <view class="island-contour island-contour-{{item.size}} island-contour-{{item.position}}"></view>
+          <view class="island-lagoon island-lagoon-{{item.size}}"></view>
+          <view class="island-grass island-grass-a island-grass-{{item.size}}"></view>
+          <view class="island-grass island-grass-b island-grass-{{item.size}}"></view>
+          <view class="island-grass island-grass-c island-grass-{{item.size}}"></view>
+          <view class="island-bush island-bush-a island-bush-{{item.size}}"></view>
+          <view class="island-bush island-bush-b island-bush-{{item.size}}"></view>
+          <view class="island-bush island-bush-c island-bush-{{item.size}}"></view>
+          <text wx:if="{{item.size === 'primary'}}" class="station-badge station-badge-{{item.size}}">{{item.badge}}</text>
+          <view class="station-icon-seat station-icon-seat-{{item.size}}">
+            <view class="station-icon-halo station-icon-halo-{{item.size}}"></view>
+            <view class="station-icon-gloss station-icon-gloss-{{item.size}}"></view>
+            <image class="station-icon station-icon-{{item.size}}" src="{{item.icon}}" mode="aspectFit" />
+          </view>
+          <view class="island-title-shell island-title-shell-{{item.size}}">
+            <text class="station-title station-title-{{item.size}}">{{item.title}}</text>
+          </view>
+        </view>
       </view>
     </view>
+  </view>
+
+  <view class="map-footer">
+    <text
+      wx:for="{{mapTips}}"
+      wx:key="*this"
+      class="map-tip"
+    >{{item}}</text>
   </view>
 </view>

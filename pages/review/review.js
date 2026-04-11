@@ -25,7 +25,7 @@ Page({
       },
       {
         id: 5,
-        name: '对策推导错误',
+        name: '对策推导难',
         expanded: false,
         groupCheckedCount: 0,
         knowledgePoints: [
@@ -55,7 +55,7 @@ Page({
         teacher: '李老师',
         avatar: '李',
         duration: '0\'58"',
-        label: '对策推导 · 五种来源速记'
+        label: '对策推导难 · 五种来源速记'
       },
       {
         id: 3,

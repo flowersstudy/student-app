@@ -5,11 +5,18 @@
     "miniprogram": {
       "list": [
         {
-          "name": "pages/trial-experience/trial-experience",
-          "pathName": "pages/trial-experience/trial-experience",
+          "name": "pages/review/review",
+          "pathName": "pages/review/review",
           "query": "",
           "scene": null,
           "launchMode": "default"
+        },
+        {
+          "name": "pages/trial-experience/trial-experience",
+          "pathName": "pages/trial-experience/trial-experience",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         },
         {
           "name": "pages/lesson-drill/lesson-drill",

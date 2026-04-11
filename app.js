@@ -1,3 +1,5 @@
+const { createDemoSession } = require('./utils/offline')
+
 App({
   globalData: {
     userInfo: null,
@@ -31,6 +33,27 @@ App({
     }
   },
   onLaunch() {
+    const storedToken = wx.getStorageSync('student_token')
+    const storedInfo = wx.getStorageSync('student_info')
+
+    if (storedToken && storedInfo) {
+      this.globalData.token = storedToken
+      this.globalData.isEnrolled = storedInfo.status !== 'new'
+      this.globalData.userProfile.name = storedInfo.name || this.globalData.userProfile.name
+      console.log('App launched')
+      return
+    }
+
+    const demo = createDemoSession(1)
+    wx.setStorageSync('student_token', demo.token)
+    wx.setStorageSync('student_info', {
+      id: demo.id,
+      name: demo.name,
+      status: demo.status
+    })
+    this.globalData.token = demo.token
+    this.globalData.isEnrolled = demo.status !== 'new'
+    this.globalData.userProfile.name = demo.name
     console.log('App launched')
   },
   onError(err) {

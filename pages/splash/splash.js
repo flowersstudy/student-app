@@ -5,6 +5,6 @@ Page({
     }, 800)
   },
   skip() {
-    wx.redirectTo({ url: '/pages/login/login' })
+    wx.switchTab({ url: '/pages/home/home' })
   }
 })

@@ -26,7 +26,7 @@ const courseMap = {
     ]
   },
   2: {
-    name: '提炼转述错误',
+    name: '总结转述难',
     subject: '申论',
     tagline: '主题明明看懂了，写出来却总是跑偏',
     price: 1080,
@@ -50,7 +50,7 @@ const courseMap = {
     ]
   },
   3: {
-    name: '分析结构错误',
+    name: '分析结构不清',
     subject: '申论',
     tagline: '材料里的逻辑关系看不清，分析题无从下手',
     price: 1080,
@@ -74,7 +74,7 @@ const courseMap = {
     ]
   },
   4: {
-    name: '公文结构错误',
+    name: '公文结构不清',
     subject: '申论',
     tagline: '公文格式死记硬背，换个题型就不会套',
     price: 1080,
@@ -98,7 +98,7 @@ const courseMap = {
     ]
   },
   5: {
-    name: '对策推导错误',
+    name: '对策推导难',
     subject: '申论',
     tagline: '提对策时脑子空白，写出来又空又假',
     price: 1080,
@@ -122,7 +122,7 @@ const courseMap = {
     ]
   },
   6: {
-    name: '作文立意错误',
+    name: '作文立意不准',
     subject: '申论',
     tagline: '大作文审题时看似懂了，落笔就跑偏',
     price: 1080,
@@ -146,7 +146,7 @@ const courseMap = {
     ]
   },
   7: {
-    name: '作文逻辑不清晰',
+    name: '作文逻辑不清',
     subject: '申论',
     tagline: '作文写了很多，但阅卷老师说"没有论证"',
     price: 1080,
@@ -170,7 +170,7 @@ const courseMap = {
     ]
   },
   8: {
-    name: '作文表达不流畅',
+    name: '作文表达不畅',
     subject: '申论',
     tagline: '答案写得明白但像聊天，缺乏书面语感',
     price: 1080,

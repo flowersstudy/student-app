@@ -5,12 +5,12 @@ const STORAGE_KEYS = {
 const DEMO_PROFILE = {
   inProgress: [
     { id: 1, name: '游走式找点', subject: '行测', status: 'in_progress', progress: 60 },
-    { id: 5, name: '对策推导错误', subject: '行测', status: 'in_progress', progress: 30 },
+    { id: 5, name: '对策推导难', subject: '行测', status: 'in_progress', progress: 30 },
   ],
   completed: [
-    { id: 2, name: '提炼转述错误', subject: '申论', status: 'completed', progress: 100 },
-    { id: 4, name: '公文结构错误', subject: '申论', status: 'completed', progress: 100 },
-    { id: 6, name: '作文立意错误', subject: '申论', status: 'completed', progress: 100 },
+    { id: 2, name: '总结转述难', subject: '申论', status: 'completed', progress: 100 },
+    { id: 4, name: '公文结构不清', subject: '申论', status: 'completed', progress: 100 },
+    { id: 6, name: '作文立意不准', subject: '申论', status: 'completed', progress: 100 },
   ],
 }
 

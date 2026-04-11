@@ -7,7 +7,7 @@ Page({
       date: '2026年3月28日 周六',
       time: '14:00 - 15:00',
       teacher: '李老师',
-      subject: '申论基础课 - 提炼转述错误',
+      subject: '申论基础课 - 总结转述难',
       status: '上课中'
     },
     notes: '',

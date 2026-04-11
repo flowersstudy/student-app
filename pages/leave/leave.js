@@ -65,10 +65,10 @@ Page({
     const sp = app.globalData.shenlunPoints || []
     const all = [...xp, ...sp].sort((a, b) => a.id - b.id)
     const purchasedPoints = all.length > 0 ? all : [
-      { id: 1, name: '游走式找点' }, { id: 2, name: '提炼转述错误' },
-      { id: 3, name: '分析结构错误' }, { id: 4, name: '公文结构错误' },
-      { id: 5, name: '对策推导错误' }, { id: 6, name: '作文立意错误' },
-      { id: 7, name: '作文逻辑不清晰' }, { id: 8, name: '作文表达不流畅' }
+      { id: 1, name: '游走式找点' }, { id: 2, name: '总结转述难' },
+      { id: 3, name: '分析结构不清' }, { id: 4, name: '公文结构不清' },
+      { id: 5, name: '对策推导难' }, { id: 6, name: '作文立意不准' },
+      { id: 7, name: '作文逻辑不清' }, { id: 8, name: '作文表达不畅' }
     ]
     const pointNames = purchasedPoints.map(p => p.name)
 

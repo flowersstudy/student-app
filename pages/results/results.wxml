@@ -88,7 +88,7 @@
       <text class="point-block-summary">{{item.desc}}</text>
     </view>
 
-    <view class="section-header-bar report-header-bar">
+    <view id="diagnosis-report-section" class="section-header-bar report-header-bar">
       <view class="section-dot diagnose-dot"></view>
       <text class="section-title-bar">诊断报告</text>
       <text class="section-count">{{diagnosisReport.reportDate}}</text>
@@ -125,42 +125,44 @@
       </view>
     </view>
 
-    <view class="section-header-bar report-header-bar">
+    <view id="practice-report-section" class="section-header-bar report-header-bar">
       <view class="section-dot practice-dot"></view>
-      <text class="section-title-bar">刷题报告</text>
-      <text class="section-count">近 {{practiceReport.recentDays}} 天</text>
+      <text class="section-title-bar">刷题课程</text>
+      <text class="section-count">{{practiceCourse.cycleLabel}}</text>
     </view>
 
     <view class="card report-card practice-report-card">
-      <view class="report-top">
-        <view>
-          <text class="report-title">近期刷题表现</text>
-          <text class="report-sub">累计 {{practiceReport.totalQuestions}} 题 · 平均正确率 {{practiceReport.accuracy}}%</text>
+      <view class="practice-card-hero">
+        <view class="practice-card-badge-row">
+          <text class="practice-card-badge">刷题班</text>
+          <text class="practice-card-status">{{practiceCourse.statusLabel}}</text>
         </view>
-        <button class="btn-report-action practice-action" bindtap="goPracticeReport">查看卡点明细</button>
+        <text class="practice-card-title">{{practiceCourse.title}}</text>
+        <text class="practice-card-sub">{{practiceCourse.currentWeek}} · {{practiceCourse.currentStage}}</text>
       </view>
 
-      <view class="practice-highlight">
-        <view class="practice-highlight-good">
-          <text class="practice-label">最稳定卡点</text>
-          <text class="practice-point">{{practiceReport.strongestPoint}}</text>
+      <view class="practice-card-stats">
+        <view class="practice-card-stat">
+          <text class="practice-card-stat-value">{{practiceCourse.currentWeek}}</text>
+          <text class="practice-card-stat-label">当前周次</text>
         </view>
-        <view class="practice-highlight-weak">
-          <text class="practice-label">当前重点补强</text>
-          <text class="practice-point">{{practiceReport.weakestPoint}}</text>
+        <view class="practice-card-stat">
+          <text class="practice-card-stat-value">{{practiceCourse.currentTaskCount}}</text>
+          <text class="practice-card-stat-label">本周任务</text>
+        </view>
+        <view class="practice-card-stat">
+          <text class="practice-card-stat-value practice-card-stat-accent">{{practiceCourse.nextLiveDate}}</text>
+          <text class="practice-card-stat-label">下次直播</text>
         </view>
       </view>
 
-      <text class="report-summary">{{practiceReport.weakestAdvice}}</text>
+      <text class="practice-card-summary">{{practiceCourse.summary}}</text>
 
-      <view class="practice-records">
-        <view wx:for="{{practiceReport.recentRecords}}" wx:key="id" class="practice-record-row">
-          <view class="practice-record-main">
-            <text class="practice-record-title">{{item.title}}</text>
-            <text class="practice-record-date">{{item.date}}</text>
-          </view>
-          <text class="practice-record-score">{{item.score}} 分</text>
+      <view class="practice-card-footer">
+        <view class="practice-card-tags">
+          <text wx:for="{{practiceCourse.keyNotes}}" wx:key="*this" class="practice-card-tag">{{item}}</text>
         </view>
+        <button class="practice-card-action" bindtap="goPracticeCourse">查看课表</button>
       </view>
     </view>
 
