@@ -11,6 +11,13 @@
   flex-direction: column;
 }
 
+.intro-hero-tag-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  flex-wrap: wrap;
+}
+
 .intro-hero-tag {
   align-self: flex-start;
   background: rgba(255,255,255,0.25);
@@ -51,6 +58,18 @@
   margin-bottom: 24rpx;
 }
 
+.intro-subsection-title {
+  display: block;
+  font-size: 24rpx;
+  line-height: 1.2;
+  color: #1d2433;
+  font-weight: 700;
+}
+
+.intro-subsection-title-gap {
+  margin-top: 24rpx;
+}
+
 /* 症状列表 */
 .symptom-item {
   display: flex;
@@ -76,6 +95,102 @@
   flex: 1;
 }
 
+.loss-chip-list,
+.ability-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14rpx;
+  margin-top: 16rpx;
+}
+
+.loss-chip,
+.ability-chip {
+  padding: 10rpx 18rpx;
+  border-radius: 999rpx;
+  background: #f8fafc;
+  border: 1rpx solid #e7edf4;
+}
+
+.loss-chip {
+  background: #fff5f5;
+  border-color: #ffd9d9;
+}
+
+.ability-chip {
+  background: #f8fbff;
+  border-color: #dfeaff;
+}
+
+.loss-chip-text,
+.ability-chip-text {
+  font-size: 22rpx;
+  line-height: 1.4;
+  color: #4a5568;
+  font-weight: 700;
+}
+
+.loss-chip-text {
+  color: #d14d41;
+}
+
+.lesson-simple-item,
+.order-simple-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+}
+
+.lesson-simple-item + .lesson-simple-item,
+.order-simple-item + .order-simple-item {
+  margin-top: 18rpx;
+}
+
+.lesson-simple-dot {
+  width: 12rpx;
+  height: 12rpx;
+  margin-top: 14rpx;
+  border-radius: 50%;
+  background: #1a6eff;
+  flex-shrink: 0;
+}
+
+.lesson-simple-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 26rpx;
+  line-height: 1.6;
+  color: #4a5568;
+}
+
+.learning-section-desc {
+  display: block;
+  margin-bottom: 18rpx;
+  font-size: 24rpx;
+  line-height: 1.6;
+  color: #8b97aa;
+}
+
+.learning-block + .learning-block {
+  margin-top: 24rpx;
+}
+
+.learning-block-title {
+  display: block;
+  font-size: 26rpx;
+  line-height: 1.2;
+  color: #1d2433;
+  font-weight: 700;
+}
+
+.learning-block-desc {
+  display: block;
+  margin-top: 10rpx;
+  margin-bottom: 16rpx;
+  font-size: 23rpx;
+  line-height: 1.6;
+  color: #8b97aa;
+}
+
 /* 解决方案列表 */
 .solution-item {
   display: flex;
@@ -99,112 +214,98 @@
   flex: 1;
 }
 
-/* 课程包含 */
-.include-item {
+.intro-section-title-tight {
+  margin-bottom: 0;
+}
+
+.version-section-head {
   display: flex;
-  flex-direction: row;
   align-items: center;
-  padding: 20rpx 0;
-  border-bottom: 1rpx solid #f5f6fa;
 }
 
-.include-item:last-child {
-  border-bottom: none;
-}
-
-.include-icon {
-  width: 44rpx;
-  height: 44rpx;
-  margin-right: 20rpx;
-  flex-shrink: 0;
-  filter: drop-shadow(0 10rpx 14rpx rgba(37, 99, 235, 0.08));
-}
-
-.include-info {
-  flex: 1;
-}
-
-.include-name {
-  font-size: 28rpx;
-  font-weight: 600;
-  color: #333;
+.version-section-desc {
   display: block;
-  margin-bottom: 4rpx;
-}
-
-.include-desc {
+  margin-top: 14rpx;
   font-size: 24rpx;
-  color: #999;
-}
-
-/* 授课老师 */
-.teacher-card {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  padding: 24rpx 0;
-  border-bottom: 1rpx solid #f5f6fa;
-}
-
-.teacher-card:last-child {
-  border-bottom: none;
-}
-
-.teacher-avatar {
-  width: 88rpx;
-  height: 88rpx;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #1A6EFF, #4a9eff);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  margin-right: 24rpx;
-}
-
-.teacher-avatar-text {
-  color: #fff;
-  font-size: 36rpx;
-  font-weight: 700;
-}
-
-.teacher-info {
-  flex: 1;
-}
-
-.teacher-name-row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: 8rpx;
-}
-
-.teacher-name {
-  font-size: 32rpx;
-  font-weight: 700;
-  color: #333;
-  margin-right: 12rpx;
-}
-
-.teacher-subject-tag {
-  font-size: 20rpx;
-  color: #1A6EFF;
-  background: #e8f0ff;
-  padding: 4rpx 14rpx;
-  border-radius: 8rpx;
-}
-
-.teacher-exp {
-  font-size: 22rpx;
-  color: #999;
-  display: block;
-  margin-bottom: 8rpx;
-}
-
-.teacher-desc {
-  font-size: 26rpx;
-  color: #555;
   line-height: 1.6;
+  color: #6f7d93;
+}
+
+.version-intro-card {
+  margin-top: 18rpx;
+  padding: 20rpx 22rpx;
+  border-radius: 20rpx;
+  background: #f8fbff;
+  border: 2rpx solid #e4edf9;
+}
+
+.version-intro-card-disabled {
+  background: #fafbfc;
+  border-color: #e8edf3;
+}
+
+.version-intro-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.version-intro-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.version-intro-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.version-intro-title {
+  font-size: 30rpx;
+  line-height: 1.2;
+  color: #1d2433;
+  font-weight: 700;
+}
+
+.version-intro-status {
+  padding: 6rpx 14rpx;
+  background: #eceff3;
+  border-radius: 999rpx;
+}
+
+.version-intro-status-text {
+  font-size: 20rpx;
+  line-height: 1.2;
+  color: #97a0ad;
+  font-weight: 700;
+}
+
+.version-intro-cycle {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 23rpx;
+  line-height: 1.4;
+  color: #4a6286;
+  font-weight: 600;
+}
+
+.version-intro-hint {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: #8b97aa;
+}
+
+.version-intro-unavailable {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: #98a1ae;
 }
 
 /* 底部购买栏 */
@@ -221,24 +322,6 @@
   align-items: center;
   justify-content: space-between;
   box-shadow: 0 -2rpx 16rpx rgba(0,0,0,0.08);
-}
-
-.buy-price-area {
-  display: flex;
-  flex-direction: row;
-  align-items: baseline;
-}
-
-.buy-price {
-  font-size: 52rpx;
-  font-weight: 700;
-  color: #ff4d4f;
-}
-
-.buy-price-unit {
-  font-size: 24rpx;
-  color: #999;
-  margin-left: 4rpx;
 }
 
 .btn-buy {

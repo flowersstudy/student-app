@@ -8,6 +8,13 @@
     "pages/chat/chat",
     "pages/results/results",
     "pages/study-square/study-square",
+    "pages/square-activity/square-activity",
+    "pages/square-team/square-team",
+    "pages/square-drill/square-drill",
+    "pages/square-comment/square-comment",
+    "pages/square-case/square-case",
+    "pages/square-points/square-points",
+    "pages/square-share/square-share",
     "pages/card-detail/card-detail",
     "pages/lesson-live/lesson-live",
     "pages/lesson-recorded/lesson-recorded",
@@ -28,8 +35,8 @@
   "tabBar": {
     "color": "#999999",
     "selectedColor": "#1A6EFF",
-    "backgroundColor": "#ffffff",
-    "borderStyle": "black",
+    "backgroundColor": "#cfefff",
+    "borderStyle": "white",
     "list": [
       {
         "pagePath": "pages/home/home",

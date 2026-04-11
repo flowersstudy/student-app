@@ -1,68 +1,133 @@
 <view class="purchase-page">
-  <view class="hero-card">
-    <text class="hero-badge">课程详情</text>
-    <text class="hero-title">{{productName}}</text>
-    <text class="hero-desc">{{coreSummary}}</text>
-    <text class="hero-price">{{priceDesc}}</text>
-  </view>
-
-  <view class="section-card">
-    <text class="section-title">卖点</text>
-    <view wx:for="{{sellingPoints}}" wx:key="title" class="point-card point-card-{{item.tone}}">
-      <text class="point-title">{{item.title}}</text>
-      <text class="point-desc">{{item.desc}}</text>
+  <view class="card purchase-header-card">
+    <view class="purchase-header-top">
+      <view class="purchase-header-main">
+        <text class="purchase-header-title">{{hasPointContext ? pointName : '卡点学习路径版本'}}</text>
+        <text class="purchase-header-desc">
+          {{hasPointContext ? ('根据你的备考周期和理解能力，选择更适合当前卡点的版本。') : systemOverview.judgeText}}
+        </text>
+      </view>
     </view>
-  </view>
-
-  <view class="section-card">
-    <text class="section-title">学习流程</text>
-    <view class="process-list">
-      <view wx:for="{{processSteps}}" wx:key="index" class="process-item">
-        <view class="process-index">{{index + 1}}</view>
-        <text class="process-text">{{item}}</text>
+    <view class="purchase-header-tags">
+      <view class="purchase-header-tag">
+        <text class="purchase-header-tag-text">{{systemOverview.versionCount}}个版本</text>
+      </view>
+      <view class="purchase-header-tag">
+        <text class="purchase-header-tag-text">{{systemOverview.pathCount}}条路径</text>
       </view>
     </view>
   </view>
 
-  <view class="section-card">
-    <text class="section-title">产品权益</text>
-    <view wx:for="{{rights}}" wx:key="index" class="rights-item">
-      <text class="rights-dot"></text>
-      <text class="rights-text">{{item}}</text>
+  <view class="card version-panel">
+    <text class="section-title">选择版本</text>
+    <view class="version-tabs">
+      <view
+        wx:for="{{versionTabs}}"
+        wx:key="key"
+        class="version-tab {{item.selected ? 'version-tab-active' : ''}} {{!item.available ? 'version-tab-disabled' : ''}}"
+        bindtap="handleVersionChange"
+        data-key="{{item.key}}"
+      >
+        <text class="version-tab-text {{item.selected ? 'version-tab-text-active' : ''}}">{{item.label}}</text>
+        <text wx:if="{{!item.available}}" class="version-tab-status">未开放</text>
+      </view>
+    </view>
+
+    <view class="version-summary-card">
+      <view class="version-summary-top">
+        <text class="version-summary-title">{{currentVersionMeta.label}}</text>
+        <text class="version-summary-price">{{currentVersionMeta.priceText}}</text>
+      </view>
+      <text class="version-summary-cycle">{{currentVersionMeta.cycleText}}</text>
+      <text class="version-summary-desc">{{currentVersionMeta.description}}</text>
+
+      <view class="version-summary-block">
+        <text class="version-summary-block-title">版本包含</text>
+        <view wx:for="{{currentVersionMeta.serviceItems}}" wx:key="index" class="version-bullet-item">
+          <view class="version-bullet-dot"></view>
+          <text class="version-bullet-text">{{item}}</text>
+        </view>
+      </view>
+
+      <view wx:if="{{currentVersionMeta.followUps.length > 0}}" class="version-summary-block">
+        <text class="version-summary-block-title">后续推进</text>
+        <view wx:for="{{currentVersionMeta.followUps}}" wx:key="index" class="version-bullet-item">
+          <view class="version-bullet-dot version-bullet-dot-light"></view>
+          <text class="version-bullet-text">{{item}}</text>
+        </view>
+      </view>
     </view>
   </view>
 
-  <view class="section-card deposit-card">
-    <text class="section-title">押金</text>
-    <text class="deposit-price">99 元 / 月</text>
-    <text class="deposit-desc">跟完 4 次直播即返押金 99 元。</text>
+  <view wx:if="{{stageTabs.length > 0}}" class="card stage-panel">
+    <text class="section-title">循序渐进阶段</text>
+    <view class="stage-tabs">
+      <view
+        wx:for="{{stageTabs}}"
+        wx:key="key"
+        class="stage-tab {{item.selected ? 'stage-tab-active' : ''}}"
+        bindtap="handleStageChange"
+        data-key="{{item.key}}"
+      >
+        <text class="stage-tab-text {{item.selected ? 'stage-tab-text-active' : ''}}">{{item.label}}</text>
+      </view>
+    </view>
   </view>
 
-  <view class="section-card">
-    <text class="section-title">月度直播课表（4 月）</text>
-    <view wx:for="{{scheduleWeeks}}" wx:key="label" class="schedule-week">
-      <text class="schedule-week-title">{{item.label}}</text>
-      <view wx:for="{{item.days}}" wx:key="index" wx:for-item="day" class="schedule-item">
-        <view class="schedule-date">
-          <text class="schedule-date-num">{{day.date}}</text>
-          <text class="schedule-date-week">{{day.weekday}}</text>
-        </view>
-        <view class="schedule-content">
-          <view class="schedule-head">
-            <text class="schedule-tag">{{day.tag}}</text>
+  <view class="card path-list-card">
+    <view class="path-list-header">
+      <view>
+        <text class="path-list-title">{{currentVersionMeta.label}}{{currentStageLabel ? ' · ' + currentStageLabel : ''}}</text>
+        <text class="path-list-subtitle">当前卡点对应的购买路径预览</text>
+      </view>
+      <view class="path-status-badge">
+        <text class="path-status-badge-text">路径预览</text>
+      </view>
+    </view>
+    <text class="path-status-hint">{{previewHint}}</text>
+
+    <view class="path-steps">
+      <view wx:for="{{pathSteps}}" wx:key="index" class="path-step-item">
+        <view class="path-step-left">
+          <view class="path-step-index">
+            <text class="path-step-index-text">{{item.index}}</text>
           </view>
-          <text class="schedule-title">{{day.title}}</text>
-          <text wx:if="{{day.note}}" class="schedule-note">{{day.note}}</text>
+          <view wx:if="{{index < pathSteps.length - 1}}" class="path-step-line"></view>
+        </view>
+        <view class="path-step-card">
+          <text class="path-step-title">{{item.title}}</text>
+          <text wx:if="{{item.note}}" class="path-step-note">{{item.note}}</text>
         </view>
       </view>
     </view>
   </view>
 
-  <view class="section-card">
-    <text class="section-title">注意事项</text>
-    <view wx:for="{{noticeList}}" wx:key="index" class="notice-item">
-      <text class="notice-index">{{index + 1}}</text>
-      <text class="notice-text">{{item}}</text>
+  <view wx:if="{{hasPointContext && otherPoints.length > 0}}" class="card other-points-card">
+    <view class="other-points-head">
+      <view>
+        <view class="other-points-kicker">
+          <text class="other-points-kicker-text">推荐了解</text>
+        </view>
+        <text class="section-title">你可能还需要解决这些卡点</text>
+      </view>
+      <text class="other-points-desc">结合学习情况，也可以一并看看</text>
+    </view>
+    <view class="other-points-grid">
+      <view
+        wx:for="{{otherPoints}}"
+        wx:key="pointId"
+        class="other-point-item other-point-item-{{item.levelClass}}"
+        bindtap="handleOtherPointTap"
+        data-point-id="{{item.pointId}}"
+      >
+        <view class="other-point-top">
+          <text class="other-point-name">{{item.pointName}}</text>
+          <view class="other-point-tag other-point-tag-{{item.levelClass}}">
+            <text class="other-point-tag-text other-point-tag-text-{{item.levelClass}}">{{item.level}}</text>
+          </view>
+        </view>
+        <text class="other-point-link">查看购买方案</text>
+      </view>
     </view>
   </view>
 
@@ -71,8 +136,8 @@
 
 <view class="pay-bar">
   <view class="pay-info">
-    <text class="pay-label">押金</text>
-    <text class="pay-price">¥{{price}}</text>
+    <text class="pay-label">当前选择</text>
+    <text class="pay-price">{{currentVersionMeta.priceText}}</text>
   </view>
-  <button class="pay-btn" bindtap="goPayment">支付 99 元并生成计划</button>
+  <button class="pay-btn" bindtap="confirmPurchase">选择该版本</button>
 </view>

@@ -1,0 +1,54 @@
+<view class="drill-page">
+  <view class="bg-glow bg-glow-a"></view>
+  <view class="bg-glow bg-glow-b"></view>
+
+  <view class="hero-card">
+    <text class="hero-badge">{{heroBadge}}</text>
+    <text class="hero-title">{{heroTitle}}</text>
+    <text class="hero-desc">{{heroDesc}}</text>
+
+    <view class="hero-overview">
+      <view wx:for="{{overview}}" wx:key="label" class="overview-item">
+        <text class="overview-value">{{item.value}}</text>
+        <text class="overview-label">{{item.label}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="route-list">
+    <view
+      wx:for="{{routes}}"
+      wx:key="key"
+      class="route-card route-card-{{item.key}}"
+      bindtap="handleRouteTap"
+      data-key="{{item.key}}"
+      hover-class="route-card-press"
+      hover-stay-time="80"
+    >
+      <view class="route-head">
+        <view>
+          <text class="route-badge">{{item.badge}}</text>
+          <text class="route-title">{{item.title}}</text>
+        </view>
+        <view class="route-icon-shell">
+          <image class="route-icon" src="{{item.icon}}" mode="aspectFit" />
+        </view>
+      </view>
+
+      <text class="route-desc">{{item.desc}}</text>
+
+      <view class="route-stats">
+        <view wx:for="{{item.stats}}" wx:key="label" class="route-stat">
+          <text class="route-stat-label">{{item.label}}</text>
+          <text class="route-stat-value">{{item.value}}</text>
+        </view>
+      </view>
+
+      <view class="route-tags">
+        <text wx:for="{{item.tags}}" wx:key="*this" class="route-tag">{{item}}</text>
+      </view>
+
+      <view class="route-cta">{{item.cta}}</view>
+    </view>
+  </view>
+</view>

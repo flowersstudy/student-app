@@ -1,6 +1,8 @@
 const { uiIcons } = require('../../utils/ui-icons')
 
 const CURRENT_LEARNING_TASK_KEY = 'current_learning_task'
+const DIAGNOSE_COUPON_STORAGE_KEY = 'new_user_diagnose_coupon'
+const DIAGNOSE_COUPON_DURATION = 30 * 60 * 1000
 
 const DEFAULT_CURRENT_TASK = {
   pointId: 2,
@@ -10,6 +12,7 @@ const DEFAULT_CURRENT_TASK = {
 }
 
 const LEARNING_POINT_ORDER = [1, 2, 5, 3, 4, 6, 7, 8]
+const FORCED_ACTIVE_POINT_IDS = [5, 3]
 
 const SUBPATH_STATUS_META = {
   completed: {
@@ -38,6 +41,30 @@ const POINT_NAME_BY_ID = {
   6: '作文立意不准',
   7: '作文逻辑不清',
   8: '作文表达不畅',
+}
+
+function createDiagnoseCouponState(now = Date.now()) {
+  return {
+    createdAt: now,
+    expiresAt: now + DIAGNOSE_COUPON_DURATION,
+    claimed: false,
+  }
+}
+
+function readDiagnoseCouponState() {
+  return wx.getStorageSync(DIAGNOSE_COUPON_STORAGE_KEY) || null
+}
+
+function writeDiagnoseCouponState(state) {
+  wx.setStorageSync(DIAGNOSE_COUPON_STORAGE_KEY, state)
+}
+
+function formatCouponCountdown(remainingMs) {
+  const safeRemaining = Math.max(0, remainingMs)
+  const totalSeconds = Math.floor(safeRemaining / 1000)
+  const minutes = Math.floor(totalSeconds / 60)
+  const seconds = totalSeconds % 60
+  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
 }
 
 function getPointIdByName(pointName = '') {
@@ -81,6 +108,10 @@ function getCurrentTaskText(taskState = {}) {
 }
 
 function getPointStatus(pointId, currentPointId) {
+  if (FORCED_ACTIVE_POINT_IDS.includes(pointId)) {
+    return 'active'
+  }
+
   const pointIndex = LEARNING_POINT_ORDER.indexOf(pointId)
   const currentIndex = LEARNING_POINT_ORDER.indexOf(currentPointId)
 
@@ -117,7 +148,7 @@ function buildDetailItems(items, currentPointId) {
 
 function createPathNodes(currentPointId = DEFAULT_CURRENT_TASK.pointId) {
   const isInBasicStage = [1, 2].includes(currentPointId)
-  const isInSpecialStage = [5, 3, 4, 6, 7, 8].includes(currentPointId)
+  const isInSpecialStage = [5, 3, 4, 6, 7, 8].includes(currentPointId) || FORCED_ACTIVE_POINT_IDS.length > 0
 
   return [
     {
@@ -254,21 +285,44 @@ Page({
       deadlineIcon: uiIcons.calendar,
       deadlineValue: '04/25',
     },
-    topTagText: '生成我的专属学习报告',
+    topTagText: '生成专属学习报告',
     currentTaskText: getDefaultCurrentTaskText(),
     currentCardProgress: 36,
     branchState: 'default',
     branchNode: getBranchDisplay(false),
     pathNodes: createPathNodes(),
+    showDiagnoseCoupon: false,
+    diagnoseCoupon: {
+      badge: '新用户专享',
+      title: '1v1申论诊断课限时优惠券',
+      subtitle: '先看清失分原因，再决定后续怎么学',
+      countdownLabel: '倒计时 30 分钟',
+      remainingText: '30:00',
+      originalPrice: '¥380',
+      price: '¥199',
+      saveText: '限时立省 ¥181',
+      featureTags: ['8维人工诊断', '电话沟通分析', '书面诊断报告'],
+      summary: '适合先定位问题、再决定课程和学习路径的新用户。',
+    },
   },
 
   onLoad() {
     this.syncCurrentTask()
     this.syncNotifications()
+    this.tryShowDiagnoseCoupon()
   },
 
   onShow() {
     this.syncNotifications()
+    this.tryShowDiagnoseCoupon()
+  },
+
+  onHide() {
+    this.stopDiagnoseCouponTimer()
+  },
+
+  onUnload() {
+    this.stopDiagnoseCouponTimer()
   },
 
   syncCurrentTask() {
@@ -289,6 +343,106 @@ Page({
     this.setData({
       unreadNotificationCount,
     })
+  },
+
+  tryShowDiagnoseCoupon() {
+    const app = getApp()
+    const isNewUser = !!(app && app.globalData && app.globalData.isNewUser)
+
+    if (!isNewUser || this._diagnoseCouponDismissed) {
+      return
+    }
+
+    const now = Date.now()
+    let couponState = readDiagnoseCouponState()
+
+    if (!couponState) {
+      couponState = createDiagnoseCouponState(now)
+      writeDiagnoseCouponState(couponState)
+    }
+
+    if (couponState.claimed || couponState.expiresAt <= now) {
+      this.stopDiagnoseCouponTimer()
+      this.setData({
+        showDiagnoseCoupon: false,
+        'diagnoseCoupon.remainingText': '00:00',
+      })
+      return
+    }
+
+    this.setData({
+      showDiagnoseCoupon: true,
+      'diagnoseCoupon.remainingText': formatCouponCountdown(couponState.expiresAt - now),
+    })
+
+    this.startDiagnoseCouponTimer()
+  },
+
+  startDiagnoseCouponTimer() {
+    this.stopDiagnoseCouponTimer()
+    this._diagnoseCouponTimer = setInterval(() => {
+      const couponState = readDiagnoseCouponState()
+      if (!couponState) {
+        this.stopDiagnoseCouponTimer()
+        return
+      }
+
+      const remaining = couponState.expiresAt - Date.now()
+      if (remaining <= 0) {
+        this.stopDiagnoseCouponTimer()
+        this.setData({
+          showDiagnoseCoupon: false,
+          'diagnoseCoupon.remainingText': '00:00',
+        })
+        return
+      }
+
+      this.setData({
+        'diagnoseCoupon.remainingText': formatCouponCountdown(remaining),
+      })
+    }, 1000)
+  },
+
+  stopDiagnoseCouponTimer() {
+    if (this._diagnoseCouponTimer) {
+      clearInterval(this._diagnoseCouponTimer)
+      this._diagnoseCouponTimer = null
+    }
+  },
+
+  closeDiagnoseCoupon() {
+    this._diagnoseCouponDismissed = true
+    this.stopDiagnoseCouponTimer()
+    this.setData({
+      showDiagnoseCoupon: false,
+    })
+  },
+
+  handleDiagnoseCouponTap() {
+    const couponState = readDiagnoseCouponState()
+    const now = Date.now()
+
+    if (!couponState || couponState.expiresAt <= now) {
+      this.setData({
+        showDiagnoseCoupon: false,
+        'diagnoseCoupon.remainingText': '00:00',
+      })
+      wx.showToast({
+        title: '优惠券已过期',
+        icon: 'none',
+      })
+      return
+    }
+
+    writeDiagnoseCouponState({
+      ...couponState,
+      claimed: true,
+    })
+    this.stopDiagnoseCouponTimer()
+    this.setData({
+      showDiagnoseCoupon: false,
+    })
+    wx.navigateTo({ url: '/pages/diagnose-detail/diagnose-detail' })
   },
 
   handlePlanTap() {

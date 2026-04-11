@@ -1,0 +1,82 @@
+<template name="squarePage">
+  <view class="square-scene theme-{{theme}}">
+    <view class="bg-orb bg-orb-a"></view>
+    <view class="bg-orb bg-orb-b"></view>
+
+    <view class="hero-card">
+      <view class="hero-row">
+        <view class="hero-copy">
+          <text class="hero-badge">{{badge}}</text>
+          <text class="hero-title">{{title}}</text>
+          <text class="hero-desc">{{desc}}</text>
+        </view>
+
+        <view class="hero-visual">
+          <view class="hero-icon-shell">
+            <image class="hero-icon" src="{{heroIcon}}" mode="aspectFit" />
+          </view>
+        </view>
+      </view>
+
+      <view class="hero-stats">
+        <view wx:for="{{stats}}" wx:key="label" wx:for-item="stat" class="stat-chip">
+          <text class="stat-value">{{stat.value}}</text>
+          <text class="stat-label">{{stat.label}}</text>
+        </view>
+      </view>
+    </view>
+
+    <scroll-view class="action-scroll" scroll-x enable-flex show-scrollbar="{{false}}">
+      <view class="action-row">
+        <view wx:for="{{actions}}" wx:key="*this" class="action-pill" hover-class="action-pill-press" hover-stay-time="80">
+          {{item}}
+        </view>
+      </view>
+    </scroll-view>
+
+    <view class="highlight-card">
+      <view class="section-head">
+        <view class="section-copy">
+          <text class="section-title">今日主推</text>
+          <text class="section-subtitle">{{highlight.lead}}</text>
+        </view>
+        <text class="section-mark">{{highlight.tag}}</text>
+      </view>
+      <text class="highlight-title">{{highlight.title}}</text>
+      <text class="highlight-desc">{{highlight.desc}}</text>
+    </view>
+
+    <view wx:for="{{sections}}" wx:key="title" wx:for-item="section" class="section-card">
+      <view class="section-head">
+        <view class="section-copy">
+          <text class="section-title">{{section.title}}</text>
+          <text class="section-subtitle">{{section.subtitle}}</text>
+        </view>
+      </view>
+
+      <view class="feed-list">
+        <view
+          wx:for="{{section.items}}"
+          wx:key="title"
+          wx:for-item="entry"
+          class="feed-item"
+          hover-class="feed-item-press"
+          hover-stay-time="80"
+        >
+          <view class="feed-icon-wrap">
+            <image class="feed-icon" src="{{entry.icon}}" mode="aspectFit" />
+          </view>
+
+          <view class="feed-main">
+            <view class="feed-topline">
+              <text class="feed-title">{{entry.title}}</text>
+              <text wx:if="{{entry.tag}}" class="feed-tag">{{entry.tag}}</text>
+            </view>
+            <text class="feed-desc">{{entry.desc}}</text>
+            <text class="feed-meta">{{entry.meta}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>

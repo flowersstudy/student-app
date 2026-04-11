@@ -4,6 +4,9 @@ App({
   globalData: {
     userInfo: null,
     isEnrolled: false,
+    isNewUser: false,
+    pointVersionSelections: {},
+    selectedPurchaseVersion: '',
     serverBase: 'http://localhost:3001',  // 开发环境后端地址
     // 请假状态（leave.js 提交后写入，progress.js 销假时清除）
     leaveStatus: {
@@ -39,6 +42,7 @@ App({
     if (storedToken && storedInfo) {
       this.globalData.token = storedToken
       this.globalData.isEnrolled = storedInfo.status !== 'new'
+      this.globalData.isNewUser = storedInfo.status === 'new'
       this.globalData.userProfile.name = storedInfo.name || this.globalData.userProfile.name
       console.log('App launched')
       return
@@ -53,6 +57,7 @@ App({
     })
     this.globalData.token = demo.token
     this.globalData.isEnrolled = demo.status !== 'new'
+    this.globalData.isNewUser = true
     this.globalData.userProfile.name = demo.name
     console.log('App launched')
   },

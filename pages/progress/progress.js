@@ -1,133 +1,188 @@
 const app = getApp()
+const {
+  VERSION_META,
+  getPointVersionData,
+} = require('../../utils/card-paths')
 
-// 各卡点标准学习路径
-// 来源：卡点体系完整汇报_按四体系整理.xlsx · 学习路径 · 标准版路径
-// extra 为 null 表示刷题无额外专项；有内容时 Day4-6 追加对应专项子任务
-// 课程内容（视频ID、讲义文件）在各 lesson 页面中维护，后期按卡点接入
-function buildTasks(pointName, extra) {
-  const drillLabel = extra ? `刷题 + ${extra}` : '刷题'
-  return [
-    {
-      id: 1, day: 'Day 1', label: '1v1共识课', type: 'live',
-      status: '待开始', url: '/pages/lesson-live/lesson-live', btnText: '去学习'
-    },
-    {
-      id: 2, day: 'Day 2', label: '理论录播课', type: 'recorded',
-      status: '待开始', url: '/pages/lesson-recorded/lesson-recorded',
-      btnText: '去学习', expanded: false,
-      subTasks: [
-        { id: 1, title: `${pointName}·理论精讲`, status: '待开始', url: '/pages/lesson-recorded/lesson-recorded' },
-        { id: 2, title: '课后作业讲解',           status: '待开始', url: '/pages/lesson-recorded/lesson-recorded' }
-      ]
-    },
-    {
-      id: 3, day: 'Day 3', label: '1v1纠偏课', type: 'correct',
-      status: '待开始', url: '/pages/lesson-correct/lesson-correct', btnText: '去学习'
-    },
-    {
-      id: 4, day: 'Day 4', label: drillLabel, type: 'drill',
-      status: '待开始', url: '/pages/lesson-drill/lesson-drill?set=1',
-      btnText: '去练习', expanded: false,
-      subTasks: extra
-        ? [{ id: 1, title: '第一题', status: '待开始', url: '/pages/lesson-drill/lesson-drill?set=1' },
-           { id: 2, title: extra,   status: '待开始', url: '/pages/lesson-drill/lesson-drill?set=1' }]
-        : [{ id: 1, title: '第一题', status: '待开始', url: '/pages/lesson-drill/lesson-drill?set=1' }]
-    },
-    {
-      id: 5, day: 'Day 5', label: drillLabel, type: 'drill',
-      status: '待开始', url: '/pages/lesson-drill/lesson-drill?set=2',
-      btnText: '去练习', expanded: false,
-      subTasks: extra
-        ? [{ id: 1, title: '第二题', status: '待开始', url: '/pages/lesson-drill/lesson-drill?set=2' },
-           { id: 2, title: extra,   status: '待开始', url: '/pages/lesson-drill/lesson-drill?set=2' }]
-        : [{ id: 1, title: '第二题', status: '待开始', url: '/pages/lesson-drill/lesson-drill?set=2' }]
-    },
-    {
-      id: 6, day: 'Day 6', label: drillLabel, type: 'drill',
-      status: '待开始', url: '/pages/lesson-drill/lesson-drill?set=3',
-      btnText: '去练习', expanded: false,
-      subTasks: extra
-        ? [{ id: 1, title: '第三题', status: '待开始', url: '/pages/lesson-drill/lesson-drill?set=3' },
-           { id: 2, title: extra,   status: '待开始', url: '/pages/lesson-drill/lesson-drill?set=3' }]
-        : [{ id: 1, title: '第三题', status: '待开始', url: '/pages/lesson-drill/lesson-drill?set=3' }]
-    },
-    {
-      id: 7, day: 'Day 7', label: '阶段考试', type: 'exam',
-      status: '待开始', url: '/pages/lesson-exam/lesson-exam', btnText: '去考试'
-    }
-  ]
+function resolveVersionKey(pointData, preferredVersionKey = 'progressive') {
+  const versionData = (pointData.versions || {})[preferredVersionKey]
+  if (versionData && versionData.available !== false) {
+    return preferredVersionKey
+  }
+
+  return Object.keys(VERSION_META).find((key) => {
+    const current = (pointData.versions || {})[key]
+    return current && current.available !== false
+  }) || 'progressive'
 }
 
-// 卡点基础信息（extra 来源：Excel 学习路径列）
-const contentMap = {
-  1: { pointName: '游走式找点',    extra: null,
-       teacher: { assigned: true,  id: 1, name: '李老师', title: '申论主讲',   avatar: '李', years: 5, specialty: ['归纳概括','综合分析'] } },
-  2: { pointName: '总结转述难',  extra: '背诵规范词',
-       teacher: { assigned: true,  id: 1, name: '李老师', title: '申论主讲',   avatar: '李', years: 5, specialty: ['归纳概括','综合分析'] } },
-  3: { pointName: '分析结构不清',  extra: null,
-       teacher: { assigned: false } },
-  4: { pointName: '公文结构不清',  extra: null,
-       teacher: { assigned: true,  id: 2, name: '王老师', title: '公文写作专项', avatar: '王', years: 7, specialty: ['公文写作','应用文'] } },
-  5: { pointName: '对策推导难',  extra: '常规对策积累',
-       teacher: { assigned: true,  id: 1, name: '李老师', title: '申论主讲',   avatar: '李', years: 5, specialty: ['归纳概括','综合分析'] } },
-  6: { pointName: '作文立意不准',  extra: null,
-       teacher: { assigned: true,  id: 3, name: '陈老师', title: '大作文专项',  avatar: '陈', years: 6, specialty: ['大作文立意','文章结构'] } },
-  7: { pointName: '作文逻辑不清', extra: '论据背诵',
-       teacher: { assigned: false } },
-  8: { pointName: '作文表达不畅', extra: '语言积累背诵',
-       teacher: { assigned: false } }
+function resolveTaskAction(stepTitle) {
+  if (/测试|模考/.test(stepTitle)) {
+    return {
+      text: '去测试',
+      url: '/pages/lesson-exam/lesson-exam',
+    }
+  }
+
+  if (/训练|刷题/.test(stepTitle)) {
+    return {
+      text: '去练习',
+      url: '/pages/lesson-drill/lesson-drill?set=1',
+    }
+  }
+
+  if (/讲义/.test(stepTitle)) {
+    return {
+      text: '去查看',
+      url: '/pages/lesson-recorded/lesson-recorded',
+    }
+  }
+
+  if (/纠偏/.test(stepTitle)) {
+    return {
+      text: '去学习',
+      url: '/pages/lesson-correct/lesson-correct',
+    }
+  }
+
+  if (/理论/.test(stepTitle)) {
+    return {
+      text: '去学习',
+      url: '/pages/lesson-recorded/lesson-recorded',
+    }
+  }
+
+  return {
+    text: '去学习',
+    url: '/pages/lesson-live/lesson-live',
+  }
+}
+
+function resolveTaskStatus(groupIndex, taskIndex) {
+  if (groupIndex === 0 && taskIndex === 0) {
+    return '已完成'
+  }
+
+  if (groupIndex === 0 && taskIndex === 1) {
+    return '学习中'
+  }
+
+  return '待开始'
+}
+
+function buildGroupStatus(tasks) {
+  if (tasks.length > 0 && tasks.every((task) => task.status === '已完成')) {
+    return '已完成'
+  }
+
+  if (tasks.some((task) => task.status !== '待开始')) {
+    return '学习中'
+  }
+
+  return '待开始'
+}
+
+function buildStageGroups(pointData, versionKey) {
+  const versionMeta = VERSION_META[versionKey]
+  const versionData = (pointData.versions || {})[versionKey] || {}
+  const rawGroups = versionData.stages
+    ? versionData.stages.map((stage) => ({
+        key: stage.key,
+        label: stage.label,
+        subtitle: `${versionMeta.label} · ${stage.label}`,
+        steps: stage.steps,
+      }))
+    : [{
+        key: 'main',
+        label: '核心路径',
+        subtitle: versionMeta.label,
+        steps: versionData.steps || [],
+      }]
+
+  return rawGroups.map((group, groupIndex) => {
+    const tasks = (group.steps || []).map((step, taskIndex) => {
+      const action = resolveTaskAction(step.title)
+      return {
+        id: `${group.key}-${taskIndex + 1}`,
+        index: taskIndex + 1,
+        title: step.title,
+        note: step.note || '',
+        status: resolveTaskStatus(groupIndex, taskIndex),
+        actionText: action.text,
+        url: action.url,
+      }
+    })
+
+    return {
+      ...group,
+      tasks,
+      status: buildGroupStatus(tasks),
+    }
+  })
+}
+
+function buildProgressSummary(stageGroups) {
+  const allTasks = stageGroups.reduce((result, group) => result.concat(group.tasks), [])
+  const totalTaskCount = allTasks.length
+  const completedTaskCount = allTasks.filter((task) => task.status === '已完成').length
+  const learningTaskCount = allTasks.filter((task) => task.status === '学习中').length
+  const progressPercent = totalTaskCount
+    ? Math.round(((completedTaskCount + learningTaskCount * 0.5) / totalTaskCount) * 100)
+    : 0
+  const currentTask = allTasks.find((task) => task.status === '学习中') || allTasks.find((task) => task.status === '待开始') || null
+
+  return {
+    totalTaskCount,
+    completedTaskCount,
+    progressPercent,
+    currentTaskTitle: currentTask ? currentTask.title : '当前路径已完成',
+  }
 }
 
 Page({
   data: {
-    pointId: null,
-    teacher: { name: '', subject: '', avatar: '' },
-    overallProgress: 0,
-    progressStatus: '正常',
-    tasks: []
+    pointId: 1,
+    pointName: '游走式找点',
+    currentVersionKey: 'progressive',
+    currentVersionMeta: VERSION_META.progressive,
+    stageGroups: [],
+    totalTaskCount: 0,
+    completedTaskCount: 0,
+    progressPercent: 0,
+    currentTaskTitle: '',
+    progressHint: '已按当前版本生成学习路径，后续与后端联通后会同步真实学习状态。',
   },
 
   onLoad(options) {
-    const pointId = parseInt(options.id) || null
-    this.setData({ pointId })
+    const pointId = parseInt(options.id, 10) || 1
+    const pointData = getPointVersionData(pointId)
+    const storedVersionKey = app.globalData.pointVersionSelections
+      ? app.globalData.pointVersionSelections[pointId]
+      : ''
+    const currentVersionKey = resolveVersionKey(pointData, options.version || storedVersionKey || 'progressive')
+    const stageGroups = buildStageGroups(pointData, currentVersionKey)
+    const summary = buildProgressSummary(stageGroups)
 
-    const content = contentMap[pointId]
-    if (content) {
-      const tasks = buildTasks(content.pointName, content.extra)
-      const done = tasks.filter(t => t.status === '已完成').length
-      const overallProgress = Math.round(done / tasks.length * 100)
-      this.setData({
-        tasks,
-        overallProgress,
-        teacher: content.teacher || { assigned: false }
-      })
-    }
-    // TODO: 其他卡点从接口拉取数据
-  },
+    this.setData({
+      pointId,
+      pointName: pointData.pointName,
+      currentVersionKey,
+      currentVersionMeta: VERSION_META[currentVersionKey],
+      stageGroups,
+      ...summary,
+    })
 
-  goTeacher() {
-    const t = this.data.teacher
-    if (!t || !t.assigned) return
-    const app = getApp()
-    app.globalData.currentTeacher = t
-    wx.navigateTo({ url: '/pages/teacher/teacher' })
+    wx.setNavigationBarTitle({
+      title: `${pointData.pointName}学习路径`,
+    })
   },
 
   goTask(e) {
     const url = e.currentTarget.dataset.url
-    this._checkLeaveAndNavigate(url)
-  },
-
-  toggleExpand(e) {
-    const taskId = parseInt(e.currentTarget.dataset.taskid)
-    const tasks = this.data.tasks.map(t =>
-      t.id === taskId ? { ...t, expanded: !t.expanded } : t
-    )
-    this.setData({ tasks })
-  },
-
-  goSubTask(e) {
-    const url = e.currentTarget.dataset.url
+    const stepName = e.currentTarget.dataset.stepName || ''
+    if (stepName && app.globalData && app.globalData.leaveStatus) {
+      app.globalData.leaveStatus.stepName = stepName
+    }
     this._checkLeaveAndNavigate(url)
   },
 

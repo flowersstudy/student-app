@@ -115,4 +115,38 @@
     </view>
   </view>
 
+  <view wx:if="{{showDiagnoseCoupon}}" class="coupon-mask">
+    <view class="coupon-dialog">
+      <view class="coupon-close" bindtap="closeDiagnoseCoupon">×</view>
+      <view class="coupon-badge">{{diagnoseCoupon.badge}}</view>
+      <text class="coupon-title">{{diagnoseCoupon.title}}</text>
+      <text class="coupon-subtitle">{{diagnoseCoupon.subtitle}}</text>
+
+      <view class="coupon-countdown">
+        <text class="coupon-countdown-label">{{diagnoseCoupon.countdownLabel}}</text>
+        <text class="coupon-countdown-value">{{diagnoseCoupon.remainingText}}</text>
+      </view>
+
+      <view class="coupon-price-card">
+        <view class="coupon-price-row">
+          <text class="coupon-price-label">券后价</text>
+          <text class="coupon-price-value">{{diagnoseCoupon.price}}</text>
+          <text class="coupon-original-price">{{diagnoseCoupon.originalPrice}}</text>
+        </view>
+        <text class="coupon-save-text">{{diagnoseCoupon.saveText}}</text>
+      </view>
+
+      <view class="coupon-tag-row">
+        <text wx:for="{{diagnoseCoupon.featureTags}}" wx:key="*this" class="coupon-tag">{{item}}</text>
+      </view>
+
+      <text class="coupon-summary">{{diagnoseCoupon.summary}}</text>
+
+      <view class="coupon-action" bindtap="handleDiagnoseCouponTap">
+        <text class="coupon-action-text">立即查看诊断课</text>
+      </view>
+      <text class="coupon-hint">弹窗仅对新用户展示，优惠倒计时从首次进入开始。</text>
+    </view>
+  </view>
+
 </view>

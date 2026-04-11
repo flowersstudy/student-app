@@ -1,88 +1,58 @@
 <view class="progress-page">
-  <!-- 顶部老师信息 -->
-  <view class="card teacher-card">
-
-    <!-- 已分配老师 -->
-    <view wx:if="{{teacher.assigned}}" class="teacher-row" bindtap="goTeacher">
-      <view class="teacher-avatar">
-        <text class="teacher-avatar-text">{{teacher.avatar}}</text>
+  <view class="card progress-hero-card">
+    <view class="progress-hero-top">
+      <view class="progress-hero-main">
+        <text class="progress-hero-kicker">卡点学习路径</text>
+        <text class="progress-hero-title">{{pointName}}</text>
       </view>
-      <view class="teacher-info">
-        <view class="teacher-name-row">
-          <text class="teacher-name">{{teacher.name}}</text>
-          <text class="teacher-title-tag">{{teacher.title}}</text>
-        </view>
-        <text class="teacher-years">从教 {{teacher.years}} 年 · 点击查看详情</text>
+      <view class="progress-version-badge">
+        <text class="progress-version-badge-text">{{currentVersionMeta.shortLabel}}</text>
       </view>
-      <text class="teacher-arrow">›</text>
     </view>
-
-    <!-- 未分配老师 -->
-    <view wx:else class="teacher-row teacher-pending-row">
-      <view class="teacher-avatar-pending">
-        <text class="teacher-pending-icon">?</text>
+    <text class="progress-hero-desc">{{progressHint}}</text>
+    <view class="progress-facts">
+      <view class="progress-fact-item">
+        <text class="progress-fact-value">{{progressPercent}}%</text>
+        <text class="progress-fact-label">当前进度</text>
       </view>
-      <view class="teacher-info">
-        <text class="teacher-pending-title">等待老师分配</text>
-        <text class="teacher-pending-desc">老师确认后将自动更新</text>
+      <view class="progress-fact-item">
+        <text class="progress-fact-value">{{totalTaskCount}}</text>
+        <text class="progress-fact-label">学习任务</text>
       </view>
-      <text class="tag tag-gray">待分配</text>
-    </view>
-
-    <view class="teacher-divider"></view>
-
-    <!-- 进度条 -->
-    <view class="progress-row">
-      <view class="row-between" style="margin-bottom:12rpx;">
-        <text class="progress-label">整体完成度</text>
-        <text class="progress-percent">{{overallProgress}}%</text>
-      </view>
-      <view class="progress-bar-bg">
-        <view class="progress-bar-fill" style="width:{{overallProgress}}%"></view>
+      <view class="progress-fact-item">
+        <text class="progress-fact-value">{{completedTaskCount}}</text>
+        <text class="progress-fact-label">已完成</text>
       </view>
     </view>
   </view>
 
-  <!-- 任务时间线 -->
-  <view class="section-title" style="padding:0 24rpx;margin:16rpx 0 8rpx;">课程任务</view>
-
-  <view class="timeline">
-    <view wx:for="{{tasks}}" wx:key="id" class="timeline-item">
-      <view class="timeline-left">
-        <view class="timeline-dot {{item.status === '待开始' ? 'timeline-dot-gray' : ''}}"></view>
-        <view class="timeline-line" wx:if="{{index < tasks.length - 1}}"></view>
+  <view wx:for="{{stageGroups}}" wx:key="key" wx:for-item="group" class="card stage-card">
+    <view class="stage-card-head">
+      <view class="stage-card-main">
+        <text class="stage-card-title">{{group.label}}</text>
+        <text class="stage-card-subtitle">{{group.subtitle}}</text>
       </view>
-      <view class="timeline-content">
-        <view class="task-card">
-          <view class="task-header">
-            <text class="task-day">{{item.day}}</text>
-            <text class="tag {{item.status === '已完成' ? 'tag-green' : item.status === '进行中' ? 'tag-blue' : 'tag-gray'}}">{{item.status}}</text>
+      <view class="stage-status-badge stage-status-badge-{{group.status === '已完成' ? 'done' : group.status === '学习中' ? 'active' : 'pending'}}">
+        <text class="stage-status-badge-text">{{group.status}}</text>
+      </view>
+    </view>
+
+    <view class="stage-task-list">
+      <view wx:for="{{group.tasks}}" wx:key="id" wx:for-item="task" class="stage-task-item">
+        <view class="stage-task-left">
+          <view class="stage-task-index stage-task-index-{{task.status === '已完成' ? 'done' : task.status === '学习中' ? 'active' : 'pending'}}">
+            <text class="stage-task-index-text">{{task.index}}</text>
           </view>
-          <view class="row-between" style="margin-top:12rpx;">
-            <text class="task-label">{{item.label}}</text>
-            <button class="btn-task" bindtap="goTask" data-url="{{item.url}}">{{item.btnText}}</button>
+          <view wx:if="{{index < group.tasks.length - 1}}" class="stage-task-line"></view>
+        </view>
+        <view class="stage-task-card">
+          <view class="stage-task-top">
+            <text class="stage-task-title">{{task.title}}</text>
+            <text class="stage-task-status stage-task-status-{{task.status === '已完成' ? 'done' : task.status === '学习中' ? 'active' : 'pending'}}">{{task.status}}</text>
           </view>
-          <!-- 收起/展开控制 -->
-          <view wx:if="{{item.subTasks}}" class="subtask-toggle" bindtap="toggleExpand" data-taskid="{{item.id}}">
-            <view class="subtask-toggle-line"></view>
-            <text class="subtask-toggle-arrow {{item.expanded ? 'subtask-arrow-up' : ''}}">▾</text>
-            <view class="subtask-toggle-line"></view>
-          </view>
-          <!-- 二级题目列表 -->
-          <view wx:if="{{item.expanded}}" class="subtask-list">
-            <view
-              wx:for="{{item.subTasks}}"
-              wx:for-item="sub"
-              wx:key="id"
-              class="subtask-item"
-              bindtap="goSubTask"
-              data-url="{{sub.url}}"
-            >
-              <view class="subtask-index">{{sub.id}}</view>
-              <text class="subtask-title">{{sub.title}}</text>
-              <text class="tag {{sub.status === '已完成' ? 'tag-green' : sub.status === '进行中' ? 'tag-blue' : 'tag-gray'}}">{{sub.status}}</text>
-              <text class="subtask-arrow">›</text>
-            </view>
+          <text wx:if="{{task.note}}" class="stage-task-note">{{task.note}}</text>
+          <view class="stage-task-bottom">
+            <button class="btn-task" bindtap="goTask" data-url="{{task.url}}" data-step-name="{{task.title}}">{{task.actionText}}</button>
           </view>
         </view>
       </view>

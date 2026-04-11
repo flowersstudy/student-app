@@ -1,138 +1,221 @@
-const SELLING_POINTS = [
-  {
-    title: '核心卖点：不再盲目刷题——先找卡点，再开药方',
-    desc: '别人让你刷 100 道，我让你先找到你专属的“八大卡点”是哪几个，再按 23 条学习路径往下拆，刷 1 道顶 10 道。',
-    tone: 'primary',
-  },
-  {
-    title: '卖点 1：追问式自评表——逼出你的真实思考漏洞',
-    desc: '每道题配一份“灵魂追问表”，一步步还原你是怎么想歪的，自己都能当自己的老师。',
-    tone: 'blue',
-  },
-  {
-    title: '卖点 2：直播“剖作业”——拒绝不知道为什么会错',
-    desc: '每个卡点分类剖析学员作业，当场拆解“为什么会错”，让你隔着屏幕照镜子。',
-    tone: 'orange',
-  },
-  {
-    title: '卖点 3：全勤免费学——你敢坚持，我敢免单',
-    desc: '1 个月 4 场直播，全程跟完就全额返 99 元，相当于白赚一套方法论 + 精题册 + 笔记。',
-    tone: 'green',
-  },
-]
+const {
+  PATH_SYSTEM_OVERVIEW,
+  POINT_VERSION_PATHS,
+  VERSION_META,
+  getPointVersionData,
+} = require('../../utils/card-paths')
 
-const PROCESS_STEPS = [
-  '完成刷题任务',
-  '提交刷题作业',
-  '完成并反馈复盘',
-  '直播学习',
-]
+const POINT_LEVEL_META = {
+  1: { level: '底层卡点', levelClass: 'foundation' },
+  2: { level: '底层卡点', levelClass: 'foundation' },
+  3: { level: '专项卡点', levelClass: 'special' },
+  4: { level: '专项卡点', levelClass: 'special' },
+  5: { level: '专项卡点', levelClass: 'special' },
+  6: { level: '专项卡点', levelClass: 'special' },
+  7: { level: '专项卡点', levelClass: 'special' },
+  8: { level: '专项卡点', levelClass: 'special' },
+}
 
-const RIGHTS = [
-  '全勤免费学（全勤标准：完整跟完 4 次直播）。',
-  '配备 4 场直播，每场直播最低 60 分钟讲解 + 30 分钟答疑。',
-  '配备 5 道精题（电子版）+ 对应题目的 AI 批改。',
-  '获得 4 份申论卡点直播笔记（电子版）。',
-]
+function buildOtherPoints(currentPointId) {
+  return Object.keys(POINT_VERSION_PATHS)
+    .map((key) => Number(key))
+    .filter((pointId) => pointId !== currentPointId)
+    .map((pointId) => {
+      const pointData = getPointVersionData(pointId)
+      const levelMeta = POINT_LEVEL_META[pointId] || { level: '卡点', levelClass: 'special' }
+      return {
+        pointId,
+        pointName: pointData.pointName,
+        ...levelMeta,
+      }
+    })
+}
 
-const SCHEDULE_WEEKS = [
-  {
-    label: '4 月第 1 周',
-    days: [
-      { date: '13', weekday: '日', title: '完成 1 道游走式找点 + 总结转述难的刷题', tag: '任务' },
-      { date: '14', weekday: '一', title: '提交刷题作业', note: 'AI 批改', tag: '提交' },
-      { date: '15', weekday: '二', title: '根据指导完成刷题复盘', tag: '复盘' },
-      { date: '16', weekday: '三', title: '提交刷题复盘', tag: '提交' },
-      { date: '17', weekday: '四', title: '直播 1：讲解精准找点的方法', note: '19:00-20:30', tag: '直播' },
-      { date: '18', weekday: '五', title: '休息', tag: '休息' },
-      { date: '19', weekday: '六', title: '休息', tag: '休息' },
-    ],
-  },
-  {
-    label: '4 月第 2 周',
-    days: [
-      { date: '20', weekday: '日', title: '完成 1 道对策推导难的刷题', tag: '任务' },
-      { date: '21', weekday: '一', title: '提交刷题作业', note: 'AI 批改', tag: '提交' },
-      { date: '22', weekday: '二', title: '根据指导完成刷题复盘', tag: '复盘' },
-      { date: '23', weekday: '三', title: '提交刷题复盘', tag: '提交' },
-      { date: '24', weekday: '四', title: '直播 2：分享对策精准可行的思路', note: '19:00-20:30', tag: '直播' },
-      { date: '25', weekday: '五', title: '休息', tag: '休息' },
-      { date: '26', weekday: '六', title: '休息', tag: '休息' },
-    ],
-  },
-  {
-    label: '4 月第 3 周',
-    days: [
-      { date: '27', weekday: '日', title: '完成 1 道分析结构不清的刷题', tag: '任务' },
-      { date: '28', weekday: '一', title: '完成 1 道公文结构不清的刷题 + 提交作业', note: 'AI 批改', tag: '提交' },
-      { date: '30', weekday: '三', title: '根据指导完成刷题复盘并提交', tag: '复盘' },
-      { date: '30', weekday: '三', title: '直播 3：讲解结构正确的方法', note: '19:00-20:30', tag: '直播' },
-      { date: '1', weekday: '四', title: '休息', note: '5 月 1 日', tag: '休息' },
-      { date: '2', weekday: '五', title: '休息', tag: '休息' },
-      { date: '3', weekday: '六', title: '休息', tag: '休息' },
-    ],
-  },
-  {
-    label: '5 月第 1 周',
-    days: [
-      { date: '4', weekday: '日', title: '完成 1 道作文立意不准的刷题', note: '完成立意', tag: '任务' },
-      { date: '5', weekday: '一', title: '完成 1 道作文逻辑不清 + 作文表达不畅的刷题', note: '完成开头 + 1 个分论点论证 + 结尾', tag: '任务' },
-      { date: '6', weekday: '二', title: '提交刷题作业', note: 'AI 批改', tag: '提交' },
-      { date: '7', weekday: '三', title: '根据指导完成刷题复盘并提交', tag: '复盘' },
-      { date: '8', weekday: '四', title: '直播 4：探讨写好作文的技巧', note: '19:00-21:00', tag: '直播' },
-      { date: '9', weekday: '五', title: '休息', tag: '休息' },
-      { date: '10', weekday: '六', title: '休息', tag: '休息' },
-    ],
-  },
-]
+function buildVersionTabs(pointData, selectedVersionKey) {
+  return Object.keys(VERSION_META).map((key) => {
+    const meta = VERSION_META[key]
+    const versionData = (pointData.versions || {})[key]
+    const available = !!versionData && versionData.available !== false
 
-const NOTICE_LIST = [
-  '所有任务需要当天按时提交。',
-  '本次直播在腾讯会议 APP 中进行，无回放，请提前下载好腾讯会议 APP，准时参加。',
-  '具体直播时间可能会根据当月情况具体调整，若有调整，会另行告知。',
-]
+    return {
+      key,
+      label: meta.shortLabel,
+      fullLabel: meta.label,
+      available,
+      selected: key === selectedVersionKey,
+    }
+  })
+}
+
+function resolveVersionKey(pointData, preferredVersionKey = 'progressive') {
+  const versionData = (pointData.versions || {})[preferredVersionKey]
+  if (versionData && versionData.available !== false) {
+    return preferredVersionKey
+  }
+
+  return Object.keys(VERSION_META).find((key) => {
+    const current = (pointData.versions || {})[key]
+    return current && current.available !== false
+  }) || 'progressive'
+}
+
+function buildStageTabs(versionData, selectedStageKey) {
+  if (!versionData || !versionData.stages) return []
+
+  const resolvedStageKey = versionData.stages.some((item) => item.key === selectedStageKey)
+    ? selectedStageKey
+    : versionData.stages[0].key
+
+  return versionData.stages.map((item) => ({
+    key: item.key,
+    label: item.label,
+    selected: item.key === resolvedStageKey,
+  }))
+}
+
+function getResolvedStage(versionData, preferredStageKey = '') {
+  if (!versionData || !versionData.stages || versionData.stages.length === 0) {
+    return null
+  }
+
+  return versionData.stages.find((item) => item.key === preferredStageKey) || versionData.stages[0]
+}
+
+function buildCurrentPath(pointData, versionKey, stageKey) {
+  const versionMeta = VERSION_META[versionKey]
+  const versionData = (pointData.versions || {})[versionKey] || {}
+  const resolvedStage = getResolvedStage(versionData, stageKey)
+  const pathSteps = resolvedStage ? resolvedStage.steps : (versionData.steps || [])
+
+  return {
+    currentVersionKey: versionKey,
+    currentVersionMeta: {
+      ...versionMeta,
+      unavailableText: versionData.unavailableText || '',
+    },
+    currentStageKey: resolvedStage ? resolvedStage.key : '',
+    currentStageLabel: resolvedStage ? resolvedStage.label : '',
+    versionTabs: buildVersionTabs(pointData, versionKey),
+    stageTabs: buildStageTabs(versionData, stageKey),
+    pathSteps: pathSteps.map((item, index) => ({
+      ...item,
+      index: index + 1,
+    })),
+  }
+}
 
 Page({
   data: {
-    productName: '《申论八大卡点·破局刷题营》',
-    price: 99,
-    priceDesc: '99 元 / 月 —— 跟完 4 次直播即返押金 99 元',
-    coreSummary: '先找卡点，再开药方：以 8 个卡点为骨架，往下拆出 23 条学习路径，并配套 12 套干预动作，把刷题、作业、复盘、直播串成真正能提分的主线。',
-    sellingPoints: SELLING_POINTS,
-    processSteps: PROCESS_STEPS,
-    rights: RIGHTS,
-    scheduleWeeks: SCHEDULE_WEEKS,
-    noticeList: NOTICE_LIST,
+    pointId: 1,
+    pointName: '游走式找点',
+    hasPointContext: false,
+    systemOverview: PATH_SYSTEM_OVERVIEW,
+    versionTabs: [],
+    stageTabs: [],
+    currentVersionKey: 'progressive',
+    currentVersionMeta: VERSION_META.progressive,
+    currentStageKey: 'stage1',
+    currentStageLabel: '一阶',
+    pathSteps: [],
+    previewHint: '当前页面是购买方案页，选择版本后会生成对应的真实学习路径。',
+    otherPoints: [],
   },
 
-  onLoad() {
+  onLoad(options) {
+    const pointId = parseInt(options.pointId || options.id, 10) || 1
+    const hasPointContext = Boolean(options.pointId || options.id)
+    const pointData = getPointVersionData(pointId)
+    const currentVersionKey = resolveVersionKey(pointData, options.version || 'progressive')
+    const currentPath = buildCurrentPath(pointData, currentVersionKey, options.stage || 'stage1')
+
+    this.setData({
+      pointId,
+      pointName: pointData.pointName,
+      hasPointContext,
+      otherPoints: hasPointContext ? buildOtherPoints(pointId) : [],
+      ...currentPath,
+    })
+
     wx.setNavigationBarTitle({
-      title: '课程详情',
+      title: '购买方案',
     })
   },
 
-  goPayment() {
+  handleVersionChange(e) {
+    const { key } = e.currentTarget.dataset
+    const pointData = getPointVersionData(this.data.pointId)
+    const versionData = (pointData.versions || {})[key]
+
+    if (!versionData || versionData.available === false) {
+      wx.showToast({
+        title: (versionData && versionData.unavailableText) || '当前版本暂未开放',
+        icon: 'none',
+      })
+      return
+    }
+
+    this.setData({
+      ...buildCurrentPath(pointData, key, 'stage1'),
+    })
+  },
+
+  handleStageChange(e) {
+    const { key } = e.currentTarget.dataset
+    const pointData = getPointVersionData(this.data.pointId)
+
+    this.setData({
+      ...buildCurrentPath(pointData, this.data.currentVersionKey, key),
+    })
+  },
+
+  confirmPurchase() {
     const app = getApp()
+    const {
+      hasPointContext,
+      pointId,
+      currentVersionKey,
+      currentVersionMeta,
+    } = this.data
+
+    if (app && app.globalData) {
+      app.globalData.selectedPurchaseVersion = currentVersionKey
+    }
+
+    if (!hasPointContext) {
+      wx.showToast({
+        title: `已选择${currentVersionMeta.label}`,
+        icon: 'success',
+      })
+      return
+    }
+
     if (app && app.globalData) {
       app.globalData.isEnrolled = true
+      app.globalData.pointVersionSelections = {
+        ...(app.globalData.pointVersionSelections || {}),
+        [pointId]: currentVersionKey,
+      }
     }
 
     wx.showToast({
-      title: '已生成学习计划',
+      title: `已选择${currentVersionMeta.label}`,
       icon: 'success',
-      duration: 1500,
+      duration: 1200,
     })
 
     setTimeout(() => {
-      const pages = getCurrentPages()
-      if (pages.length > 1) {
-        wx.navigateBack({ delta: 1 })
-        return
-      }
-
       wx.redirectTo({
-        url: '/pages/trial-experience/trial-experience',
+        url: `/pages/progress/progress?id=${pointId}&version=${currentVersionKey}`,
       })
-    }, 1500)
+    }, 1200)
+  },
+
+  handleOtherPointTap(e) {
+    const { pointId } = e.currentTarget.dataset
+    if (!pointId) return
+
+    wx.redirectTo({
+      url: `/pages/purchase/purchase?pointId=${pointId}`,
+    })
   },
 })

@@ -1,68 +1,83 @@
 <view class="intro-page">
-
-  <!-- 卡点头部 -->
   <view class="intro-hero">
-    <view class="intro-hero-tag">{{course.subject}}</view>
+    <view class="intro-hero-tag-row">
+      <view class="intro-hero-tag">{{course.subject}}</view>
+    </view>
     <text class="intro-hero-name">{{course.name}}</text>
     <text class="intro-hero-tagline">{{course.tagline}}</text>
   </view>
 
-  <!-- 你是否有这些问题 -->
   <view class="card intro-section">
-    <text class="intro-section-title">你是否有这些问题？</text>
+    <text class="intro-section-title">你的典型表现</text>
+    <text class="intro-subsection-title">常见失分点</text>
+    <view class="loss-chip-list">
+      <view wx:for="{{course.lossPoints}}" wx:key="index" class="loss-chip">
+        <text class="loss-chip-text">{{item}}</text>
+      </view>
+    </view>
+
+    <text class="intro-subsection-title intro-subsection-title-gap">常见状态</text>
     <view wx:for="{{course.symptoms}}" wx:key="index" class="symptom-item">
       <view class="symptom-dot"></view>
       <text class="symptom-text">{{item}}</text>
     </view>
   </view>
 
-  <!-- 课程解决什么 -->
   <view class="card intro-section">
-    <text class="intro-section-title">这门课帮你解决</text>
+    <text class="intro-section-title">你会学到什么</text>
+    <text class="intro-subsection-title">核心能力</text>
+    <view class="ability-chip-list">
+      <view wx:for="{{course.knowledgePoints}}" wx:key="index" class="ability-chip">
+        <text class="ability-chip-text">{{item}}</text>
+      </view>
+    </view>
+
+    <text class="intro-subsection-title intro-subsection-title-gap">学习收获</text>
     <view wx:for="{{course.solutions}}" wx:key="index" class="solution-item">
       <image class="solution-icon" src="{{uiIcons.check}}" mode="aspectFit" />
       <text class="solution-text">{{item}}</text>
     </view>
   </view>
 
-  <!-- 课程包含 -->
   <view class="card intro-section">
-    <text class="intro-section-title">课程包含</text>
-    <view wx:for="{{course.includes}}" wx:key="index" class="include-item">
-      <image class="include-icon" src="{{item.icon}}" mode="aspectFit" />
-      <view class="include-info">
-        <text class="include-name">{{item.name}}</text>
-        <text class="include-desc">{{item.desc}}</text>
+    <text class="intro-section-title">学习内容与路径</text>
+    <text class="learning-section-desc">课程会先帮你建立基础认知，再进入方法训练和针对性提升。</text>
+    <view wx:for="{{course.learningBlocks}}" wx:key="title" class="learning-block">
+      <text class="learning-block-title">{{item.title}}</text>
+      <text class="learning-block-desc">{{item.desc}}</text>
+      <view wx:for="{{item.lessons}}" wx:key="code" class="lesson-simple-item">
+        <view class="lesson-simple-dot"></view>
+        <text class="lesson-simple-text">{{item.content}}</text>
       </view>
     </view>
   </view>
 
-  <!-- 授课老师 -->
   <view class="card intro-section">
-    <text class="intro-section-title">授课老师</text>
-    <view wx:for="{{teachers}}" wx:key="id" class="teacher-card">
-      <view class="teacher-avatar">
-        <text class="teacher-avatar-text">{{item.name[0]}}</text>
-      </view>
-      <view class="teacher-info">
-        <view class="teacher-name-row">
-          <text class="teacher-name">{{item.name}}</text>
-          <text class="teacher-subject-tag">{{item.subject}}</text>
+    <view class="version-section-head">
+      <text class="intro-section-title intro-section-title-tight">学习路径版本</text>
+    </view>
+    <text class="version-section-desc">根据备考周期和理解能力，为你匹配合适版本。完整内容在“查看购买方案”中查看。</text>
+
+    <view wx:for="{{versionCards}}" wx:key="key" class="version-intro-card {{!item.available ? 'version-intro-card-disabled' : ''}}">
+      <view class="version-intro-top">
+        <view class="version-intro-main">
+          <view class="version-intro-title-row">
+            <text class="version-intro-title">{{item.label}}</text>
+            <view wx:if="{{!item.available}}" class="version-intro-status">
+              <text class="version-intro-status-text">当前卡点未开放</text>
+            </view>
+          </view>
+          <text class="version-intro-cycle">{{item.cycleText}}</text>
         </view>
-        <text class="teacher-exp">{{item.exp}}</text>
-        <text class="teacher-desc">{{item.desc}}</text>
       </view>
+      <text class="version-intro-hint">{{item.description}}</text>
+      <text wx:if="{{!item.available && item.unavailableText}}" class="version-intro-unavailable">{{item.unavailableText}}</text>
     </view>
   </view>
 
   <view style="height:160rpx;"></view>
 </view>
 
-<!-- 底部购买栏 -->
 <view class="buy-bar">
-  <view class="buy-price-area">
-    <text class="buy-price">¥{{course.price}}</text>
-    <text class="buy-price-unit">/ 节</text>
-  </view>
-  <button class="btn-buy" bindtap="goPurchase">立即购买</button>
+  <button class="btn-buy" bindtap="goPurchase">查看购买方案</button>
 </view>

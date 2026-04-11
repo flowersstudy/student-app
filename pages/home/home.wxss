@@ -8,6 +8,194 @@ page {
   box-sizing: border-box;
 }
 
+.coupon-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32rpx;
+  background: rgba(15, 23, 42, 0.52);
+  box-sizing: border-box;
+}
+
+.coupon-dialog {
+  position: relative;
+  width: 100%;
+  max-width: 670rpx;
+  padding: 40rpx 34rpx 34rpx;
+  background:
+    radial-gradient(circle at top right, rgba(255, 227, 195, 0.72) 0%, rgba(255, 227, 195, 0) 34%),
+    linear-gradient(180deg, #fffaf4 0%, #ffffff 100%);
+  border-radius: 32rpx;
+  box-shadow: 0 22rpx 56rpx rgba(15, 23, 42, 0.22);
+  box-sizing: border-box;
+}
+
+.coupon-close {
+  position: absolute;
+  top: 20rpx;
+  right: 20rpx;
+  width: 52rpx;
+  height: 52rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.8);
+  color: #94a3b8;
+  font-size: 36rpx;
+  line-height: 1;
+}
+
+.coupon-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50rpx;
+  padding: 0 18rpx;
+  background: linear-gradient(90deg, #ffedd5 0%, #fde68a 100%);
+  border-radius: 999rpx;
+  color: #b45309;
+  font-size: 22rpx;
+  font-weight: 700;
+}
+
+.coupon-title {
+  display: block;
+  margin-top: 22rpx;
+  padding-right: 52rpx;
+  font-size: 40rpx;
+  line-height: 1.35;
+  color: #1f2937;
+  font-weight: 700;
+}
+
+.coupon-subtitle {
+  display: block;
+  margin-top: 14rpx;
+  font-size: 25rpx;
+  line-height: 1.7;
+  color: #64748b;
+}
+
+.coupon-countdown {
+  margin-top: 24rpx;
+  padding: 18rpx 22rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.82);
+  border: 2rpx solid #fde7cf;
+  border-radius: 24rpx;
+}
+
+.coupon-countdown-label {
+  font-size: 24rpx;
+  color: #92400e;
+  font-weight: 600;
+}
+
+.coupon-countdown-value {
+  font-size: 34rpx;
+  color: #ea580c;
+  font-weight: 700;
+  letter-spacing: 2rpx;
+}
+
+.coupon-price-card {
+  margin-top: 22rpx;
+  padding: 28rpx 26rpx;
+  background: linear-gradient(135deg, #fff7ed 0%, #fffbeb 100%);
+  border: 2rpx solid #fed7aa;
+  border-radius: 28rpx;
+}
+
+.coupon-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 16rpx;
+}
+
+.coupon-price-label {
+  font-size: 24rpx;
+  color: #9a3412;
+  font-weight: 600;
+}
+
+.coupon-price-value {
+  font-size: 56rpx;
+  line-height: 1;
+  color: #ea580c;
+  font-weight: 700;
+}
+
+.coupon-original-price {
+  font-size: 24rpx;
+  color: #94a3b8;
+  text-decoration: line-through;
+}
+
+.coupon-save-text {
+  display: block;
+  margin-top: 14rpx;
+  font-size: 24rpx;
+  color: #c2410c;
+  font-weight: 700;
+}
+
+.coupon-tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14rpx;
+  margin-top: 22rpx;
+}
+
+.coupon-tag {
+  padding: 10rpx 18rpx;
+  background: #f8fafc;
+  border: 1rpx solid #e2e8f0;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  color: #475569;
+  font-weight: 600;
+}
+
+.coupon-summary {
+  display: block;
+  margin-top: 18rpx;
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: #64748b;
+}
+
+.coupon-action {
+  height: 88rpx;
+  margin-top: 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(90deg, #f97316 0%, #fb923c 100%);
+  border-radius: 999rpx;
+  box-shadow: 0 12rpx 28rpx rgba(249, 115, 22, 0.24);
+}
+
+.coupon-action-text {
+  font-size: 28rpx;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.coupon-hint {
+  display: block;
+  margin-top: 18rpx;
+  font-size: 20rpx;
+  line-height: 1.6;
+  color: #94a3b8;
+  text-align: center;
+}
+
 .home-notice-btn {
   position: relative;
   width: 76rpx;
@@ -449,6 +637,7 @@ page {
   border-bottom-width: 4rpx;
   border-bottom-style: solid;
   border-bottom-left-radius: 144rpx;
+  border-color: #f3b0b9;
 }
 
 .path-curve-yellow-card {
@@ -460,6 +649,7 @@ page {
   border-bottom-width: 4rpx;
   border-bottom-style: solid;
   border-bottom-right-radius: 152rpx;
+  border-color: #f2d26f;
 }
 
 .path-curve-blue-card {
@@ -471,24 +661,31 @@ page {
   border-bottom-width: 4rpx;
   border-bottom-style: solid;
   border-bottom-left-radius: 156rpx;
+  border-color: #bfd7ff;
 }
 
 .path-node-highlight {
-  position: absolute;
-  top: 112rpx;
-  right: 46rpx;
-  width: 356rpx;
-  height: 150rpx;
-  border-radius: 999rpx;
-  background: radial-gradient(circle at 50% 50%, rgba(61, 124, 255, 0.11) 0%, rgba(61, 124, 255, 0.05) 62%, rgba(61, 124, 255, 0) 100%);
+  display: none;
+}
+
+.path-node-wrap-final-card .path-node-highlight {
+  display: none;
+}
+
+.path-node-wrap-yellow-card .path-node-highlight {
+  display: none;
+}
+
+.path-node-wrap-blue-card .path-node-highlight {
+  display: none;
 }
 
 .path-node {
   position: relative;
   z-index: 2;
-  min-width: 246rpx;
-  min-height: 116rpx;
-  padding: 0 28rpx;
+  min-width: 224rpx;
+  min-height: 96rpx;
+  padding: 0 22rpx;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -512,11 +709,11 @@ page {
 }
 
 .path-node-current {
-  min-width: 308rpx;
-  min-height: 126rpx;
-  border: 4rpx solid #4d8dff;
+  min-width: 276rpx;
+  min-height: 108rpx;
+  border: 3rpx solid #4d8dff;
   background: linear-gradient(180deg, #f6faff 0%, #ffffff 100%);
-  box-shadow: 0 18rpx 34rpx rgba(77, 141, 255, 0.14);
+  box-shadow: 0 14rpx 28rpx rgba(77, 141, 255, 0.12);
 }
 
 .path-node-browse {
@@ -531,16 +728,114 @@ page {
 }
 
 .path-node-wrap-yellow-card .path-node {
-  min-width: 264rpx;
+  min-width: 238rpx;
 }
 
 .path-node-wrap-blue-card .path-node {
-  min-width: 248rpx;
+  min-width: 230rpx;
+}
+
+.path-node-wrap-final-card .path-node-done,
+.path-node-wrap-final-card .path-node-current,
+.path-node-wrap-final-card .path-node-browse,
+.path-node-wrap-final-card .path-node-locked {
+  border-color: #f2c6cc;
+  background: #ffffff;
+  box-shadow: 0 12rpx 24rpx rgba(29, 45, 74, 0.06);
+}
+
+.path-node-wrap-final-card .path-node-current {
+  border-width: 3rpx;
+  border-color: #ea4c60;
+  background: #fff7f8;
+  box-shadow: 0 12rpx 24rpx rgba(29, 45, 74, 0.08);
+}
+
+.path-node-wrap-final-card .path-node-icon-done,
+.path-node-wrap-final-card .path-node-icon-current,
+.path-node-wrap-final-card .path-node-icon-browse,
+.path-node-wrap-final-card .path-node-icon-locked {
+  background: #ea4c60;
+}
+
+.path-node-wrap-final-card .path-node-note {
+  color: #c23b4c;
+  background: #ffe9ed;
+}
+
+.path-node-wrap-final-card .path-node-expand {
+  color: #d45a6a;
+}
+
+.path-node-wrap-yellow-card .path-node-done,
+.path-node-wrap-yellow-card .path-node-current,
+.path-node-wrap-yellow-card .path-node-browse,
+.path-node-wrap-yellow-card .path-node-locked {
+  border-color: #efd98a;
+  background: #ffffff;
+  box-shadow: 0 12rpx 24rpx rgba(29, 45, 74, 0.06);
+}
+
+.path-node-wrap-yellow-card .path-node-current {
+  border-width: 3rpx;
+  border-color: #e2aa14;
+  background: #fff9e9;
+  box-shadow: 0 12rpx 24rpx rgba(29, 45, 74, 0.08);
+}
+
+.path-node-wrap-yellow-card .path-node-icon-done,
+.path-node-wrap-yellow-card .path-node-icon-current,
+.path-node-wrap-yellow-card .path-node-icon-browse,
+.path-node-wrap-yellow-card .path-node-icon-locked {
+  background: #e2aa14;
+}
+
+.path-node-wrap-yellow-card .path-node-note {
+  color: #aa7a00;
+  background: #fff1c4;
+}
+
+.path-node-wrap-yellow-card .path-node-expand {
+  color: #9a7000;
+}
+
+.path-node-wrap-blue-card .path-node-done,
+.path-node-wrap-blue-card .path-node-current,
+.path-node-wrap-blue-card .path-node-browse,
+.path-node-wrap-blue-card .path-node-locked {
+  border-color: #cfe0ff;
+  background: #ffffff;
+  box-shadow: 0 12rpx 24rpx rgba(29, 45, 74, 0.06);
+}
+
+.path-node-wrap-blue-card .path-node-current {
+  border-width: 3rpx;
+  border-color: #3d7cff;
+  background: #f5f9ff;
+  box-shadow: 0 12rpx 24rpx rgba(29, 45, 74, 0.08);
+}
+
+.path-node-wrap-blue-card .path-node-icon-done,
+.path-node-wrap-blue-card .path-node-icon-current,
+.path-node-wrap-blue-card .path-node-icon-browse,
+.path-node-wrap-blue-card .path-node-icon-locked {
+  background: #3d7cff;
+}
+
+.path-node-wrap-blue-card .path-node-note {
+  color: #3567d8;
+  background: #eaf2ff;
+}
+
+.path-node-wrap-blue-card .path-node-title,
+.path-node-wrap-blue-card .path-node-note,
+.path-node-wrap-blue-card .path-node-expand {
+  color: #355a9d;
 }
 
 .path-node-icon {
-  width: 56rpx;
-  height: 56rpx;
+  width: 48rpx;
+  height: 48rpx;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -553,8 +848,8 @@ page {
 }
 
 .path-node-icon-current {
-  width: 64rpx;
-  height: 64rpx;
+  width: 56rpx;
+  height: 56rpx;
   background: #4d8dff;
 }
 
@@ -567,30 +862,30 @@ page {
 }
 
 .path-node-icon-text {
-  font-size: 28rpx;
+  font-size: 24rpx;
   color: #ffffff;
   font-weight: 800;
 }
 
 .path-node-text {
-  margin-left: 14rpx;
+  margin-left: 12rpx;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
 .path-node-title {
-  font-size: 36rpx;
-  line-height: 1.16;
+  font-size: 30rpx;
+  line-height: 1.14;
   color: #1d2433;
   font-weight: 800;
 }
 
 .path-node-note {
-  margin-top: 10rpx;
-  padding: 8rpx 18rpx;
+  margin-top: 8rpx;
+  padding: 6rpx 14rpx;
   border-radius: 999rpx;
-  font-size: 22rpx;
+  font-size: 20rpx;
   line-height: 1.2;
 }
 
@@ -654,6 +949,18 @@ page {
   border-radius: 999rpx;
   background: linear-gradient(180deg, #d9e4f2 0%, #d4e0f0 100%);
   transform-origin: top center;
+}
+
+.path-node-detail-final-card .path-node-detail-connector {
+  background: #efb0ba;
+}
+
+.path-node-detail-yellow-card .path-node-detail-connector {
+  background: #ecc34a;
+}
+
+.path-node-detail-blue-card .path-node-detail-connector {
+  background: #b5d0ff;
 }
 
 .path-node-detail-open .path-node-detail-card {
@@ -751,8 +1058,8 @@ page {
 }
 
 .path-node-subpath-card {
-  min-width: 210rpx;
-  max-width: 280rpx;
+  min-width: 300rpx;
+  max-width: 340rpx;
   min-height: 60rpx;
   padding: 14rpx 24rpx;
   border-radius: 999rpx;
@@ -785,14 +1092,18 @@ page {
   align-items: center;
   justify-content: space-between;
   gap: 16rpx;
+  flex-wrap: nowrap;
 }
 
 .path-node-subpath-text {
   flex: 1;
   min-width: 0;
   font-size: 24rpx;
-  line-height: 1.4;
+  line-height: 1.2;
   color: #50607a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .path-node-subpath-text-completed {
@@ -836,6 +1147,7 @@ page {
   font-size: 20rpx;
   line-height: 1;
   font-weight: 700;
+  white-space: nowrap;
 }
 
 .path-node-subpath-status-text-completed {
@@ -848,6 +1160,78 @@ page {
 
 .path-node-subpath-status-text-locked {
   color: #98a1ae;
+}
+
+.path-node-detail-final-card .path-node-subpath-dot-active {
+  border-color: #ea4c60;
+  box-shadow: 0 0 0 8rpx rgba(234, 76, 96, 0.12);
+}
+
+.path-node-detail-final-card .path-node-subpath-line-active {
+  background: #f2d7dc;
+}
+
+.path-node-detail-final-card .path-node-subpath-card-active {
+  background: #fff7f8;
+  border-color: #f5c3cb;
+  box-shadow: 0 8rpx 16rpx rgba(29, 45, 74, 0.04);
+}
+
+.path-node-detail-final-card .path-node-subpath-text-active,
+.path-node-detail-final-card .path-node-subpath-status-text-active {
+  color: #c23b4c;
+}
+
+.path-node-detail-final-card .path-node-subpath-status-active {
+  background: #ffe9ed;
+}
+
+.path-node-detail-yellow-card .path-node-subpath-dot-active {
+  border-color: #e2aa14;
+  box-shadow: 0 0 0 8rpx rgba(233, 184, 35, 0.12);
+}
+
+.path-node-detail-yellow-card .path-node-subpath-line-active {
+  background: #f0dda0;
+}
+
+.path-node-detail-yellow-card .path-node-subpath-card-active {
+  background: #fff9e9;
+  border-color: #efd98a;
+  box-shadow: 0 8rpx 16rpx rgba(29, 45, 74, 0.04);
+}
+
+.path-node-detail-yellow-card .path-node-subpath-text-active,
+.path-node-detail-yellow-card .path-node-subpath-status-text-active {
+  color: #9a7000;
+}
+
+.path-node-detail-yellow-card .path-node-subpath-status-active {
+  background: #fff1c4;
+}
+
+.path-node-detail-blue-card .path-node-subpath-dot-active {
+  border-color: #3d7cff;
+  box-shadow: 0 0 0 8rpx rgba(61, 124, 255, 0.12);
+}
+
+.path-node-detail-blue-card .path-node-subpath-line-active {
+  background: #d8e6ff;
+}
+
+.path-node-detail-blue-card .path-node-subpath-card-active {
+  background: #f5f9ff;
+  border-color: #cfe0ff;
+  box-shadow: 0 8rpx 16rpx rgba(29, 45, 74, 0.04);
+}
+
+.path-node-detail-blue-card .path-node-subpath-text-active,
+.path-node-detail-blue-card .path-node-subpath-status-text-active {
+  color: #355a9d;
+}
+
+.path-node-detail-blue-card .path-node-subpath-status-active {
+  background: #edf4ff;
 }
 
 .path-node-detail-inline-action {

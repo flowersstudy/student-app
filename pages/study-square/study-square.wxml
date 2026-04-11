@@ -1,5 +1,7 @@
 <view class="study-square-page">
   <view class="map-shell">
+    <view class="sea-horizon"></view>
+
     <view class="foam foam-1"></view>
     <view class="foam foam-2"></view>
     <view class="foam foam-3"></view>
@@ -27,24 +29,23 @@
           <view class="island-bush island-bush-b island-bush-{{item.size}}"></view>
           <view class="island-bush island-bush-c island-bush-{{item.size}}"></view>
           <text wx:if="{{item.size === 'primary'}}" class="station-badge station-badge-{{item.size}}">{{item.badge}}</text>
+
           <view class="station-icon-seat station-icon-seat-{{item.size}}">
             <view class="station-icon-halo station-icon-halo-{{item.size}}"></view>
             <view class="station-icon-gloss station-icon-gloss-{{item.size}}"></view>
             <image class="station-icon station-icon-{{item.size}}" src="{{item.icon}}" mode="aspectFit" />
           </view>
+
           <view class="island-title-shell island-title-shell-{{item.size}}">
             <text class="station-title station-title-{{item.size}}">{{item.title}}</text>
           </view>
         </view>
       </view>
     </view>
+
   </view>
 
-  <view class="map-footer">
-    <text
-      wx:for="{{mapTips}}"
-      wx:key="*this"
-      class="map-tip"
-    >{{item}}</text>
+  <view class="map-inline-guide">
+    <text class="map-inline-guide-text">{{landingGuideText}}</text>
   </view>
 </view>

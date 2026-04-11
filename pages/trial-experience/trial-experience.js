@@ -3,21 +3,25 @@ const PATH_STEPS = [
     id: 'task',
     title: '完成刷题任务',
     desc: '先完成当期卡点对应的刷题任务，明确自己卡在哪里。',
+    scheduleType: 'drill',
   },
   {
     id: 'submit',
     title: '提交刷题作业',
     desc: '按要求提交当天作业，系统先做 AI 批改，老师再重点看问题。',
+    scheduleType: 'hw',
   },
   {
     id: 'review',
     title: '完成并反馈复盘',
     desc: '根据指导完成复盘，把“为什么错”真正说清楚、写明白。',
+    scheduleType: 'video',
   },
   {
     id: 'live',
     title: '直播学习',
     desc: '进入直播课，针对共性卡点集中拆解方法和提分路径。',
+    scheduleType: 'class',
   },
 ]
 
@@ -78,6 +82,46 @@ const NOTICE_LIST = [
   '具体直播时间可能会根据当月情况调整，若有变化会另行通知。',
 ]
 
+function padNumber(value) {
+  return String(value).padStart(2, '0')
+}
+
+function formatDateStr(date) {
+  return `${date.getFullYear()}-${padNumber(date.getMonth() + 1)}-${padNumber(date.getDate())}`
+}
+
+function formatDisplayDate(dateStr) {
+  if (!dateStr) return ''
+  const date = new Date(dateStr)
+  const weekdays = ['日', '一', '二', '三', '四', '五', '六']
+  return `${date.getMonth() + 1}月${date.getDate()}日 · 周${weekdays[date.getDay()]}`
+}
+
+function buildScheduleData() {
+  const typeMap = {
+    task: { eventType: 'drill' },
+    submit: { eventType: 'hw' },
+    review: { eventType: 'video' },
+    live: { eventType: 'class' },
+    rest: { eventType: 'rest' },
+  }
+
+  return SCHEDULE_WEEKS.reduce((result, week) => {
+    ;(week.days || []).forEach((day) => {
+      if (day.type === 'rest') return
+      const dateStr = `2026-${padNumber(parseInt(day.date.split('/')[0], 10))}-${padNumber(parseInt(day.date.split('/')[1], 10))}`
+      if (!result[dateStr]) result[dateStr] = []
+      result[dateStr].push({
+        label: day.title,
+        type: (typeMap[day.type] || {}).eventType || 'drill',
+        note: day.note || '',
+        weekday: day.weekday,
+      })
+    })
+    return result
+  }, {})
+}
+
 Page({
   data: {
     isEnrolled: false,
@@ -86,6 +130,18 @@ Page({
     pathSteps: PATH_STEPS,
     scheduleWeeks: SCHEDULE_WEEKS,
     noticeList: NOTICE_LIST,
+    scheduleData: buildScheduleData(),
+    calendarView: 'month',
+    calendarYear: 2026,
+    calendarMonth: 4,
+    calendarSelectedDate: '',
+    calendarWeeks: [],
+    calendarWeekDays: [],
+    calendarWeekTitle: '',
+    calendarSelectedLabel: '',
+    calendarSelectedTasks: [],
+    todayDateStr: '',
+    todayTasks: [],
   },
 
   onShow() {
@@ -93,11 +149,249 @@ Page({
     this.setData({
       isEnrolled: !!(app && app.globalData && app.globalData.isEnrolled),
     })
+    this.initCalendar()
   },
 
   goToPurchase() {
     wx.navigateTo({
       url: '/pages/purchase/purchase',
     })
+  },
+
+  initCalendar() {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const todayStr = formatDateStr(today)
+    const weekData = this.buildWeekDays(todayStr)
+
+    this.setData({
+      calendarYear: today.getFullYear(),
+      calendarMonth: today.getMonth() + 1,
+      calendarSelectedDate: todayStr,
+      calendarWeeks: this.buildMonthWeeks(today.getFullYear(), today.getMonth() + 1),
+      calendarWeekDays: weekData,
+      calendarWeekTitle: weekData.title,
+      calendarSelectedLabel: formatDisplayDate(todayStr),
+      calendarSelectedTasks: this.data.scheduleData[todayStr] || [],
+      todayDateStr: todayStr,
+      todayTasks: this.data.scheduleData[todayStr] || [],
+    })
+  },
+
+  buildMonthWeeks(year, month) {
+    const days = this.buildMonthDays(year, month)
+    const weeks = []
+    for (let index = 0; index < days.length; index += 7) {
+      weeks.push({ days: days.slice(index, index + 7) })
+    }
+    return weeks
+  },
+
+  buildMonthDays(year, month) {
+    const scheduleData = this.data.scheduleData
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const todayStr = formatDateStr(today)
+    const firstDayIndex = (new Date(year, month - 1, 1).getDay() + 6) % 7
+    const daysInMonth = new Date(year, month, 0).getDate()
+    const previousMonthDays = new Date(year, month - 1, 0).getDate()
+    const days = []
+
+    for (let index = firstDayIndex - 1; index >= 0; index -= 1) {
+      const day = previousMonthDays - index
+      const prevMonth = month === 1 ? 12 : month - 1
+      const prevYear = month === 1 ? year - 1 : year
+      const dateStr = `${prevYear}-${padNumber(prevMonth)}-${padNumber(day)}`
+      days.push({
+        dateStr,
+        dayNum: day,
+        isCurrentMonth: false,
+        isToday: false,
+        tasks: scheduleData[dateStr] || [],
+      })
+    }
+
+    for (let day = 1; day <= daysInMonth; day += 1) {
+      const dateStr = `${year}-${padNumber(month)}-${padNumber(day)}`
+      days.push({
+        dateStr,
+        dayNum: day,
+        isCurrentMonth: true,
+        isToday: dateStr === todayStr,
+        tasks: scheduleData[dateStr] || [],
+      })
+    }
+
+    const remaining = days.length % 7
+    if (remaining > 0) {
+      const nextMonth = month === 12 ? 1 : month + 1
+      const nextYear = month === 12 ? year + 1 : year
+      for (let day = 1; day <= 7 - remaining; day += 1) {
+        const dateStr = `${nextYear}-${padNumber(nextMonth)}-${padNumber(day)}`
+        days.push({
+          dateStr,
+          dayNum: day,
+          isCurrentMonth: false,
+          isToday: false,
+          tasks: scheduleData[dateStr] || [],
+        })
+      }
+    }
+
+    return days
+  },
+
+  buildWeekDays(selectedDateStr) {
+    const scheduleData = this.data.scheduleData
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const todayStr = formatDateStr(today)
+    const selectedDate = new Date(selectedDateStr)
+    const dayOffset = (selectedDate.getDay() + 6) % 7
+    const monday = new Date(selectedDate.getTime() - dayOffset * 86400000)
+    const sunday = new Date(monday.getTime() + 6 * 86400000)
+    const weekdays = ['一', '二', '三', '四', '五', '六', '日']
+    const days = []
+
+    for (let index = 0; index < 7; index += 1) {
+      const date = new Date(monday.getTime() + index * 86400000)
+      const dateStr = formatDateStr(date)
+      days.push({
+        dateStr,
+        dayNum: date.getDate(),
+        label: weekdays[index],
+        isToday: dateStr === todayStr,
+        tasks: scheduleData[dateStr] || [],
+      })
+    }
+
+    const formatTitle = (date) => `${date.getMonth() + 1}月${date.getDate()}日`
+    return {
+      days,
+      title: `${formatTitle(monday)} - ${formatTitle(sunday)}`,
+    }
+  },
+
+  onCalDayTap(e) {
+    const dateStr = e.currentTarget.dataset.date
+    const weekData = this.buildWeekDays(dateStr)
+    this.setData({
+      calendarSelectedDate: dateStr,
+      calendarSelectedLabel: formatDisplayDate(dateStr),
+      calendarSelectedTasks: this.data.scheduleData[dateStr] || [],
+      calendarWeekDays: weekData,
+      calendarWeekTitle: weekData.title,
+    })
+  },
+
+  onPathStepTap(e) {
+    const { stepType } = e.currentTarget.dataset
+    if (!stepType) return
+
+    const targetDate = this.findNearestScheduleDate(stepType)
+    if (!targetDate) {
+      wx.showToast({ title: '暂未找到对应日程', icon: 'none' })
+      return
+    }
+
+    const target = new Date(targetDate)
+    const weekData = this.buildWeekDays(targetDate)
+    this.setData({
+      calendarYear: target.getFullYear(),
+      calendarMonth: target.getMonth() + 1,
+      calendarSelectedDate: targetDate,
+      calendarSelectedLabel: formatDisplayDate(targetDate),
+      calendarSelectedTasks: this.data.scheduleData[targetDate] || [],
+      calendarWeeks: this.buildMonthWeeks(target.getFullYear(), target.getMonth() + 1),
+      calendarWeekDays: weekData,
+      calendarWeekTitle: weekData.title,
+    })
+
+    wx.pageScrollTo({
+      selector: '#schedule-calendar-section',
+      duration: 300,
+    })
+  },
+
+  findNearestScheduleDate(stepType) {
+    const todayStr = formatDateStr(new Date())
+    const scheduleDates = Object.keys(this.data.scheduleData)
+      .filter((dateStr) => (this.data.scheduleData[dateStr] || []).some((task) => task.type === stepType))
+      .sort()
+
+    const upcoming = scheduleDates.find((dateStr) => dateStr >= todayStr)
+    return upcoming || scheduleDates[0] || ''
+  },
+
+  onCalPrev() {
+    if (this.data.calendarView === 'week') {
+      const date = new Date(this.data.calendarSelectedDate)
+      date.setDate(date.getDate() - 7)
+      const dateStr = formatDateStr(date)
+      const weekData = this.buildWeekDays(dateStr)
+      this.setData({
+        calendarSelectedDate: dateStr,
+        calendarSelectedLabel: formatDisplayDate(dateStr),
+        calendarSelectedTasks: this.data.scheduleData[dateStr] || [],
+        calendarWeekDays: weekData,
+        calendarWeekTitle: weekData.title,
+      })
+      return
+    }
+
+    let { calendarYear, calendarMonth } = this.data
+    calendarMonth -= 1
+    if (calendarMonth < 1) {
+      calendarMonth = 12
+      calendarYear -= 1
+    }
+    this.setData({
+      calendarYear,
+      calendarMonth,
+      calendarWeeks: this.buildMonthWeeks(calendarYear, calendarMonth),
+    })
+  },
+
+  onCalNext() {
+    if (this.data.calendarView === 'week') {
+      const date = new Date(this.data.calendarSelectedDate)
+      date.setDate(date.getDate() + 7)
+      const dateStr = formatDateStr(date)
+      const weekData = this.buildWeekDays(dateStr)
+      this.setData({
+        calendarSelectedDate: dateStr,
+        calendarSelectedLabel: formatDisplayDate(dateStr),
+        calendarSelectedTasks: this.data.scheduleData[dateStr] || [],
+        calendarWeekDays: weekData,
+        calendarWeekTitle: weekData.title,
+      })
+      return
+    }
+
+    let { calendarYear, calendarMonth } = this.data
+    calendarMonth += 1
+    if (calendarMonth > 12) {
+      calendarMonth = 1
+      calendarYear += 1
+    }
+    this.setData({
+      calendarYear,
+      calendarMonth,
+      calendarWeeks: this.buildMonthWeeks(calendarYear, calendarMonth),
+    })
+  },
+
+  onCalToggleView() {
+    if (this.data.calendarView === 'month') {
+      const weekData = this.buildWeekDays(this.data.calendarSelectedDate)
+      this.setData({
+        calendarView: 'week',
+        calendarWeekDays: weekData,
+        calendarWeekTitle: weekData.title,
+      })
+      return
+    }
+
+    this.setData({ calendarView: 'month' })
   },
 })

@@ -1,3 +1,5 @@
 {
-  "navigationBarTitleText": "一起学"
+  "navigationBarTitleText": "一起学",
+  "navigationBarBackgroundColor": "#d7f3ff",
+  "navigationBarTextStyle": "black"
 }
