@@ -1,0 +1,70 @@
+<view wx:if="{{showMini}}" class="coupon-fab" bindtap="openCouponPopup">
+  <view class="coupon-fab-main">
+    <text class="coupon-fab-price">{{coupon.price}}</text>
+  </view>
+  <text class="coupon-fab-time">{{coupon.remainingText}}</text>
+</view>
+
+<view wx:if="{{showPopup}}" class="coupon-mask" bindtap="closeCouponPopup">
+  <view class="coupon-dialog" catchtap="noop">
+    <view class="coupon-glow coupon-glow-left"></view>
+    <view class="coupon-glow coupon-glow-right"></view>
+    <view class="coupon-close" bindtap="closeCouponPopup">×</view>
+
+    <view class="coupon-topline">
+      <view class="coupon-badge">{{coupon.badge}}</view>
+      <view class="coupon-countdown">
+        <text class="coupon-countdown-label">{{coupon.countdownLabel}}</text>
+        <text class="coupon-countdown-value">{{coupon.remainingText}}</text>
+      </view>
+    </view>
+
+    <text class="coupon-title">{{coupon.title}}</text>
+    <text class="coupon-subtitle">{{coupon.subtitle}}</text>
+
+    <view class="coupon-ticket">
+      <view class="coupon-ticket-hole coupon-ticket-hole-left"></view>
+      <view class="coupon-ticket-hole coupon-ticket-hole-right"></view>
+      <view class="coupon-ticket-left">
+        <text class="coupon-ticket-kicker">诊断课新人券</text>
+        <text class="coupon-ticket-save">{{coupon.saveText}}</text>
+        <text class="coupon-ticket-hero">{{coupon.heroText}}</text>
+      </view>
+      <view class="coupon-ticket-divider"></view>
+      <view class="coupon-ticket-right">
+        <text class="coupon-price-label">券后价</text>
+        <view class="coupon-price-row">
+          <text class="coupon-price-value">{{coupon.price}}</text>
+        </view>
+        <view class="coupon-original-row">
+          <text class="coupon-original-label">原价</text>
+          <text class="coupon-original-price">{{coupon.originalPrice}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="coupon-tag-row">
+      <text wx:for="{{coupon.featureTags}}" wx:key="*this" class="coupon-tag">{{item}}</text>
+    </view>
+
+    <view class="coupon-benefit-list">
+      <view wx:for="{{coupon.benefitList}}" wx:key="*this" class="coupon-benefit-item">
+        <view class="coupon-benefit-dot"></view>
+        <text class="coupon-benefit-text">{{item}}</text>
+      </view>
+    </view>
+
+    <text class="coupon-summary">{{coupon.summary}}</text>
+    <text class="coupon-action-note">30 分钟内为你保留优惠；点击领取后先购买诊断课，帮你找清失分病因。</text>
+
+    <view class="coupon-action-row">
+      <view class="coupon-action coupon-action-secondary" bindtap="goConsult">
+        <text class="coupon-action-text coupon-action-text-secondary">去咨询</text>
+      </view>
+      <view class="coupon-action coupon-action-primary" bindtap="handleCouponClaim">
+        <text class="coupon-action-text">立即领取 ¥180 诊断券</text>
+      </view>
+    </view>
+
+  </view>
+</view>

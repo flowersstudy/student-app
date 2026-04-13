@@ -45,19 +45,24 @@
 
     <view class="path-track-surface">
       <view class="path-track">
-        <view class="branch-area branch-area-{{branchState}}">
+        <view class="branch-area branch-area-{{branchState}} branch-area-mood-{{bukaScene.mood}}">
+          <view class="branch-guide"></view>
           <view class="branch-node">
             <view class="branch-shadow"></view>
             <view class="branch-glow"></view>
-            <view class="branch-spirit">
-              <view class="branch-spirit-belly"></view>
-              <view class="branch-spirit-gloss"></view>
-              <view class="branch-eye branch-eye-left"></view>
-              <view class="branch-eye branch-eye-right"></view>
+            <view class="branch-koi-shell branch-koi-shell-left">
+              <image class="branch-koi" src="/assets/buka/buka-koi-mascot-v2.svg" mode="aspectFit" />
+              <view class="branch-koi-shine"></view>
+              <view class="branch-koi-orb branch-koi-orb-top"></view>
+              <view class="branch-koi-orb branch-koi-orb-side"></view>
             </view>
           </view>
-          <view class="branch-bubble">
-            <text class="branch-bubble-slogan">{{branchNode.slogan}}</text>
+          <view class="branch-bubble branch-bubble-mood-{{bukaScene.mood}}" bindlongpress="handleBukaDebugToggle">
+            <text class="branch-bubble-title">{{bukaScene.title}}</text>
+            <text class="branch-bubble-slogan">{{bukaScene.slogan}}</text>
+            <view class="branch-bubble-action" bindtap="handleBukaAction">
+              <text class="branch-bubble-action-text">{{bukaScene.ctaText}}</text>
+            </view>
             <view class="branch-bubble-tail"></view>
           </view>
         </view>
@@ -69,14 +74,12 @@
 
             <view class="path-node-group">
               <view class="path-node path-node-{{item.status}}" bindtap="handleNodeTap" data-id="{{item.id}}">
-                <view class="path-node-icon path-node-icon-{{item.status}}">
-                  <text class="path-node-icon-text">{{item.icon}}</text>
-                </view>
                 <view class="path-node-text">
                   <text class="path-node-title">{{item.title}}</text>
-                  <text class="path-node-note">{{item.note}}</text>
+                  <view class="path-node-note-pill path-node-note-pill-{{item.status}}">
+                    <text class="path-node-note">{{item.note}}</text>
+                  </view>
                 </view>
-                <text wx:if="{{item.hasDetail}}" class="path-node-expand">{{item.expandText}}</text>
               </view>
 
               <view wx:if="{{item.detailVisible}}" class="path-node-detail path-node-detail-{{item.id}} path-node-detail-{{item.detailStateClass}}">
@@ -86,7 +89,6 @@
                     <block wx:for="{{item.items}}" wx:key="text" wx:for-item="detail">
                       <view class="path-node-subpath-item">
                         <view class="path-node-subpath-rail">
-                          <view class="path-node-subpath-dot path-node-subpath-dot-{{detail.statusClass}}"></view>
                           <view wx:if="{{detail.showLine}}" class="path-node-subpath-line path-node-subpath-line-{{detail.statusClass}}"></view>
                         </view>
                         <view
@@ -115,38 +117,7 @@
     </view>
   </view>
 
-  <view wx:if="{{showDiagnoseCoupon}}" class="coupon-mask">
-    <view class="coupon-dialog">
-      <view class="coupon-close" bindtap="closeDiagnoseCoupon">×</view>
-      <view class="coupon-badge">{{diagnoseCoupon.badge}}</view>
-      <text class="coupon-title">{{diagnoseCoupon.title}}</text>
-      <text class="coupon-subtitle">{{diagnoseCoupon.subtitle}}</text>
-
-      <view class="coupon-countdown">
-        <text class="coupon-countdown-label">{{diagnoseCoupon.countdownLabel}}</text>
-        <text class="coupon-countdown-value">{{diagnoseCoupon.remainingText}}</text>
-      </view>
-
-      <view class="coupon-price-card">
-        <view class="coupon-price-row">
-          <text class="coupon-price-label">券后价</text>
-          <text class="coupon-price-value">{{diagnoseCoupon.price}}</text>
-          <text class="coupon-original-price">{{diagnoseCoupon.originalPrice}}</text>
-        </view>
-        <text class="coupon-save-text">{{diagnoseCoupon.saveText}}</text>
-      </view>
-
-      <view class="coupon-tag-row">
-        <text wx:for="{{diagnoseCoupon.featureTags}}" wx:key="*this" class="coupon-tag">{{item}}</text>
-      </view>
-
-      <text class="coupon-summary">{{diagnoseCoupon.summary}}</text>
-
-      <view class="coupon-action" bindtap="handleDiagnoseCouponTap">
-        <text class="coupon-action-text">立即查看诊断课</text>
-      </view>
-      <text class="coupon-hint">弹窗仅对新用户展示，优惠倒计时从首次进入开始。</text>
-    </view>
-  </view>
 
 </view>
+
+<diagnose-coupon-fab auto-popup="{{true}}"></diagnose-coupon-fab>

@@ -5,6 +5,8 @@ Page({
   data: {
     uiIcons,
     isEnrolled: false,
+    hasDiagnoseCourse: false,
+    hasPracticeCourse: false,
     studentName: '张三',
     diagnosisScore: 108,
     targetScore: 130,
@@ -14,21 +16,25 @@ Page({
       pending: 5
     },
     diagnosisReport: {
-      reportDate: '2026-04-03',
-      teacher: '李老师',
-      exam: '国考行测申论',
-      summary: '当前核心问题集中在审题稳定性、材料提炼和作文结构，建议优先处理高频失分卡点。',
-      keyFindings: ['作文逻辑不清', '总结转述难', '公文结构不清']
+      reportDate: '2026-04-10',
+      teacher: '何可心',
+      exam: '27年浙江省考 / 事业编',
+      diagnosisScore: '60.5',
+      targetScore: '70',
+      scoreGap: '9.5',
+      summary: '你的对策推导与结构掌握较好，如突破“游走式找点”，离目标分只差临门一脚。',
+      keyFindings: ['游走式找点', '要点遗漏', '前置词错误']
     },
+    diagnoseReportActionText: '查看完整报告',
     practiceCourse: {
-      title: '申论八大卡点·破局刷题营',
+      title: '破局刷题课',
       cycleLabel: '4 周训练',
-      statusLabel: '进行中',
+      statusLabel: '查看完整报告',
       currentWeek: '第 2 周',
       currentStage: '刷题作业中',
       currentTaskCount: '2/4',
       nextLiveDate: '4/24',
-      summary: '刷题班按周推进刷题、作业、复盘和直播讲评，当前已进入第 2 周训练节奏。',
+      summary: '刷题课按周推进刷题、作业、复盘和直播讲评，当前已进入第 2 周训练节奏。',
       keyNotes: ['刷题作业', '复盘反馈', '直播讲评']
     },
     totalStudyDisplay: '20h 40m',
@@ -50,13 +56,56 @@ Page({
   onShow() {
     const profile = app.globalData.userProfile || {}
     const diagnosis = app.globalData.diagnosis || {}
+    const hasDiagnoseCourse = !!app.globalData.hasDiagnoseCourse
+    const hasPracticeCourse = !!app.globalData.hasPracticeCourse
+    const diagnosisScoreGap = Number(diagnosis.scoreGap)
+    const defaultDiagnosisReport = {
+      reportDate: '2026-04-10',
+      teacher: '何可心',
+      exam: diagnosis.targetExam || '27年浙江省考 / 事业编',
+      diagnosisScore: '60.5',
+      targetScore: '70',
+      scoreGap: '9.5',
+      summary: '你的对策推导与结构掌握较好，如突破“游走式找点”，离目标分只差临门一脚。',
+      keyFindings: ['游走式找点', '要点遗漏', '前置词错误']
+    }
+    const introDiagnosisReport = {
+      reportDate: '课程介绍',
+      teacher: '1v1 人工诊断',
+      exam: '未开通 · 先看病因再决定怎么提分',
+      diagnosisScore: '1v1',
+      targetScore: '8维',
+      scoreGap: '报告',
+      summary: '先通过老师人工拆解失分原因，判断你真正卡在理解、结构还是表达，再给出书面诊断结论和后续学习建议。',
+      keyFindings: ['失分病因', '核心卡点', '学习路径']
+    }
+
     this.setData({
       isEnrolled: app.globalData.isEnrolled,
+      hasDiagnoseCourse,
+      hasPracticeCourse,
       studentName: profile.name || '张三',
       diagnosisScore: diagnosis.diagnosisScore || this.data.diagnosisScore,
       targetScore: diagnosis.targetScore || this.data.targetScore,
-      'diagnosisReport.exam': diagnosis.targetExam || '国考行测申论',
-      'stats.scoreGap': diagnosis.scoreGap || this.data.stats.scoreGap
+      diagnosisReport: hasDiagnoseCourse ? {
+        ...defaultDiagnosisReport,
+        exam: diagnosis.targetExam || defaultDiagnosisReport.exam,
+      } : introDiagnosisReport,
+      diagnoseReportActionText: hasDiagnoseCourse ? '查看完整报告' : '立即了解',
+      'stats.scoreGap': hasDiagnoseCourse
+        ? (Number.isFinite(diagnosisScoreGap) ? diagnosisScoreGap : this.data.stats.scoreGap)
+        : 0,
+      'practiceCourse.statusLabel': hasPracticeCourse ? '查看完整报告' : '了解刷题课',
+      'practiceCourse.currentWeek': hasPracticeCourse ? '第 2 周' : '未开通',
+      'practiceCourse.currentStage': hasPracticeCourse ? '刷题作业中' : '开通后展示训练节奏',
+      'practiceCourse.currentTaskCount': hasPracticeCourse ? '2/4' : '--',
+      'practiceCourse.nextLiveDate': hasPracticeCourse ? '4/24' : '--',
+      'practiceCourse.summary': hasPracticeCourse
+        ? '刷题课按周推进刷题、作业、复盘和直播讲评，当前已进入第 2 周训练节奏。'
+        : '刷题课会按周展示刷题任务、作业提交、复盘提醒和直播讲评，开通后这里再展示你的训练进展。',
+      'practiceCourse.keyNotes': hasPracticeCourse
+        ? ['刷题作业', '复盘反馈', '直播讲评']
+        : ['每周训练安排', '作业与复盘', '直播讲评']
     })
   },
 
@@ -72,10 +121,29 @@ Page({
   },
 
   goDiagnoseReport() {
+    if (!this.data.hasDiagnoseCourse) {
+      wx.navigateTo({ url: '/pages/diagnose-detail/diagnose-detail?source=results_report_intro' })
+      return
+    }
+
     wx.navigateTo({ url: '/pages/diagnose-report/diagnose-report' })
   },
 
+  handleGoalGapTap() {
+    if (!this.data.hasDiagnoseCourse) {
+      wx.navigateTo({ url: '/pages/diagnose-detail/diagnose-detail?source=results_goal_gap' })
+      return
+    }
+
+    this.goDiagnoseReport()
+  },
+
   goPracticeCourse() {
-    wx.navigateTo({ url: '/pages/trial-experience/trial-experience' })
+    if (app.globalData.hasPracticeCourse) {
+      wx.navigateTo({ url: '/pages/practice-report/practice-report' })
+      return
+    }
+
+    wx.navigateTo({ url: '/pages/practice-purchase/practice-purchase' })
   }
 })

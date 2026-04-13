@@ -13,17 +13,17 @@ Page({
     routes: [
       {
         key: 'class',
-        badge: '学习路径',
+        badge: '班级入口',
         title: '刷题班',
-        desc: '这里进入刷题课的学习路径，也就是复盘页最下面那个查看课表。',
+        desc: '按课表推进刷题、作业、复盘和讲评，进入后直接看本班学习路径。',
         icon: uiIcons.class,
-        cta: '查看学习路径',
+        cta: '进入刷题班',
         url: '/pages/trial-experience/trial-experience',
         stats: [
-          { label: '当前班级', value: '21 天上岸班' },
-          { label: '当前状态', value: '学习路径进行中' },
+          { label: '当前周次', value: '第 2 周' },
+          { label: '下次直播', value: '4/24 19:00' },
         ],
-        tags: ['查看课表', '班课讲评'],
+        tags: ['查看课表', '作业复盘'],
       },
       {
         key: 'xingce',

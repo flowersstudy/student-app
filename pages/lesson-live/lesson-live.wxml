@@ -79,3 +79,5 @@
   </view>
   <view class="safe-bottom"></view>
 </view>
+
+<diagnose-coupon-fab auto-popup="{{true}}"></diagnose-coupon-fab>

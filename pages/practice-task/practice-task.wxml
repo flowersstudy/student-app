@@ -1,0 +1,60 @@
+<view class="practice-page">
+  <view class="card hero-card">
+    <text class="hero-kicker">{{taskInfo.pointName}}</text>
+    <text class="hero-title">{{taskInfo.title}}</text>
+    <text class="hero-subtitle">{{taskInfo.dueText}} · {{taskInfo.teacher}} 发布</text>
+
+    <view class="hero-tag-row">
+      <text wx:for="{{taskTags}}" wx:key="*this" class="hero-tag">{{item}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="row-between">
+      <text class="section-title">题目 PDF</text>
+      <text class="tag tag-blue">{{openedPdf ? '已查看' : '待查看'}}</text>
+    </view>
+
+    <view class="file-card" bindtap="openPdf">
+      <view class="file-icon"><text class="file-icon-text">PDF</text></view>
+      <view class="file-info">
+        <text class="file-name">{{taskInfo.pdfName}}</text>
+        <text class="file-size">{{taskInfo.pages}} · {{taskInfo.uploadTime}}</text>
+      </view>
+      <text class="file-arrow">›</text>
+    </view>
+
+    <text class="helper-text">这里先预留为老师上传题目 PDF 的位置，后续可以直接接真实文件预览。</text>
+  </view>
+
+  <view class="card">
+    <text class="section-title">做题提醒</text>
+    <view wx:for="{{checklist}}" wx:key="*this" class="bullet-row">
+      <view class="bullet-dot"></view>
+      <text class="bullet-text">{{item}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <text class="section-title">随手记录</text>
+    <textarea
+      class="input-area"
+      placeholder="记录你最不确定的地方，提交作业时可以一起发给老师..."
+      value="{{notes}}"
+      bindinput="onNotesInput"
+      auto-height
+    />
+  </view>
+
+  <view class="bottom-space"></view>
+</view>
+
+<view class="pay-bar">
+  <view class="pay-info">
+    <text class="pay-label">{{taskInfo.setName}}</text>
+    <text class="pay-price">完成后去提交作业</text>
+  </view>
+  <button class="pay-btn" bindtap="goSubmit">去提交作业</button>
+</view>
+
+<diagnose-coupon-fab auto-popup="{{true}}"></diagnose-coupon-fab>

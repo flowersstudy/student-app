@@ -1,0 +1,156 @@
+<view class="practice-submit-page">
+  <view class="card hero-card">
+    <text class="hero-kicker">刷题作业</text>
+    <text class="hero-title">{{assignment.taskLabel}}</text>
+    <text class="hero-subtitle">{{assignment.weekLabel}} · {{assignment.pointName}} · {{assignment.teacher}} · {{assignment.dueText}}</text>
+
+    <view class="hero-chip-row">
+      <text wx:for="{{statusChips}}" wx:key="*this" class="hero-chip">{{item}}</text>
+    </view>
+
+    <view class="ai-tip">
+      <text class="ai-tip-text">提示：下方结果为 AI 初步批改，仅供参考，老师会再重点看你的问题。</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-head">
+      <text class="section-title">先把作业交上来</text>
+      <text class="section-desc">你可以直接传图片，也可以上传 PDF / Word 文档。</text>
+    </view>
+
+    <view class="upload-grid">
+      <view class="upload-box" bindtap="chooseImage">
+        <image class="upload-icon" src="{{uiIcons.camera}}" mode="aspectFit" />
+        <text class="upload-title">上传图片</text>
+        <text class="upload-desc">支持拍照或相册</text>
+      </view>
+      <view class="upload-box" bindtap="chooseFile">
+        <image class="upload-icon" src="{{uiIcons.file}}" mode="aspectFit" />
+        <text class="upload-title">上传文档</text>
+        <text class="upload-desc">支持 PDF / Word</text>
+      </view>
+    </view>
+
+    <view wx:if="{{uploadedFiles.length > 0}}" class="file-list">
+      <view class="file-list-head">
+        <text class="file-list-title">已添加 {{uploadedFiles.length}} 个文件</text>
+      </view>
+
+      <view wx:for="{{uploadedFiles}}" wx:key="id" class="file-row">
+        <view wx:if="{{item.kind === 'image'}}" class="file-thumb">
+          <image class="file-thumb-image" src="{{item.path}}" mode="aspectFill" />
+        </view>
+        <view wx:else class="file-thumb file-thumb-doc">
+          <text class="file-thumb-text">DOC</text>
+        </view>
+
+        <view class="file-row-main">
+          <text class="file-row-name">{{item.name}}</text>
+          <text class="file-row-meta">{{item.kind === 'image' ? '图片作业' : '文档作业'}}</text>
+        </view>
+
+        <text class="file-row-remove" bindtap="removeFile" data-id="{{item.id}}">删除</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-head">
+      <text class="section-title">补充说明</text>
+      <text class="section-desc">如果有最不确定的地方，建议在这里写 1 句，老师更容易直接看重点。</text>
+    </view>
+
+    <textarea
+      class="input-area"
+      placeholder="可以补充自己最不确定的地方，老师看作业时会更快进入重点..."
+      value="{{remark}}"
+      bindinput="onRemarkInput"
+      auto-height
+    />
+  </view>
+
+  <view wx:if="{{aiReview}}" class="card ai-card">
+    <view class="row-between ai-card-head">
+      <view>
+        <text class="section-title">AI 初步批改</text>
+        <text class="ai-card-sub">仅供参考，老师会继续复看</text>
+      </view>
+      <text class="score-pill">{{aiReview.score}}分</text>
+    </view>
+
+    <text class="ai-summary">{{aiReview.summary}}</text>
+
+    <view class="ai-grid">
+      <view class="ai-block ai-block-good">
+        <text class="ai-block-title">AI 先看到的优点</text>
+        <view wx:for="{{aiReview.strengths}}" wx:key="*this" class="bullet-row">
+          <view class="bullet-dot bullet-dot-green"></view>
+          <text class="bullet-text">{{item}}</text>
+        </view>
+      </view>
+
+      <view class="ai-block ai-block-risk">
+        <text class="ai-block-title">AI 判断的风险点</text>
+        <view wx:for="{{aiReview.risks}}" wx:key="*this" class="bullet-row">
+          <view class="bullet-dot bullet-dot-orange"></view>
+          <text class="bullet-text">{{item}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="ai-block ai-block-suggest">
+      <text class="ai-block-title">下一步建议</text>
+      <view wx:for="{{aiReview.suggestions}}" wx:key="*this" class="bullet-row">
+        <view class="bullet-dot"></view>
+        <text class="bullet-text">{{item}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{submitMeta}}" class="card teacher-card">
+    <view class="row-between teacher-card-head">
+      <view>
+        <text class="section-title">{{teacherFollowUp.title}}</text>
+        <text class="teacher-card-sub">{{submitMeta.submittedAt}} · {{submitMeta.countText}}</text>
+      </view>
+      <text class="teacher-badge">待老师复看</text>
+    </view>
+
+    <text class="teacher-desc">{{teacherFollowUp.desc}}</text>
+
+    <view class="teacher-wait-card">
+      <text class="teacher-wait-label">预计处理</text>
+      <text class="teacher-wait-value">{{teacherFollowUp.eta}}</text>
+    </view>
+  </view>
+
+  <view wx:if="{{!aiReview}}" class="card helper-card">
+    <text class="section-title">提交后会发生什么</text>
+    <view class="bullet-row">
+      <view class="bullet-dot"></view>
+      <text class="bullet-text">系统先给你一版 AI 初评，方便你立刻知道大概问题。</text>
+    </view>
+    <view class="bullet-row">
+      <view class="bullet-dot"></view>
+      <text class="bullet-text">老师会再看你的作业和备注，后续重点帮你确认最该改的地方。</text>
+    </view>
+    <view class="bullet-row">
+      <view class="bullet-dot"></view>
+      <text class="bullet-text">你可以直接接着进入复盘页，把错因和改法写清楚。</text>
+    </view>
+  </view>
+
+  <view class="bottom-space"></view>
+</view>
+
+<view class="pay-bar">
+  <view class="pay-info">
+    <text class="pay-label">{{aiReview ? '已提交并生成 AI 初评' : '支持图片与文档上传'}}</text>
+    <text class="pay-price">{{aiReview ? '下一步建议去做复盘' : '提交后老师会继续复看'}}</text>
+  </view>
+  <button wx:if="{{!aiReview}}" class="pay-btn" bindtap="submitHomework">提交作业</button>
+  <button wx:else class="pay-btn" bindtap="goReview">去做复盘</button>
+</view>
+
+<diagnose-coupon-fab auto-popup="{{true}}"></diagnose-coupon-fab>

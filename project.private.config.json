@@ -5,11 +5,18 @@
     "miniprogram": {
       "list": [
         {
-          "name": "pages/review/review",
-          "pathName": "pages/review/review",
+          "name": "pages/diagnose-report/diagnose-report",
+          "pathName": "pages/diagnose-report/diagnose-report",
           "query": "",
-          "scene": null,
-          "launchMode": "default"
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/diagnose-detail/diagnose-detail",
+          "pathName": "pages/diagnose-detail/diagnose-detail",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         },
         {
           "name": "pages/trial-experience/trial-experience",

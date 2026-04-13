@@ -1,1 +1,6 @@
-{ "navigationBarTitleText": "诊断报告" }
+{
+    "navigationBarTitleText":  "诊断报告",
+    "usingComponents":  {
+                            "diagnose-coupon-fab":  "/components/diagnose-coupon-fab/index"
+                        }
+}

@@ -1,8 +1,8 @@
 <view class="diagnose-detail-page">
   <view class="dd-hero card">
     <text class="dd-badge">1v1申论诊断</text>
-    <text class="dd-title">先看清你为什么失分，再决定下一步怎么学</text>
-    <text class="dd-desc">参考完整诊断报告结构，先给你看到诊断会输出什么、怎么判断、最后怎么形成学习路径。看完再进入正式诊断流程。</text>
+    <text class="dd-title">先找到失分病因，再决定下一步怎么学</text>
+    <text class="dd-desc">参考完整诊断报告结构，先看老师会怎么拆解病因、怎么判断关键卡点、最后怎么形成学习路径。看完再进入正式诊断流程。</text>
 
     <view class="dd-metrics">
       <view class="dd-metric">
@@ -11,7 +11,7 @@
       </view>
       <view class="dd-metric">
         <text class="dd-metric-value">{{overview.serviceType}}</text>
-        <text class="dd-metric-label">沟通方式</text>
+        <text class="dd-metric-label">诊断形式</text>
       </view>
       <view class="dd-metric">
         <text class="dd-metric-value">{{overview.outputCount}}</text>
@@ -61,7 +61,7 @@
   </view>
 
   <view class="card">
-    <text class="dd-section-title">诊断结果会先告诉你什么</text>
+    <text class="dd-section-title">诊断结果会先帮你找什么病因</text>
     <view wx:for="{{previewPoints}}" wx:key="name" class="dd-point-card dd-point-card-{{item.tier}}">
       <view class="dd-point-head">
         <text class="dd-point-tier dd-point-tier-{{item.tier}}">{{item.tierText}}</text>
@@ -72,7 +72,7 @@
   </view>
 
   <view class="card">
-    <text class="dd-section-title">诊断依据与输出</text>
+    <text class="dd-section-title">找病因的依据与输出</text>
     <view wx:for="{{basisRows}}" wx:key="label" class="dd-basis-row">
       <text class="dd-basis-label">{{item.label}}</text>
       <text class="dd-basis-value">{{item.value}}</text>
@@ -111,10 +111,16 @@
   </view>
 
   <view class="dd-footer card">
-    <text class="dd-footer-title">先看清问题，再进入正式诊断流程</text>
+    <text class="dd-footer-title">先看清失分病因，再进入正式诊断流程</text>
     <text class="dd-footer-desc">点下面这个按钮，才会进入你现在已有的“诊断流程”页面。</text>
+    <view class="dd-footer-note-list">
+      <text class="dd-footer-note">当前页是诊断样例预览，不是正式诊断流程。</text>
+      <text class="dd-footer-note">正式购买后，通常会先提交信息，再由老师联系、拆解病因并输出书面诊断报告。</text>
+    </view>
     <view class="dd-footer-btn" bindtap="goStartDiagnose">
       <text class="dd-footer-btn-text">去诊断</text>
     </view>
   </view>
 </view>
+
+<diagnose-coupon-fab auto-popup="{{true}}"></diagnose-coupon-fab>

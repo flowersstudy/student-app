@@ -52,3 +52,5 @@
     </view>
   </view>
 </view>
+
+<diagnose-coupon-fab auto-popup="{{true}}"></diagnose-coupon-fab>

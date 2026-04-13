@@ -1,0 +1,74 @@
+<svg width="800" height="800" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="120" y1="80" x2="700" y2="720" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ECFBFF"/>
+      <stop offset="1" stop-color="#DDF4FF"/>
+    </linearGradient>
+    <linearGradient id="bodyGrad" x1="208" y1="217" x2="554" y2="537" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF8F0"/>
+      <stop offset="0.62" stop-color="#FFE0B8"/>
+      <stop offset="1" stop-color="#FFB86A"/>
+    </linearGradient>
+    <linearGradient id="bellyGrad" x1="264" y1="343" x2="485" y2="510" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFDF8"/>
+      <stop offset="1" stop-color="#FFF2D9"/>
+    </linearGradient>
+    <linearGradient id="finGrad" x1="457" y1="309" x2="678" y2="475" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFE7B8"/>
+      <stop offset="1" stop-color="#FF9A48"/>
+    </linearGradient>
+    <linearGradient id="coralGrad" x1="262" y1="229" x2="394" y2="359" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF9D85"/>
+      <stop offset="1" stop-color="#FF734C"/>
+    </linearGradient>
+    <filter id="softShadow" x="120" y="135" width="565" height="482" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="18"/>
+      <feGaussianBlur stdDeviation="24"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.168627 0 0 0 0 0.419608 0 0 0 0 0.662745 0 0 0 0.16 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_1"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_1" result="shape"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="800" rx="80" fill="url(#bg)"/>
+  <circle cx="650" cy="164" r="78" fill="#FFFFFF" fill-opacity="0.46"/>
+  <circle cx="162" cy="630" r="96" fill="#FFFFFF" fill-opacity="0.32"/>
+
+  <path d="M104 220C145 179 201 170 247 199C277 218 300 248 335 259" stroke="#A9E8FF" stroke-width="16" stroke-linecap="round" opacity="0.8"/>
+  <path d="M587 576C634 566 671 530 688 487" stroke="#A9E8FF" stroke-width="14" stroke-linecap="round" opacity="0.7"/>
+
+  <g filter="url(#softShadow)">
+    <path d="M594 365C631 383 651 412 638 437C624 465 580 472 545 468C521 465 495 456 468 452C429 447 394 451 347 462C306 471 257 475 219 451C177 425 168 374 193 329C221 279 276 241 345 223C421 204 520 217 594 256C626 273 646 300 648 327C649 345 633 356 594 365Z" fill="url(#bodyGrad)"/>
+    <path d="M283 347C315 324 359 311 409 313C457 315 501 329 532 352C522 381 494 407 450 425C412 440 371 447 334 445C292 442 259 430 241 409C223 388 238 366 283 347Z" fill="url(#bellyGrad)"/>
+
+    <path d="M563 305C603 279 648 277 676 299C705 321 700 365 664 393C636 415 595 424 559 420C580 391 591 357 594 322C594 316 592 310 563 305Z" fill="url(#finGrad)"/>
+    <path d="M596 429C632 437 663 459 667 490C671 523 643 550 602 553C567 556 528 539 507 510C542 504 570 486 589 459C594 452 599 442 596 429Z" fill="url(#finGrad)"/>
+    <path d="M215 289C184 258 176 219 197 192C219 165 264 162 298 189C324 210 341 246 346 278C318 271 287 272 257 281C244 284 229 289 215 289Z" fill="#FFD38C"/>
+
+    <path d="M313 222C330 191 364 172 396 179C425 185 441 214 434 244C430 264 419 284 402 303C392 280 377 261 358 246C344 236 329 229 313 222Z" fill="url(#coralGrad)"/>
+    <path d="M366 218C388 200 415 193 433 199C448 204 456 218 454 235C452 250 440 265 421 280C408 262 390 246 366 218Z" fill="#FFF5EC" fill-opacity="0.72"/>
+
+    <circle cx="311" cy="341" r="23" fill="#FFFFFF"/>
+    <circle cx="318" cy="346" r="11" fill="#233B54"/>
+    <circle cx="323" cy="341" r="4" fill="#FFFFFF"/>
+    <path d="M251 350C265 340 282 335 299 335" stroke="#F18E5B" stroke-width="8" stroke-linecap="round"/>
+    <path d="M282 386C304 401 334 407 361 404" stroke="#E27A4E" stroke-width="9" stroke-linecap="round"/>
+
+    <path d="M350 269C374 278 395 292 410 310" stroke="#F7A56E" stroke-width="6" stroke-linecap="round" opacity="0.9"/>
+    <path d="M391 258C418 269 442 286 459 308" stroke="#F7A56E" stroke-width="6" stroke-linecap="round" opacity="0.82"/>
+    <path d="M434 259C462 272 487 292 504 319" stroke="#F7A56E" stroke-width="6" stroke-linecap="round" opacity="0.76"/>
+    <path d="M333 452C354 465 379 473 406 476" stroke="#F6B672" stroke-width="6" stroke-linecap="round" opacity="0.85"/>
+    <path d="M385 449C410 460 437 466 467 466" stroke="#F6B672" stroke-width="6" stroke-linecap="round" opacity="0.72"/>
+
+    <circle cx="551" cy="289" r="9" fill="#FFF4D6"/>
+    <circle cx="580" cy="315" r="7" fill="#FFF4D6"/>
+    <circle cx="528" cy="519" r="8" fill="#FFF4D6"/>
+  </g>
+
+  <path d="M180 601C227 650 298 670 364 656" stroke="#74D4FF" stroke-width="18" stroke-linecap="round" opacity="0.55"/>
+  <circle cx="564" cy="173" r="18" fill="#FFFFFF" fill-opacity="0.72"/>
+  <circle cx="597" cy="206" r="10" fill="#FFFFFF" fill-opacity="0.64"/>
+  <circle cx="620" cy="170" r="7" fill="#FFFFFF" fill-opacity="0.58"/>
+</svg>

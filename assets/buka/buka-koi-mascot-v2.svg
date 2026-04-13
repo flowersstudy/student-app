@@ -1,0 +1,73 @@
+<svg width="320" height="320" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="koiAura" x1="70" y1="44" x2="252" y2="274" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8FCFF"/>
+      <stop offset="1" stop-color="#E6F4FB"/>
+    </linearGradient>
+    <linearGradient id="koiBody" x1="86" y1="98" x2="234" y2="223" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFDF8"/>
+      <stop offset="0.58" stop-color="#F7ECCE"/>
+      <stop offset="1" stop-color="#EBD8A2"/>
+    </linearGradient>
+    <linearGradient id="koiFin" x1="191" y1="105" x2="278" y2="181" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E8F7FD"/>
+      <stop offset="1" stop-color="#8BC3D8"/>
+    </linearGradient>
+    <linearGradient id="koiTail" x1="203" y1="178" x2="284" y2="250" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#DFF3FB"/>
+      <stop offset="1" stop-color="#79B8CF"/>
+    </linearGradient>
+    <linearGradient id="koiCoral" x1="118" y1="84" x2="171" y2="134" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F6E7BE"/>
+      <stop offset="1" stop-color="#D9BE75"/>
+    </linearGradient>
+    <filter id="koiShadow" x="44" y="59" width="243" height="202" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="10"/>
+      <feGaussianBlur stdDeviation="14"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.121569 0 0 0 0 0.352941 0 0 0 0 0.580392 0 0 0 0.18 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_1"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_1" result="shape"/>
+    </filter>
+  </defs>
+
+  <circle cx="160" cy="160" r="116" fill="url(#koiAura)"/>
+  <circle cx="225" cy="94" r="28" fill="white" fill-opacity="0.48"/>
+  <circle cx="92" cy="238" r="34" fill="white" fill-opacity="0.34"/>
+
+  <path d="M66 111C83 93 108 90 128 101C139 108 149 117 160 121" stroke="#9FD5E7" stroke-width="8" stroke-linecap="round" opacity="0.8"/>
+  <path d="M213 240C232 237 248 225 257 209" stroke="#9FD5E7" stroke-width="7" stroke-linecap="round" opacity="0.72"/>
+
+  <g filter="url(#koiShadow)">
+    <path d="M232 152C249 161 258 173 252 186C246 200 226 204 210 202C199 201 186 197 173 196C155 194 139 196 117 201C98 205 76 207 59 196C41 184 37 160 48 141C61 118 86 100 118 91C154 82 200 88 233 105C247 113 256 126 257 138C257 146 250 151 232 152Z" fill="url(#koiBody)"/>
+    <path d="M90 150C105 139 126 133 150 133C172 134 193 141 208 152C203 166 190 179 169 187C151 194 132 197 114 196C94 194 78 188 69 177C61 167 67 158 90 150Z" fill="#FFFDF7"/>
+    <path d="M216 123C235 111 257 110 270 120C284 131 281 152 264 166C251 176 231 181 214 179C224 166 229 150 230 134C230 131 229 126 216 123Z" fill="url(#koiFin)"/>
+    <path d="M233 182C250 186 266 197 268 212C269 227 256 240 236 241C219 243 200 235 190 221C207 218 220 209 229 197C232 193 235 188 233 182Z" fill="url(#koiTail)"/>
+    <path d="M59 121C44 106 40 87 50 74C61 61 82 60 98 73C110 83 118 101 120 116C107 113 93 113 78 117C72 118 66 121 59 121Z" fill="#E9D298"/>
+
+    <path d="M104 89C113 73 129 63 144 67C158 70 166 84 163 99C161 109 156 119 148 129C143 117 136 107 126 99C120 94 112 91 104 89Z" fill="url(#koiCoral)"/>
+    <path d="M129 87C140 78 153 75 161 78C169 80 173 87 172 96C171 103 165 111 156 118C150 109 141 100 129 87Z" fill="#FFFBF2" fill-opacity="0.74"/>
+
+    <circle cx="103" cy="147" r="11" fill="white"/>
+    <circle cx="106" cy="150" r="5.8" fill="#22344A"/>
+    <circle cx="109" cy="147" r="2" fill="white"/>
+    <path d="M75 152C82 147 90 145 98 145" stroke="#C7AF6C" stroke-width="4.5" stroke-linecap="round"/>
+    <path d="M89 170C99 178 113 181 126 180" stroke="#9CCADA" stroke-width="5" stroke-linecap="round"/>
+
+    <path d="M121 113C133 118 143 125 151 134" stroke="#D2BA7B" stroke-width="3.6" stroke-linecap="round" opacity="0.92"/>
+    <path d="M140 108C153 114 165 122 173 133" stroke="#D2BA7B" stroke-width="3.6" stroke-linecap="round" opacity="0.84"/>
+    <path d="M160 109C174 115 186 124 194 137" stroke="#93C7D9" stroke-width="3.6" stroke-linecap="round" opacity="0.76"/>
+    <path d="M114 199C124 205 136 209 149 211" stroke="#A9D3E2" stroke-width="3.6" stroke-linecap="round" opacity="0.88"/>
+    <path d="M138 197C150 202 163 205 177 205" stroke="#A9D3E2" stroke-width="3.6" stroke-linecap="round" opacity="0.72"/>
+
+    <circle cx="210" cy="115" r="4" fill="#F8F0D8"/>
+    <circle cx="223" cy="128" r="3.2" fill="#F8F0D8"/>
+    <circle cx="199" cy="223" r="3.8" fill="#E4F4FA"/>
+  </g>
+
+  <path d="M83 223C106 248 140 258 172 251" stroke="#84C6DB" stroke-width="9" stroke-linecap="round" opacity="0.6"/>
+  <circle cx="225" cy="93" r="6.6" fill="white" fill-opacity="0.76"/>
+  <circle cx="238" cy="106" r="3.8" fill="white" fill-opacity="0.62"/>
+  <circle cx="247" cy="91" r="2.8" fill="white" fill-opacity="0.58"/>
+</svg>

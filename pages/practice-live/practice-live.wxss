@@ -1,0 +1,177 @@
+page {
+  background: #f5f7fb;
+}
+
+.live-page {
+  min-height: 100vh;
+  padding: 24rpx 24rpx 0;
+  box-sizing: border-box;
+}
+
+.hero-card {
+  background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
+}
+
+.hero-title {
+  display: block;
+  font-size: 38rpx;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #0f172a;
+}
+
+.hero-subtitle {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  color: #64748b;
+}
+
+.info-row {
+  margin-top: 18rpx;
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+}
+
+.info-icon {
+  width: 36rpx;
+  height: 36rpx;
+}
+
+.info-text {
+  flex: 1;
+  font-size: 24rpx;
+  color: #334155;
+}
+
+.link-card {
+  margin-top: 8rpx;
+  padding: 22rpx 22rpx 24rpx;
+  border-radius: 22rpx;
+  background: #f8fbff;
+}
+
+.link-label {
+  display: block;
+  font-size: 22rpx;
+  color: #64748b;
+}
+
+.link-value {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  color: #0f172a;
+  line-height: 1.7;
+  word-break: break-all;
+}
+
+.meeting-meta {
+  display: block;
+  margin-top: 14rpx;
+  font-size: 22rpx;
+  color: #64748b;
+}
+
+.btn-row {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 20rpx;
+}
+
+.btn-flow {
+  flex: 1;
+  height: 76rpx;
+  line-height: 76rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%);
+  color: #ffffff;
+  font-size: 26rpx;
+  font-weight: 700;
+  border: none;
+}
+
+.btn-flow::after {
+  border: none;
+}
+
+.btn-flow-outline {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.bullet-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+  margin-top: 18rpx;
+}
+
+.bullet-dot {
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  margin-top: 12rpx;
+  background: #2563eb;
+  flex-shrink: 0;
+}
+
+.bullet-text {
+  flex: 1;
+  font-size: 25rpx;
+  line-height: 1.7;
+  color: #334155;
+}
+
+.bottom-space {
+  height: 144rpx;
+}
+
+.pay-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 20rpx 24rpx calc(20rpx + env(safe-area-inset-bottom));
+  background: rgba(255, 255, 255, 0.96);
+  border-top: 1rpx solid rgba(148, 163, 184, 0.16);
+}
+
+.pay-info {
+  flex: 1;
+}
+
+.pay-label {
+  display: block;
+  font-size: 22rpx;
+  color: #64748b;
+}
+
+.pay-price {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.pay-btn {
+  min-width: 220rpx;
+  height: 84rpx;
+  line-height: 84rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%);
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: 700;
+  border: none;
+}
+
+.pay-btn::after {
+  border: none;
+}

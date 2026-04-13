@@ -1,11 +1,16 @@
 .study-square-page {
   position: relative;
+  height: 100vh;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
-  padding: 18rpx 24rpx 24rpx;
+  box-sizing: border-box;
+  padding: 8rpx 20rpx 8rpx;
+  gap: 12rpx;
   background:
-    radial-gradient(circle at 50% -6%, rgba(255, 255, 255, 0.88), transparent 24%),
-    linear-gradient(180deg, #d7f3ff 0%, #a8e4f7 14%, #6ecfea 34%, #49b8dc 58%, #309fc9 80%, #2387af 100%);
+    radial-gradient(circle at 50% -10%, rgba(255, 255, 255, 0.92), transparent 24%),
+    linear-gradient(180deg, #ffffff 0%, #f8fafc 20%, #f4f7fb 52%, #f2f5fa 100%);
 }
 
 .study-square-page::before,
@@ -19,23 +24,24 @@
 
 .study-square-page::before {
   background:
-    radial-gradient(ellipse at 20% 22%, rgba(255, 255, 255, 0.18), transparent 22%),
-    radial-gradient(ellipse at 78% 28%, rgba(255, 255, 255, 0.12), transparent 18%),
-    radial-gradient(ellipse at 50% 82%, rgba(22, 126, 168, 0.22), transparent 34%);
-  opacity: 0.95;
+    radial-gradient(ellipse at 20% 14%, rgba(255, 255, 255, 0.3), transparent 20%),
+    radial-gradient(ellipse at 82% 76%, rgba(148, 163, 184, 0.03), transparent 24%);
+  opacity: 0.76;
 }
 
 .study-square-page::after {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 26%, rgba(10, 103, 146, 0.06) 72%, rgba(7, 77, 116, 0.18) 100%);
-  opacity: 0.9;
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0) 26%, rgba(148, 163, 184, 0.03) 100%);
+  opacity: 0.72;
 }
 
 .map-shell {
   position: relative;
+  flex: 1;
+  min-height: 0;
   z-index: 1;
-  height: 1180rpx;
-  margin-top: 8rpx;
+  height: auto;
+  margin-top: 0;
   border-radius: 44rpx;
   background:
     radial-gradient(circle at 50% -8%, rgba(255, 255, 255, 0.62), transparent 34%),
@@ -43,6 +49,14 @@
   border: 1rpx solid rgba(191, 228, 249, 0.82);
   box-shadow: 0 18rpx 40rpx rgba(14, 116, 144, 0.08);
   overflow: hidden;
+}
+
+.map-scene {
+  position: relative;
+  width: 100%;
+  height: 1180rpx;
+  transform: translateY(-44rpx) scale(1.04);
+  transform-origin: top center;
 }
 
 .sea-horizon {
@@ -144,13 +158,13 @@
 }
 
 .island-primary {
-  width: 292rpx;
-  height: 228rpx;
+  width: 316rpx;
+  height: 248rpx;
 }
 
 .island-normal {
-  width: 182rpx;
-  height: 140rpx;
+  width: 224rpx;
+  height: 172rpx;
 }
 
 .island-shape-activity { transform: rotate(-12deg); animation: islandFloatActivity 5.8s ease-in-out infinite; }
@@ -326,8 +340,8 @@
   animation: iconSeatBreath 4s ease-in-out infinite;
 }
 
-.station-icon-seat-primary { width: 126rpx; height: 126rpx; }
-.station-icon-seat-normal { width: 82rpx; height: 82rpx; }
+.station-icon-seat-primary { width: 128rpx; height: 128rpx; }
+.station-icon-seat-normal { width: 90rpx; height: 90rpx; }
 
 .station-icon-halo {
   inset: 10rpx;
@@ -356,17 +370,17 @@
 }
 
 .station-icon-primary { width: 108rpx; height: 108rpx; }
-.station-icon-normal { width: 68rpx; height: 68rpx; }
+.station-icon-normal { width: 72rpx; height: 72rpx; }
 
 .station-badge {
   position: absolute;
-  top: 18rpx;
-  right: 18rpx;
+  top: 22rpx;
+  right: 20rpx;
   z-index: 4;
-  padding: 10rpx 16rpx;
+  padding: 6rpx 12rpx;
   border-radius: 999rpx;
-  font-size: 22rpx;
-  font-weight: 700;
+  font-size: 18rpx;
+  font-weight: 600;
   background: rgba(255, 255, 255, 0.86);
   color: #2f855a;
   box-shadow: 0 8rpx 14rpx rgba(15, 23, 42, 0.08);
@@ -379,7 +393,7 @@
   z-index: 4;
   transform: translateX(-50%);
   white-space: nowrap;
-  padding: 8rpx 16rpx;
+  padding: 6rpx 14rpx;
   border-radius: 999rpx;
   background: rgba(255,255,255,0.82);
   box-shadow: 0 8rpx 16rpx rgba(15, 23, 42, 0.08);
@@ -397,7 +411,7 @@
 }
 
 .station-title-primary {
-  font-size: 34rpx;
+  font-size: 32rpx;
   color: #16324f;
 }
 
@@ -405,32 +419,34 @@
   font-size: 24rpx;
 }
 
-.station-activity { top: 132rpx; left: 52rpx; }
-.station-team { top: 154rpx; right: 48rpx; }
-.station-drill { top: 346rpx; left: 50%; transform: translateX(-50%); }
-.station-comment { top: 614rpx; left: 40rpx; }
-.station-case { top: 622rpx; right: 42rpx; }
-.station-points { top: 916rpx; left: 78rpx; }
-.station-share { top: 930rpx; right: 80rpx; }
+.station-activity { top: 164rpx; left: 66rpx; }
+.station-team { top: 178rpx; right: 64rpx; }
+.station-drill { top: 392rpx; left: 50%; transform: translateX(-50%); }
+.station-comment { top: 708rpx; left: 54rpx; }
+.station-case { top: 720rpx; right: 56rpx; }
+.station-points { top: 1004rpx; left: 86rpx; }
+.station-share { top: 1018rpx; right: 88rpx; }
 
 .map-inline-guide {
   position: relative;
+  flex-shrink: 0;
   z-index: 1;
-  margin: 18rpx 8rpx 0;
+  margin: 0;
   padding: 18rpx 24rpx;
   border-radius: 28rpx;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1rpx solid rgba(191, 228, 249, 0.76);
-  box-shadow: 0 14rpx 30rpx rgba(14, 116, 144, 0.08);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(247, 250, 253, 0.94) 100%);
+  border: 1rpx solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 12rpx 24rpx rgba(29, 45, 74, 0.05);
 }
 
 .map-inline-guide-text {
   display: block;
   text-align: center;
-  font-size: 23rpx;
-  line-height: 1.6;
-  color: #567089;
-  font-weight: 600;
+  font-size: 22rpx;
+  line-height: 1.55;
+  color: #64748b;
+  font-weight: 500;
   text-shadow: none;
 }
 

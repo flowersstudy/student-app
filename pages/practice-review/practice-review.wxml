@@ -1,0 +1,91 @@
+<view class="review-page">
+  <view class="card hero-card">
+    <text class="hero-kicker">复盘反馈</text>
+    <text class="hero-title">把这次为什么错，真正想明白</text>
+    <text class="hero-subtitle">{{reviewInfo.subtitle}}</text>
+  </view>
+
+  <view class="card">
+    <view class="section-head">
+      <text class="section-title">先圈出这次最主要的问题</text>
+      <text class="section-desc">不用全选，先抓最影响结果的 1-2 个。</text>
+    </view>
+    <view class="tag-row">
+      <view
+        wx:for="{{mistakeOptions}}"
+        wx:key="id"
+        class="tag-chip {{item.selected ? 'tag-chip-active' : ''}}"
+        bindtap="toggleMistake"
+        data-id="{{item.id}}"
+      >
+        <text class="tag-chip-text {{item.selected ? 'tag-chip-text-active' : ''}}">{{item.label}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-head">
+      <text class="section-title">把问题拆开写</text>
+      <text class="section-desc">先复盘错因，再写下次的具体改法。</text>
+    </view>
+
+    <view class="field-block">
+      <text class="field-label">我为什么会错</text>
+      <textarea
+        class="input-area"
+        placeholder="比如：我只想到方向，没有把对策写成具体动作..."
+        value="{{reflection}}"
+        bindinput="onReflectionInput"
+        auto-height
+      />
+    </view>
+
+    <view class="field-block field-block-last">
+      <text class="field-label">下次准备怎么改</text>
+      <textarea
+        class="input-area"
+        placeholder="比如：先写清问题，再补“谁做、怎么做、做到什么程度”..."
+        value="{{nextAction}}"
+        bindinput="onNextActionInput"
+        auto-height
+      />
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-head">
+      <text class="section-title">准备发给老师的内容</text>
+      <text class="section-desc">把最想追问的点和自己的完成情况一起带上。</text>
+    </view>
+
+    <view class="field-block">
+      <text class="field-label">我想继续问老师</text>
+      <textarea
+        class="input-area"
+        placeholder="把你最想问老师的一个问题写在这里..."
+        value="{{questionForTeacher}}"
+        bindinput="onQuestionInput"
+        auto-height
+      />
+    </view>
+
+    <text class="field-label field-label-check">复盘清单</text>
+    <view wx:for="{{checklist}}" wx:key="id" class="check-row" bindtap="toggleChecklist" data-id="{{item.id}}">
+      <view class="check-box {{item.checked ? 'check-box-active' : ''}}">
+        <text wx:if="{{item.checked}}" class="check-mark">✓</text>
+      </view>
+      <text class="check-text">{{item.text}}</text>
+    </view>
+  </view>
+
+  <view class="bottom-space"></view>
+</view>
+
+<view class="pay-bar">
+  <view class="pay-link" bindtap="goLive">
+    <text class="pay-link-text">去直播课</text>
+  </view>
+  <button class="pay-btn" bindtap="submitReview">提交复盘</button>
+</view>
+
+<diagnose-coupon-fab auto-popup="{{true}}"></diagnose-coupon-fab>

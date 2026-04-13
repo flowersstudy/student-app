@@ -1,12 +1,18 @@
 {
   "pages": [
     "pages/splash/splash",
-    "pages/kpoint-list/kpoint-list",
+    "pages/account-bind/account-bind",
     "pages/diagnose-detail/diagnose-detail",
     "pages/home/home",
     "pages/progress/progress",
     "pages/chat/chat",
     "pages/results/results",
+    "pages/practice-report/practice-report",
+    "pages/practice-purchase/practice-purchase",
+    "pages/practice-task/practice-task",
+    "pages/practice-submit/practice-submit",
+    "pages/practice-review/practice-review",
+    "pages/practice-live/practice-live",
     "pages/study-square/study-square",
     "pages/square-activity/square-activity",
     "pages/square-team/square-team",
@@ -15,6 +21,7 @@
     "pages/square-case/square-case",
     "pages/square-points/square-points",
     "pages/square-share/square-share",
+    "pages/share-detail/share-detail",
     "pages/card-detail/card-detail",
     "pages/lesson-live/lesson-live",
     "pages/lesson-recorded/lesson-recorded",
@@ -25,7 +32,6 @@
     "pages/course-intro/course-intro",
     "pages/leave/leave",
     "pages/lesson-exam/lesson-exam",
-    "pages/review/review",
     "pages/diagnose/diagnose",
     "pages/diagnose-report/diagnose-report",
     "pages/notifications/notifications",
@@ -35,8 +41,8 @@
   "tabBar": {
     "color": "#999999",
     "selectedColor": "#1A6EFF",
-    "backgroundColor": "#cfefff",
-    "borderStyle": "white",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
     "list": [
       {
         "pagePath": "pages/home/home",
@@ -69,6 +75,9 @@
     "navigationBarBackgroundColor": "#ffffff",
     "navigationBarTitleText": "学习助手",
     "navigationBarTextStyle": "black"
+  },
+  "usingComponents": {
+    "diagnose-coupon-fab": "/components/diagnose-coupon-fab/index"
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json"

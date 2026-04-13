@@ -1,7 +1,8 @@
 <view class="intro-page">
-  <view class="intro-hero">
+  <view class="intro-hero intro-hero-{{course.levelClass}}">
     <view class="intro-hero-tag-row">
-      <view class="intro-hero-tag">{{course.subject}}</view>
+      <view class="intro-hero-tag intro-hero-tag-{{course.levelClass}}">{{course.subject}}</view>
+      <view class="intro-hero-tag intro-hero-level-tag intro-hero-level-tag-{{course.levelClass}}">{{course.level}}</view>
     </view>
     <text class="intro-hero-name">{{course.name}}</text>
     <text class="intro-hero-tagline">{{course.tagline}}</text>
@@ -79,5 +80,7 @@
 </view>
 
 <view class="buy-bar">
-  <button class="btn-buy" bindtap="goPurchase">查看购买方案</button>
+  <button class="btn-buy btn-buy-{{course.levelClass}}" bindtap="goPurchase">查看购买方案</button>
 </view>
+
+<diagnose-coupon-fab auto-popup="{{true}}"></diagnose-coupon-fab>

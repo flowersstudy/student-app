@@ -1,0 +1,64 @@
+<view class="live-page">
+  <view class="card hero-card">
+    <view class="row-between">
+      <view>
+        <text class="hero-title">{{liveInfo.title}}</text>
+        <text class="hero-subtitle">{{liveInfo.subtitle}}</text>
+      </view>
+      <text class="tag tag-orange">{{liveInfo.status}}</text>
+    </view>
+
+    <view class="info-row">
+      <image class="info-icon" src="{{uiIcons.calendar}}" mode="aspectFit" />
+      <text class="info-text">{{liveInfo.time}}</text>
+    </view>
+    <view class="info-row">
+      <image class="info-icon" src="{{uiIcons.user}}" mode="aspectFit" />
+      <text class="info-text">{{liveInfo.teacher}} · {{liveInfo.updatedAt}} 更新</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <text class="section-title">直播入口</text>
+    <view class="link-card">
+      <text class="link-label">老师上传的直播链接</text>
+      <text class="link-value">{{liveInfo.link}}</text>
+      <view class="btn-row">
+        <button class="btn-flow" bindtap="copyLink">复制链接</button>
+        <button class="btn-flow btn-flow-outline" bindtap="copyMeetingNo">复制会议号</button>
+      </view>
+      <text class="meeting-meta">会议号：{{liveInfo.meetingNo}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <text class="section-title">上课提醒</text>
+    <view wx:for="{{reminders}}" wx:key="*this" class="bullet-row">
+      <view class="bullet-dot"></view>
+      <text class="bullet-text">{{item}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <text class="section-title">课前问题记录</text>
+    <textarea
+      class="input-area"
+      placeholder="先记下你最想问老师的问题，开播时可以直接提..."
+      value="{{notes}}"
+      bindinput="onNotesInput"
+      auto-height
+    />
+  </view>
+
+  <view class="bottom-space"></view>
+</view>
+
+<view class="pay-bar">
+  <view class="pay-info">
+    <text class="pay-label">如果链接有问题</text>
+    <text class="pay-price">可直接去聊天页联系老师</text>
+  </view>
+  <button class="pay-btn" bindtap="goChat">联系老师</button>
+</view>
+
+<diagnose-coupon-fab auto-popup="{{true}}"></diagnose-coupon-fab>

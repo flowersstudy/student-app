@@ -14,6 +14,7 @@
       wx:if="{{item.pinned}}"
       class="notif-item notif-item-pinned"
       bindtap="onItemTap"
+      data-id="{{item.id}}"
       data-url="{{item.url}}"
       data-pinned="{{item.pinned}}"
     >
@@ -36,6 +37,7 @@
       wx:if="{{!item.pinned}}"
       class="notif-item"
       bindtap="onItemTap"
+      data-id="{{item.id}}"
       data-url="{{item.url}}"
       data-pinned="{{item.pinned}}"
     >
@@ -52,3 +54,5 @@
   </view>
 
 </view>
+
+<diagnose-coupon-fab auto-popup="{{true}}"></diagnose-coupon-fab>

@@ -1,5 +1,8 @@
 {
-  "navigationBarTitleText": "老师详情",
-  "navigationBarBackgroundColor": "#ffffff",
-  "navigationBarTextStyle": "black"
+    "navigationBarTitleText":  "老师详情",
+    "navigationBarBackgroundColor":  "#ffffff",
+    "navigationBarTextStyle":  "black",
+    "usingComponents":  {
+                            "diagnose-coupon-fab":  "/components/diagnose-coupon-fab/index"
+                        }
 }

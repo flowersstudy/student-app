@@ -1,3 +1,6 @@
 {
-  "navigationBarTitleText": "活动发布"
+    "navigationBarTitleText":  "活动发布",
+    "usingComponents":  {
+                            "diagnose-coupon-fab":  "/components/diagnose-coupon-fab/index"
+                        }
 }

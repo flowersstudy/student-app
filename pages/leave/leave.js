@@ -1,5 +1,6 @@
 const app = getApp()
 const { uiIcons } = require('../../utils/ui-icons')
+const { fetchStudentLeaveRecords, fetchStudentProfile, submitStudentLeave } = require('../../utils/student-api')
 
 
 function getStepsForPoint() {
@@ -13,6 +14,48 @@ function fmtTime(date) {
   const d = date || new Date()
   const pad = n => String(n).padStart(2, '0')
   return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
+
+function toPointItem(course = {}) {
+  return {
+    id: Number(course.course_id || course.courseId || course.id || 0),
+    name: course.name || '',
+    subject: course.subject || '',
+    progress: Number(course.progress || 0),
+    status: course.status || '',
+  }
+}
+
+function formatLeaveDays(days) {
+  const safeDays = Math.max(1, Number(days || 1))
+  return safeDays >= 7 ? '7天及以上' : `${safeDays}天`
+}
+
+function getLatestActiveLeave(records = []) {
+  return records.find((item) => item.status === 'pending' || item.status === 'approved') || null
+}
+
+function buildLeaveHistoryMap(records = []) {
+  return records.reduce((acc, item) => {
+    const courseId = Number(item.course_id || item.courseId || 0)
+    if (!courseId || item.status === 'rejected') {
+      return acc
+    }
+
+    acc[courseId] = (acc[courseId] || 0) + 1
+    return acc
+  }, {})
+}
+
+function buildSubmittedInfo(record = {}) {
+  return {
+    leaveType: record.type || 'single',
+    pointName: record.point_name || '',
+    stepName: record.step_name || '',
+    days: formatLeaveDays(record.days),
+    reason: record.reason || '',
+    submitTime: record.created_at ? fmtTime(new Date(record.created_at)) : fmtTime(new Date()),
+  }
 }
 
 Page({
@@ -56,45 +99,110 @@ Page({
     submittedInfo: null
   },
 
-  autoApproveTimer: null,
-
   onLoad(options) {
     const type = options.type || 'single'
-
-    const xp = app.globalData.xingcePoints || []
-    const sp = app.globalData.shenlunPoints || []
-    const all = [...xp, ...sp].sort((a, b) => a.id - b.id)
-    const purchasedPoints = all.length > 0 ? all : [
-      { id: 1, name: '游走式找点' }, { id: 2, name: '总结转述难' },
-      { id: 3, name: '分析结构不清' }, { id: 4, name: '公文结构不清' },
-      { id: 5, name: '对策推导难' }, { id: 6, name: '作文立意不准' },
-      { id: 7, name: '作文逻辑不清' }, { id: 8, name: '作文表达不畅' }
-    ]
-    const pointNames = purchasedPoints.map(p => p.name)
-
-    let pointIndex = 0
-    if (options.pointId) {
-      const idx = purchasedPoints.findIndex(p => p.id === parseInt(options.pointId))
-      if (idx >= 0) pointIndex = idx
-    }
-
-    const point = purchasedPoints[pointIndex]
-    const steps = getStepsForPoint()
-    const currentPointLeaveCount = this.data.leaveHistory[point.id] || 0
-
-    let stepIndex = 0
-    if (options.stepIndex) stepIndex = Math.min(parseInt(options.stepIndex), steps.length - 1)
-
-    this.setData({
-      leaveType: type, purchasedPoints, pointNames,
-      pointIndex, steps, stepIndex,
-      currentPointLeaveCount,
-      warnMaxLeaves: currentPointLeaveCount >= 2
+    this.setData({ leaveType: type })
+    this.refreshLeaveState({
+      pointId: options.pointId,
+      stepIndex: options.stepIndex,
+      leaveType: type,
     })
   },
 
-  onUnload() {
-    if (this.autoApproveTimer) clearTimeout(this.autoApproveTimer)
+  onShow() {
+    this.refreshLeaveState()
+  },
+
+  async refreshLeaveState(options = {}) {
+    const leaveType = options.leaveType || this.data.leaveType || 'single'
+
+    try {
+      const [profile, leaveRecords] = await Promise.all([
+        fetchStudentProfile(app),
+        fetchStudentLeaveRecords(app),
+      ])
+
+      const inProgress = Array.isArray(profile && profile.inProgress) ? profile.inProgress : []
+      const completed = Array.isArray(profile && profile.completed) ? profile.completed : []
+      const purchasedPoints = [...inProgress, ...completed].map(toPointItem)
+
+      if (purchasedPoints.length) {
+        const xingcePoints = purchasedPoints.filter((item) => String(item.subject || '').includes('行测'))
+        const shenlunPoints = purchasedPoints.filter((item) => !String(item.subject || '').includes('行测'))
+        app.globalData.xingcePoints = xingcePoints
+        app.globalData.shenlunPoints = shenlunPoints
+      }
+
+      const pointNames = purchasedPoints.map((item) => item.name)
+      const leaveHistory = buildLeaveHistoryMap(leaveRecords)
+      const latestLeave = getLatestActiveLeave(leaveRecords)
+
+      let pointIndex = Number(this.data.pointIndex || 0)
+      const pointId = Number(options.pointId || 0)
+      if (pointId) {
+        const matchedIndex = purchasedPoints.findIndex((item) => Number(item.id) === pointId)
+        if (matchedIndex >= 0) {
+          pointIndex = matchedIndex
+        }
+      } else if (purchasedPoints[pointIndex] == null) {
+        pointIndex = 0
+      }
+
+      const point = purchasedPoints[pointIndex] || { id: 0, name: '' }
+      const steps = getStepsForPoint(point)
+      let stepIndex = Number(this.data.stepIndex || 0)
+      if (options.stepIndex !== undefined) {
+        stepIndex = Math.min(Number(options.stepIndex) || 0, steps.length - 1)
+      } else if (stepIndex > steps.length - 1) {
+        stepIndex = 0
+      }
+
+      const currentPointLeaveCount = leaveHistory[point.id] || 0
+      const submitted = !!latestLeave
+      const approvalStatus = latestLeave && latestLeave.status === 'approved' ? 'approved' : 'pending'
+      const submittedInfo = latestLeave ? buildSubmittedInfo(latestLeave) : null
+
+      if (latestLeave) {
+        app.globalData.leaveStatus = {
+          active: true,
+          approvalStatus,
+          pointName: submittedInfo.pointName,
+          stepName: submittedInfo.stepName,
+          days: submittedInfo.days,
+          submitTime: submittedInfo.submitTime,
+        }
+      } else {
+        app.globalData.leaveStatus = {
+          active: false,
+          approvalStatus: '',
+          pointName: '',
+          stepName: '',
+          days: '',
+          submitTime: '',
+        }
+      }
+
+      this.setData({
+        leaveType,
+        purchasedPoints,
+        pointNames,
+        pointIndex,
+        steps,
+        stepIndex,
+        leaveHistory,
+        currentPointLeaveCount,
+        warnMaxLeaves: leaveType === 'single' && currentPointLeaveCount >= 2,
+        submitted,
+        approvalStatus,
+        submittedInfo,
+      }, () => this._computeLeaveWarning())
+    } catch (error) {
+      console.warn('请假页真实数据加载失败:', error && error.message ? error.message : error)
+      wx.showToast({
+        title: (error && error.message) || '请假信息加载失败',
+        icon: 'none',
+      })
+    }
   },
 
   selectType(e) {
@@ -212,40 +320,35 @@ Page({
     wx.showModal({
       title: '确认提交',
       content: `${detailText}\n\n提交后将通知带教老师和学管，确认吗？`,
-      success: (res) => {
+      success: async (res) => {
         if (!res.confirm) return
 
-        // 更新请假次数
-        const leaveHistory = { ...this.data.leaveHistory }
-        if (leaveType === 'single') leaveHistory[point.id] = (leaveHistory[point.id] || 0) + 1
+        try {
+          wx.showLoading({ title: '提交中...', mask: true })
+          await submitStudentLeave({
+            type: leaveType,
+            courseId: leaveType === 'single' ? point.id : null,
+            pointName: leaveType === 'single' ? point.name : '',
+            stepName: leaveType === 'single' ? step : '',
+            days: daysIndex >= 6 ? 7 : daysIndex + 1,
+            reason,
+          }, app)
 
-        const submittedInfo = {
-          leaveType,
-          pointName: leaveType === 'single' ? point.name : '',
-          stepName:  leaveType === 'single' ? step : '',
-          days,
-          reason,
-          submitTime: fmtTime(new Date())
+          wx.hideLoading()
+          wx.showToast({ title: '请假申请已提交', icon: 'success' })
+          await this.refreshLeaveState({
+            pointId: leaveType === 'single' ? point.id : '',
+            stepIndex,
+            leaveType,
+          })
+        } catch (error) {
+          wx.hideLoading()
+          wx.showToast({
+            title: (error && error.message) || '提交失败，请稍后重试',
+            icon: 'none',
+            duration: 2500,
+          })
         }
-
-        this.setData({ submitted: true, approvalStatus: 'pending', leaveHistory, submittedInfo })
-
-        // 写入全局请假状态（progress 页销假检测用）
-        app.globalData.leaveStatus = {
-          active: true,
-          approvalStatus: 'pending',
-          pointName: submittedInfo.pointName,
-          stepName: submittedInfo.stepName,
-          days: submittedInfo.days,
-          submitTime: submittedInfo.submitTime
-        }
-
-        // 2小时后系统自动同意
-        this.autoApproveTimer = setTimeout(() => {
-          this.setData({ approvalStatus: 'approved' })
-          app.globalData.leaveStatus.approvalStatus = 'approved'
-          wx.showToast({ title: '老师已同意请假', icon: 'success', duration: 2500 })
-        }, 2 * 60 * 60 * 1000)
       }
     })
   }

@@ -1,5 +1,8 @@
 {
-  "navigationBarTitleText": "学习路径",
-  "navigationBarBackgroundColor": "#f7f9fc",
-  "navigationBarTextStyle": "black"
+    "navigationBarTitleText":  "学习路径",
+    "navigationBarBackgroundColor":  "#f7f9fc",
+    "navigationBarTextStyle":  "black",
+    "usingComponents":  {
+                            "diagnose-coupon-fab":  "/components/diagnose-coupon-fab/index"
+                        }
 }

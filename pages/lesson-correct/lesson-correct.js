@@ -1,5 +1,6 @@
 const { uiIcons } = require('../../utils/ui-icons')
 const { completeLocalUpload, isOfflineMode } = require('../../utils/offline')
+const { ensureSilentLogin, getStudentAuthHeader } = require('../../utils/auth')
 
 Page({
   data: {
@@ -44,7 +45,7 @@ Page({
       success: (res) => this._doUpload(res.tempFiles[0].path, res.tempFiles[0].name),
     })
   },
-  _doUpload(filePath, fileName) {
+  async _doUpload(filePath, fileName) {
     const app = getApp()
     const profile = app.globalData.userProfile
     const lesson = this.data.lessonInfo
@@ -66,10 +67,19 @@ Page({
       return
     }
 
+    try {
+      await ensureSilentLogin(app)
+    } catch (error) {
+      wx.hideLoading()
+      wx.showToast({ title: '登录状态已失效，请稍后重试', icon: 'none' })
+      return
+    }
+
     wx.uploadFile({
       url: `${app.globalData.serverBase}/api/submissions`,
       filePath,
       name: 'file',
+      header: getStudentAuthHeader(),
       formData: {
         studentName: profile.name,
         studentId: profile.name,

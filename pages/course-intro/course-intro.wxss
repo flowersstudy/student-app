@@ -11,6 +11,14 @@
   flex-direction: column;
 }
 
+.intro-hero-foundation {
+  background: linear-gradient(150deg, #1248cc 0%, #1A6EFF 60%, #4a9eff 100%);
+}
+
+.intro-hero-special {
+  background: linear-gradient(150deg, #c97a00 0%, #f4b400 58%, #ffd76a 100%);
+}
+
 .intro-hero-tag-row {
   display: flex;
   align-items: center;
@@ -28,6 +36,26 @@
   border-radius: 20rpx;
   margin-bottom: 20rpx;
   letter-spacing: 2rpx;
+}
+
+.intro-hero-tag-foundation {
+  background: rgba(255,255,255,0.22);
+}
+
+.intro-hero-tag-special {
+  background: rgba(255,255,255,0.26);
+}
+
+.intro-hero-level-tag {
+  letter-spacing: 0;
+}
+
+.intro-hero-level-tag-foundation {
+  background: rgba(219, 234, 254, 0.26);
+}
+
+.intro-hero-level-tag-special {
+  background: rgba(255, 248, 220, 0.3);
 }
 
 .intro-hero-name {
@@ -332,6 +360,15 @@
   font-size: 30rpx;
   font-weight: 700;
   border: none;
+}
+
+.btn-buy-foundation {
+  background: linear-gradient(90deg, #1A6EFF 0%, #4a9eff 100%);
+}
+
+.btn-buy-special {
+  background: linear-gradient(90deg, #e49b00 0%, #f4b400 100%);
+  box-shadow: 0 14rpx 28rpx rgba(244, 180, 0, 0.22);
 }
 
 .btn-buy::after {

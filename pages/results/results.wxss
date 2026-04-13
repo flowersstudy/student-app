@@ -141,6 +141,14 @@
   box-shadow: none;
 }
 
+.stat-chip-clickable {
+  position: relative;
+}
+
+.stat-chip-clickable:active {
+  transform: scale(0.98);
+}
+
 .stat-goal {
   background: linear-gradient(180deg, #f7fbff 0%, #eef5ff 100%);
   border-color: rgba(96, 165, 250, 0.16);
@@ -358,6 +366,13 @@
   margin-bottom: 16rpx;
 }
 
+.practice-card-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
 .practice-card-badge,
 .practice-card-status {
   display: inline-flex;
@@ -382,8 +397,15 @@
   border: 1rpx solid rgba(37, 99, 235, 0.12);
 }
 
+.practice-card-report-action {
+  margin: 0;
+  flex-shrink: 0;
+}
+
 .practice-card-title {
   display: block;
+  flex: 1;
+  min-width: 0;
   font-size: 32rpx;
   font-weight: 700;
   color: #0f172a;
@@ -423,6 +445,10 @@
   line-height: 1.15;
 }
 
+.practice-card-stat-compact {
+  font-size: 26rpx;
+}
+
 .practice-card-stat-accent {
   color: #c2410c;
 }
@@ -456,6 +482,10 @@
   gap: 10rpx;
   flex: 1;
   min-width: 0;
+}
+
+.practice-card-tags-alone {
+  padding: 22rpx 28rpx 30rpx;
 }
 
 .practice-card-tag {

@@ -1,3 +1,6 @@
 {
-  "navigationBarTitleText": "理论录播课"
+    "navigationBarTitleText":  "理论录播课",
+    "usingComponents":  {
+                            "diagnose-coupon-fab":  "/components/diagnose-coupon-fab/index"
+                        }
 }

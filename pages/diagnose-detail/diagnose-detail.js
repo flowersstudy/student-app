@@ -14,11 +14,11 @@ Page({
       scoreGap: 22,
       dimensions: 8,
       outputCount: 3,
-      serviceType: '1v1'
+      serviceType: '人工诊断'
     },
     highlights: [
       {
-        title: '优势基底',
+        title: '优势基础',
         desc: '材料阅读基础不弱，理解速度和信息敏感度在线，具备继续提分的底子。'
       },
       {
@@ -26,7 +26,7 @@ Page({
         desc: '真正拖分的不是努力不够，而是卡在结构、转述和作文逻辑这几个关键位置。'
       }
     ],
-    quickTags: ['人工诊断', '卡点定位', '阶段规划', '专属报告'],
+    quickTags: ['失分拆解', '卡点定位', '阶段规划', '专属报告'],
     systemFacts: [
       {
         value: '8',
@@ -70,7 +70,7 @@ Page({
       }
     ],
     basisRows: [
-      { label: '诊断方式', value: '老师批改 + 电话沟通 + 书面报告' },
+      { label: '诊断方式', value: '老师批改 + 失分分析 + 书面报告' },
       { label: '输出结果', value: '失分依据、核心卡点、学习路径、干预建议' },
       { label: '适用场景', value: '不知道先补哪、刷题很多但分数不涨' }
     ],
@@ -87,7 +87,7 @@ Page({
       },
       {
         tag: '阶段三',
-        title: '靶向冲刺',
+        title: '面向冲刺',
         desc: '围绕目标考试做作文和考情突破，把分数真正往上拉。'
       }
     ],

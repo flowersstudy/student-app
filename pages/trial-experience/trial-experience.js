@@ -4,24 +4,28 @@ const PATH_STEPS = [
     title: '完成刷题任务',
     desc: '先完成当期卡点对应的刷题任务，明确自己卡在哪里。',
     scheduleType: 'drill',
+    routeUrl: '/pages/practice-task/practice-task',
   },
   {
     id: 'submit',
     title: '提交刷题作业',
     desc: '按要求提交当天作业，系统先做 AI 批改，老师再重点看问题。',
     scheduleType: 'hw',
+    routeUrl: '/pages/practice-submit/practice-submit',
   },
   {
     id: 'review',
     title: '完成并反馈复盘',
     desc: '根据指导完成复盘，把“为什么错”真正说清楚、写明白。',
     scheduleType: 'video',
+    routeUrl: '/pages/practice-review/practice-review',
   },
   {
     id: 'live',
     title: '直播学习',
     desc: '进入直播课，针对共性卡点集中拆解方法和提分路径。',
     scheduleType: 'class',
+    routeUrl: '/pages/practice-live/practice-live',
   },
 ]
 
@@ -125,8 +129,9 @@ function buildScheduleData() {
 Page({
   data: {
     isEnrolled: false,
-    productName: '《申论八大卡点·破局刷题营》',
-    depositText: '99 元 / 月，4 次直播全勤返还 99 元',
+    hasPracticeCourse: false,
+    productName: '《申论八大卡点·刷题班》',
+    depositText: '99 元 / 月 · 4 次直播全勤返还 99 元',
     pathSteps: PATH_STEPS,
     scheduleWeeks: SCHEDULE_WEEKS,
     noticeList: NOTICE_LIST,
@@ -148,13 +153,14 @@ Page({
     const app = getApp()
     this.setData({
       isEnrolled: !!(app && app.globalData && app.globalData.isEnrolled),
+      hasPracticeCourse: !!(app && app.globalData && app.globalData.hasPracticeCourse),
     })
     this.initCalendar()
   },
 
   goToPurchase() {
     wx.navigateTo({
-      url: '/pages/purchase/purchase',
+      url: '/pages/practice-purchase/practice-purchase',
     })
   },
 
@@ -285,31 +291,14 @@ Page({
   },
 
   onPathStepTap(e) {
-    const { stepType } = e.currentTarget.dataset
-    if (!stepType) return
-
-    const targetDate = this.findNearestScheduleDate(stepType)
-    if (!targetDate) {
-      wx.showToast({ title: '暂未找到对应日程', icon: 'none' })
+    const { routeUrl } = e.currentTarget.dataset
+    if (!routeUrl) {
+      wx.showToast({ title: '页面准备中', icon: 'none' })
       return
     }
 
-    const target = new Date(targetDate)
-    const weekData = this.buildWeekDays(targetDate)
-    this.setData({
-      calendarYear: target.getFullYear(),
-      calendarMonth: target.getMonth() + 1,
-      calendarSelectedDate: targetDate,
-      calendarSelectedLabel: formatDisplayDate(targetDate),
-      calendarSelectedTasks: this.data.scheduleData[targetDate] || [],
-      calendarWeeks: this.buildMonthWeeks(target.getFullYear(), target.getMonth() + 1),
-      calendarWeekDays: weekData,
-      calendarWeekTitle: weekData.title,
-    })
-
-    wx.pageScrollTo({
-      selector: '#schedule-calendar-section',
-      duration: 300,
+    wx.navigateTo({
+      url: routeUrl,
     })
   },
 

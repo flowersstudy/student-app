@@ -18,23 +18,23 @@
       </view>
     </view>
 
-    <!-- ── Step 2 1v1 电话沟通 ── -->
+    <!-- ── Step 2 补充信息确认 ── -->
     <view class="dl-item">
       <view class="dl-left">
-        <view class="dl-dot {{step2.status === '已完成' ? 'dl-dot-green' : step2.status === '待电话沟通' ? 'dl-dot-blue' : 'dl-dot-gray'}}"></view>
+        <view class="dl-dot {{step2.status === '已完成' ? 'dl-dot-green' : step2.status === '待信息确认' ? 'dl-dot-blue' : 'dl-dot-gray'}}"></view>
         <view class="dl-line"></view>
       </view>
       <view class="dl-content">
         <view class="card dl-card">
           <view class="dl-header">
             <text class="dl-step-num">Step 2</text>
-            <text class="tag {{step2.status === '已完成' ? 'tag-green' : step2.status === '待电话沟通' ? 'tag-blue' : 'tag-gray'}}">{{step2.status}}</text>
+            <text class="tag {{step2.status === '已完成' ? 'tag-green' : step2.status === '待信息确认' ? 'tag-blue' : 'tag-gray'}}">{{step2.status}}</text>
           </view>
-          <text class="dl-title">1v1 电话沟通</text>
+          <text class="dl-title">补充信息确认</text>
           <text class="dl-time">2天内完成</text>
           <button wx:if="{{step2.status === '待约时间'}}" class="btn-outline dl-btn" bindtap="scheduleCall">去约时间</button>
-          <view wx:elif="{{step2.status === '待电话沟通'}}" class="dl-tip">
-            <text class="dl-tip-text">等待电话沟通，请保持手机畅通</text>
+          <view wx:elif="{{step2.status === '待信息确认'}}" class="dl-tip">
+            <text class="dl-tip-text">老师会先确认关键信息，用来提高诊断判断准确度</text>
           </view>
         </view>
       </view>
@@ -124,7 +124,7 @@
       </view>
     </view>
 
-    <!-- ── Step 5 1v1 诊断沟通 ── -->
+    <!-- ── Step 5 诊断讲解 ── -->
     <view class="dl-item">
       <view class="dl-left">
         <view class="dl-dot {{step5.status === '已完成' ? 'dl-dot-green' : step5.status === '待上课' ? 'dl-dot-blue' : 'dl-dot-gray'}}"></view>
@@ -136,7 +136,7 @@
             <text class="dl-step-num">Step 5</text>
             <text class="tag {{step5.status === '已完成' ? 'tag-green' : step5.status === '待上课' ? 'tag-blue' : 'tag-gray'}}">{{step5.status}}</text>
           </view>
-          <text class="dl-title">1v1 诊断沟通</text>
+          <text class="dl-title">诊断讲解</text>
           <text class="dl-time">3天内完成</text>
           <button wx:if="{{step5.status === '待约课'}}" class="btn-outline dl-btn" bindtap="scheduleCourse">去约课</button>
           <view wx:elif="{{step5.status === '待上课'}}" class="dl-tip">
@@ -166,3 +166,5 @@
   </view>
   <view class="safe-bottom"></view>
 </view>
+
+<diagnose-coupon-fab auto-popup="{{true}}"></diagnose-coupon-fab>

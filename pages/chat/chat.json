@@ -1,3 +1,6 @@
 {
-  "navigationBarTitleText": "李老师 · 申论基础课"
+    "navigationBarTitleText":  "李老师 · 申论基础课",
+    "usingComponents":  {
+                            "diagnose-coupon-fab":  "/components/diagnose-coupon-fab/index"
+                        }
 }

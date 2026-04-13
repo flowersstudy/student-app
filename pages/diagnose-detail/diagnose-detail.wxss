@@ -445,6 +445,24 @@
   line-height: 1.72;
 }
 
+.dd-footer-note-list {
+  margin-top: 18rpx;
+  padding: 18rpx 20rpx;
+  border-radius: 20rpx;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dd-footer-note {
+  display: block;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 22rpx;
+  line-height: 1.65;
+}
+
+.dd-footer-note + .dd-footer-note {
+  margin-top: 10rpx;
+}
+
 .dd-footer-btn {
   margin-top: 24rpx;
   height: 82rpx;

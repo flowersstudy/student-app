@@ -2,32 +2,71 @@ const app = getApp()
 
 Page({
   data: {
-    student: { name: '张三', exam: '国考行测申论', diagnosisDate: '2026-04-03', teacher: '李老师' },
-    diagnosisScore: 108,
-    targetScore: 130,
-    scoreGap: 22,
-    corePoints: [
-      { id: 7, name: '作文逻辑不清', priority: '高', desc: '作文论证结构混乱，缺乏清晰的层次感，论据与论点之间缺少衔接分析。' },
-      { id: 2, name: '总结转述难',  priority: '高', desc: '材料提炼时容易受次要信息干扰，主旨提炼偏移，归纳段落大意准确率不足。' },
-      { id: 4, name: '公文结构不清',  priority: '中', desc: '公文格式背记较熟，但内容组织套路化，缺乏针对题目的灵活调整。' }
+    student: {
+      name: '张三',
+      exam: '27年浙江省考 / 事业编',
+      diagnosisDate: '2026-04-10',
+      teacher: '何可心',
+    },
+    summary: {
+      typeTitle: '差一丢丢通关型',
+      diagnosisScore: '60.5',
+      targetScore: '70',
+      scoreGap: '9.5',
+      conclusion: '你的对策推导与结构掌握较好，如果补上“游走式找点”这一块，离目标分数就只差临门一脚。',
+      basis: '依据测评分数、反复失分点和答题表现综合判断。',
+    },
+    strengths: [
+      '对策推导与结构掌握整体较好，方法基础已经具备。',
+      '学习理解能力不错，接受新方法和调整思路的速度较快。',
     ],
-    plan: [
-      '第一阶段（1-2周）：优先攻克「作文逻辑不清」和「总结转述难」',
-      '第二阶段（3-4周）：解决「公文结构不清」，同步巩固前两个卡点',
-      '第三阶段（5-6周）：综合真题实战，稳固提分成果'
+    hiddenLosses: [
+      '作答时容易只扫点不看结构，导致明明会做却丢掉细节分。',
     ],
-    teacherComment: '同学整体基础不错，逻辑思维能力较强，主要问题在于作文论证结构和答题规范化程度。按上述计划推进，预计6周内可达目标分数，加油！',
-    messageExpanded: false
+    frequentLosses: [
+      { title: '要点遗漏', score: '-10分', desc: '4道题都出现细节漏点，是当前最主要的失分来源。' },
+      { title: '前置词错误', score: '-6分', desc: '共出现 6 处错误，覆盖 4 道题，属于高频系统性问题。' },
+      { title: '要点分类错误', score: '-3.5分', desc: '3道题出现分类偏差，会与漏点、前置词错误相互叠加。' },
+    ],
+    corePoint: {
+      title: '红标·游走式找点',
+      reason: '阅读习惯偏“扫点式”，没有勾画逻辑词，容易忽略过渡段和案例后的关键信息，因此漏点、分类错和前置词错会一起出现。',
+      importance: '这是当前最底层的前置卡点，如果不先解决，后面很多题型都会被持续拖分。',
+      gain: '提分空间 +9.5 分',
+    },
+    methods: [
+      '识别常见作答要素及其表现形式，如做法、成效、问题、原因等。',
+      '训练材料结构分析法，先看逻辑关系，再决定如何找点。',
+      '训练材料层级划分法，理清句子、段落与案例之间的关系。',
+      '掌握要点分类方法，避免分类互相干扰造成重复失分。',
+    ],
+    stages: [
+      {
+        title: '阶段一 · 卡点纠偏',
+        duration: '2026.04 - 2026.05（约 4-6 周）',
+        goal: '集中纠偏“游走式找点”，建立正确的找点习惯和阅读方法。',
+      },
+      {
+        title: '阶段二 · 卡点稳定',
+        duration: '2026.06 - 考前',
+        goal: '通过针对性刷题、整卷训练和月度复盘，把方法练成稳定输出能力。',
+      },
+    ],
+    suggestions: [
+      '先放下原有做题惯性，严格按纠偏后的方法重新训练。',
+      '有问题及时沟通，不要把疑问拖成新的卡点。',
+      '前期先把方法练对，后期再强化限时训练和整卷节奏。',
+      '每题都做复盘，记录错误原因、正确方法和后续改进方向。',
+    ],
+    closing: '愿你从发现卡点开始，逐个攻克，按计划稳定提分，顺利达到目标分数。',
   },
 
   onLoad() {
-    const profile = app.globalData.userProfile
-    if (profile) {
-      this.setData({ 'student.name': profile.name })
+    const profile = app.globalData.userProfile || {}
+    if (profile.name) {
+      this.setData({
+        'student.name': profile.name,
+      })
     }
   },
-
-  toggleMessage() {
-    this.setData({ messageExpanded: !this.data.messageExpanded })
-  }
 })

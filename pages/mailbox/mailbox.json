@@ -1,5 +1,8 @@
 {
-  "navigationBarTitleText": "校长信箱",
-  "navigationBarBackgroundColor": "#ffffff",
-  "navigationBarTextStyle": "black"
+    "navigationBarTitleText":  "校长信箱",
+    "navigationBarBackgroundColor":  "#ffffff",
+    "navigationBarTextStyle":  "black",
+    "usingComponents":  {
+                            "diagnose-coupon-fab":  "/components/diagnose-coupon-fab/index"
+                        }
 }

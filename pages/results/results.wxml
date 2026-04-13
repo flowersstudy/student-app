@@ -1,14 +1,5 @@
 <view class="results-page">
-  <block wx:if="{{!isEnrolled}}">
-    <view class="empty-state">
-      <image class="empty-icon" src="{{uiIcons.chart}}" mode="aspectFit" />
-      <text class="empty-title">暂无学习数据</text>
-      <text class="empty-desc">购课并开始学习后，你的卡点突破记录、学习时长、老师寄语都会在这里展示。</text>
-      <button class="btn-primary empty-btn" bindtap="goEnroll">去选课</button>
-    </view>
-  </block>
 
-  <block wx:else>
     <view class="summary-section">
       <view class="summary-board">
         <view class="summary-top-row">
@@ -35,22 +26,25 @@
         </view>
 
         <view class="summary-bottom-row">
-          <view class="stat-chip stat-goal">
-            <text class="stat-chip-label">提分目标</text>
+          <view
+            class="stat-chip stat-goal {{!hasDiagnoseCourse ? 'stat-chip-clickable' : ''}}"
+            bindtap="handleGoalGapTap"
+          >
+            <text class="stat-chip-label">目标提分</text>
             <view class="stat-chip-main">
               <text class="stat-chip-value">{{stats.scoreGap}}</text>
               <text class="stat-chip-unit">分</text>
             </view>
           </view>
           <view class="stat-chip stat-solved">
-            <text class="stat-chip-label">已突破</text>
+            <text class="stat-chip-label">已解决</text>
             <view class="stat-chip-main">
               <text class="stat-chip-value">{{stats.solved}}</text>
               <text class="stat-chip-unit">个</text>
             </view>
           </view>
           <view class="stat-chip stat-pending">
-            <text class="stat-chip-label">待解决</text>
+            <text class="stat-chip-label">待突破</text>
             <view class="stat-chip-main">
               <text class="stat-chip-value">{{stats.pending}}</text>
               <text class="stat-chip-unit">个</text>
@@ -62,14 +56,14 @@
 
     <view class="section-header-bar">
       <view class="section-dot solved-dot"></view>
-      <text class="section-title-bar resolved-title">已解决</text>
+      <text class="section-title-bar resolved-title">已解决卡点</text>
       <text class="section-count">{{solvedPoints.length}} 个</text>
     </view>
 
     <view wx:for="{{solvedPoints}}" wx:key="id" class="card point-block">
       <view class="row-between">
         <text class="point-block-name">{{item.name}}</text>
-        <button class="btn-detail" bindtap="goCardDetail" data-id="{{item.id}}">学习数据</button>
+        <button class="btn-detail" bindtap="goCardDetail" data-id="{{item.id}}">查看详情</button>
       </view>
       <text class="point-block-summary">{{item.summary}}</text>
       <text class="point-block-date">完成时间：{{item.completedAt}}</text>
@@ -77,7 +71,7 @@
 
     <view class="section-header-bar">
       <view class="section-dot pending-dot"></view>
-      <text class="section-title-bar pending-title">待突破</text>
+      <text class="section-title-bar pending-title">待突破卡点</text>
       <text class="section-count">{{pendingPoints.length}} 个</text>
     </view>
 
@@ -97,24 +91,24 @@
     <view class="card report-card diagnose-report-card">
       <view class="report-top">
         <view>
-          <text class="report-title">专属诊断报告</text>
+          <text class="report-title">{{hasDiagnoseCourse ? '个性化诊断结论' : '1v1申论诊断课'}}</text>
           <text class="report-sub">{{studentName}} · {{diagnosisReport.exam}} · {{diagnosisReport.teacher}}</text>
         </view>
-        <button class="btn-report-action" bindtap="goDiagnoseReport">查看完整报告</button>
+        <button class="btn-report-action" bindtap="goDiagnoseReport">{{diagnoseReportActionText}}</button>
       </view>
 
       <view class="report-stats">
         <view class="report-stat-item">
-          <text class="report-stat-value">{{diagnosisScore}}</text>
-          <text class="report-stat-label">诊断分</text>
+          <text class="report-stat-value">{{diagnosisReport.diagnosisScore}}</text>
+          <text class="report-stat-label">{{hasDiagnoseCourse ? '诊断分' : '诊断形式'}}</text>
         </view>
         <view class="report-stat-item">
-          <text class="report-stat-value">{{targetScore}}</text>
-          <text class="report-stat-label">目标分</text>
+          <text class="report-stat-value">{{diagnosisReport.targetScore}}</text>
+          <text class="report-stat-label">{{hasDiagnoseCourse ? '目标分' : '诊断维度'}}</text>
         </view>
         <view class="report-stat-item">
-          <text class="report-stat-value report-stat-warn">{{stats.scoreGap}}</text>
-          <text class="report-stat-label">待提升</text>
+          <text class="report-stat-value report-stat-warn">{{diagnosisReport.scoreGap}}</text>
+          <text class="report-stat-label">{{hasDiagnoseCourse ? '差距' : '输出结果'}}</text>
         </view>
       </view>
 
@@ -127,17 +121,16 @@
 
     <view id="practice-report-section" class="section-header-bar report-header-bar">
       <view class="section-dot practice-dot"></view>
-      <text class="section-title-bar">刷题课程</text>
+      <text class="section-title-bar">刷题课报告</text>
       <text class="section-count">{{practiceCourse.cycleLabel}}</text>
     </view>
 
     <view class="card report-card practice-report-card">
       <view class="practice-card-hero">
-        <view class="practice-card-badge-row">
-          <text class="practice-card-badge">刷题班</text>
-          <text class="practice-card-status">{{practiceCourse.statusLabel}}</text>
+        <view class="practice-card-title-row">
+          <text class="practice-card-title">{{practiceCourse.title}}</text>
+          <button class="btn-report-action practice-card-report-action" bindtap="goPracticeCourse">{{practiceCourse.statusLabel}}</button>
         </view>
-        <text class="practice-card-title">{{practiceCourse.title}}</text>
         <text class="practice-card-sub">{{practiceCourse.currentWeek}} · {{practiceCourse.currentStage}}</text>
       </view>
 
@@ -148,7 +141,7 @@
         </view>
         <view class="practice-card-stat">
           <text class="practice-card-stat-value">{{practiceCourse.currentTaskCount}}</text>
-          <text class="practice-card-stat-label">本周任务</text>
+          <text class="practice-card-stat-label">当前任务</text>
         </view>
         <view class="practice-card-stat">
           <text class="practice-card-stat-value practice-card-stat-accent">{{practiceCourse.nextLiveDate}}</text>
@@ -158,14 +151,12 @@
 
       <text class="practice-card-summary">{{practiceCourse.summary}}</text>
 
-      <view class="practice-card-footer">
-        <view class="practice-card-tags">
-          <text wx:for="{{practiceCourse.keyNotes}}" wx:key="*this" class="practice-card-tag">{{item}}</text>
-        </view>
-        <button class="practice-card-action" bindtap="goPracticeCourse">查看课表</button>
+      <view class="practice-card-tags practice-card-tags-alone">
+        <text wx:for="{{practiceCourse.keyNotes}}" wx:key="*this" class="practice-card-tag">{{item}}</text>
       </view>
     </view>
 
     <view class="safe-bottom"></view>
-  </block>
 </view>
+
+<diagnose-coupon-fab auto-popup="{{true}}"></diagnose-coupon-fab>

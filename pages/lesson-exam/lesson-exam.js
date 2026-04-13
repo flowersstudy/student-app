@@ -1,5 +1,6 @@
 const { uiIcons } = require('../../utils/ui-icons')
 const { completeLocalUpload, isOfflineMode } = require('../../utils/offline')
+const { ensureSilentLogin, getStudentAuthHeader } = require('../../utils/auth')
 
 Page({
   data: {
@@ -162,7 +163,7 @@ Page({
       count: 1,
       type: 'file',
       extension: ['pdf'],
-      success: (res) => {
+      success: async (res) => {
         const file = res.tempFiles[0]
         wx.showLoading({ title: '上传中...', mask: true })
 
@@ -185,10 +186,19 @@ Page({
           return
         }
 
+        try {
+          await ensureSilentLogin(app)
+        } catch (error) {
+          wx.hideLoading()
+          wx.showToast({ title: '登录状态已失效，请稍后重试', icon: 'none' })
+          return
+        }
+
         wx.uploadFile({
           url: `${app.globalData.serverBase}/api/submissions`,
           filePath: file.path,
           name: 'file',
+          header: getStudentAuthHeader(),
           formData: {
             studentName: profile.name,
             studentId: profile.name,

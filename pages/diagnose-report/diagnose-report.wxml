@@ -1,72 +1,156 @@
-<view class="dr-page">
+<view class="diagnose-report-page">
+  <view class="card diagnose-hero">
+    <view class="hero-glow"></view>
+    <view class="hero-badge">诊断报告 · 专属定制</view>
 
-  <!-- 头部 -->
-  <view class="card dr-header">
-    <view class="dr-badge">专属诊断报告</view>
-    <view class="dr-student-row">
-      <view class="dr-avatar">
-        <text class="dr-avatar-text">{{student.name[0]}}</text>
+    <view class="hero-top">
+      <view class="hero-main">
+        <text class="hero-name">{{student.name}}</text>
+        <text class="hero-exam">{{student.exam}}</text>
       </view>
-      <view class="dr-student-info">
-        <text class="dr-student-name">{{student.name}}</text>
-        <text class="dr-student-meta">{{student.exam}}</text>
-        <text class="dr-student-meta">诊断日期：{{student.diagnosisDate}}</text>
+      <view class="hero-type-pill">
+        <text class="hero-type-pill-text">{{summary.typeTitle}}</text>
       </view>
     </view>
 
-    <view class="dr-scores">
-      <view class="dr-score-item">
-        <text class="dr-score-val dr-score-warn">{{diagnosisScore}}</text>
-        <text class="dr-score-label">诊断分数</text>
+    <view class="hero-meta-row">
+      <view class="hero-meta-chip">报告时间：{{student.diagnosisDate}}</view>
+      <view class="hero-meta-chip">诊断老师：{{student.teacher}}</view>
+    </view>
+
+    <view class="hero-score-row">
+      <view class="hero-score-card hero-score-card-warn">
+        <text class="hero-score-value hero-score-warn">{{summary.diagnosisScore}}</text>
+        <text class="hero-score-label">诊断分数</text>
       </view>
-      <text class="dr-score-arrow">→</text>
-      <view class="dr-score-item">
-        <text class="dr-score-val dr-score-target">{{targetScore}}</text>
-        <text class="dr-score-label">目标分数</text>
+      <view class="hero-score-card hero-score-card-blue">
+        <text class="hero-score-value hero-score-blue">{{summary.targetScore}}</text>
+        <text class="hero-score-label">目标分数</text>
       </view>
-      <view class="dr-score-gap-wrap">
-        <text class="dr-score-gap">+{{scoreGap}}</text>
-        <text class="dr-score-label">提分目标</text>
+      <view class="hero-score-card hero-score-card-green">
+        <text class="hero-score-value hero-score-green">+{{summary.scoreGap}}</text>
+        <text class="hero-score-label">提分空间</text>
+      </view>
+    </view>
+
+    <view class="hero-conclusion">
+      <text class="hero-conclusion-label">核心结论</text>
+      <text class="hero-summary">{{summary.conclusion}}</text>
+    </view>
+    <text class="hero-basis">诊断依据：{{summary.basis}}</text>
+  </view>
+
+  <view class="card diagnosis-section-card">
+    <view class="section-head">
+      <text class="section-index">01</text>
+      <view class="section-head-copy">
+        <text class="section-title">诊断结果</text>
+        <text class="section-subtitle">先看你当前的优势和主要失分来源</text>
+      </view>
+    </view>
+
+    <view class="block-title-row">
+      <view class="section-dot success-dot"></view>
+      <text class="block-title">优势点</text>
+    </view>
+    <view wx:for="{{strengths}}" wx:key="index" class="bullet-row">
+      <view class="bullet-dot success-dot"></view>
+      <text class="bullet-text">{{item}}</text>
+    </view>
+
+    <view class="block-title-row">
+      <view class="section-dot warn-dot"></view>
+      <text class="block-title">隐性失分点</text>
+    </view>
+    <view wx:for="{{hiddenLosses}}" wx:key="index" class="bullet-row subtle-bullet-row">
+      <view class="bullet-dot warn-dot"></view>
+      <text class="bullet-text">{{item}}</text>
+    </view>
+
+    <view class="block-title-row">
+      <view class="section-dot danger-dot"></view>
+      <text class="block-title">高频失分点</text>
+    </view>
+    <view wx:for="{{frequentLosses}}" wx:key="title" class="loss-card">
+      <view class="loss-accent"></view>
+      <view class="loss-body">
+        <view class="row-between loss-top">
+          <text class="loss-title">{{item.title}}</text>
+          <text class="loss-score">{{item.score}}</text>
+        </view>
+        <text class="loss-desc">{{item.desc}}</text>
       </view>
     </view>
   </view>
 
-  <!-- 核心卡点 -->
-  <view class="card">
-    <text class="section-title">核心失分卡点</text>
-    <view wx:for="{{corePoints}}" wx:key="id" class="dr-point-item {{index < corePoints.length - 1 ? 'dr-point-border' : ''}}">
-      <view class="row-between" style="margin-bottom:10rpx;">
-        <text class="dr-point-name">{{item.name}}</text>
-        <text class="tag {{item.priority === '高' ? 'tag-orange' : 'tag-gray'}}">{{item.priority}}优先</text>
+  <view class="card diagnosis-section-card">
+    <view class="section-head">
+      <text class="section-index">02</text>
+      <view class="section-head-copy">
+        <text class="section-title">深度分析</text>
+        <text class="section-subtitle">核心红标卡点和背后的根因</text>
       </view>
-      <text class="dr-point-desc">{{item.desc}}</text>
+    </view>
+
+    <view class="core-point-panel">
+      <view class="core-point-head row-between">
+        <text class="core-point-title">{{corePoint.title}}</text>
+        <text class="core-point-gain">{{corePoint.gain}}</text>
+      </view>
+      <text class="core-point-copy">{{corePoint.reason}}</text>
+      <text class="core-point-copy core-point-copy-last">{{corePoint.importance}}</text>
+    </view>
+
+    <view class="block-title-row methods-title-row">
+      <view class="section-dot primary-dot"></view>
+      <text class="block-title">对应方法</text>
+    </view>
+    <view wx:for="{{methods}}" wx:key="index" class="method-card">
+      <text class="method-index">0{{index + 1}}</text>
+      <text class="method-text">{{item}}</text>
     </view>
   </view>
 
-  <!-- 学习规划 -->
-  <view class="card">
-    <text class="section-title">学习规划</text>
-    <view wx:for="{{plan}}" wx:key="index" class="dr-plan-item">
-      <view class="dr-plan-dot"></view>
-      <text class="dr-plan-text">{{item}}</text>
+  <view class="card diagnosis-section-card">
+    <view class="section-head">
+      <text class="section-index">03</text>
+      <view class="section-head-copy">
+        <text class="section-title">学习规划</text>
+        <text class="section-subtitle">按阶段推进，先纠偏再稳定</text>
+      </view>
+    </view>
+
+    <view wx:for="{{stages}}" wx:key="title" class="stage-card">
+      <view class="stage-line"></view>
+      <view class="stage-body">
+        <text class="stage-title">{{item.title}}</text>
+        <text class="stage-duration">{{item.duration}}</text>
+        <text class="stage-goal">{{item.goal}}</text>
+      </view>
     </view>
   </view>
 
-  <!-- 老师点评 -->
-  <view class="card">
-    <text class="section-title">老师评语</text>
-    <view class="message-wrap">
-      <text class="teacher-message {{messageExpanded ? '' : 'message-collapsed'}}">{{teacherComment}}</text>
+  <view class="card diagnosis-section-card">
+    <view class="section-head">
+      <text class="section-index">04</text>
+      <view class="section-head-copy">
+        <text class="section-title">学习建议</text>
+        <text class="section-subtitle">把方法落到每天的训练动作里</text>
+      </view>
     </view>
-    <view class="expand-btn" bindtap="toggleMessage">
-      <text class="expand-text">{{messageExpanded ? '收起' : '展开全文'}}</text>
-      <text class="expand-icon">{{messageExpanded ? '▲' : '▼'}}</text>
+
+    <view wx:for="{{suggestions}}" wx:key="index" class="advice-row">
+      <view class="advice-marker"></view>
+      <text class="bullet-text">{{item}}</text>
     </view>
-    <view class="dr-sign">
-      <text class="dr-sign-name">{{student.teacher}}</text>
-      <text class="dr-sign-date">{{student.diagnosisDate}}</text>
+
+    <view class="closing-box">
+      <text class="closing-copy">{{closing}}</text>
+      <text class="closing-sign">—— {{student.teacher}}</text>
     </view>
   </view>
 
   <view class="safe-bottom"></view>
 </view>
+
+<diagnose-coupon-fab auto-popup="{{true}}"></diagnose-coupon-fab>

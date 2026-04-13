@@ -1,0 +1,80 @@
+<view class="practice-purchase-page">
+  <view class="card hero-card">
+    <view class="hero-kicker">
+      <text class="hero-kicker-text">{{course.badge}}</text>
+    </view>
+    <text class="hero-title">{{course.title}}</text>
+    <text class="hero-subtitle">{{course.subtitle}}</text>
+
+    <view class="hero-price-row">
+      <text class="hero-price">{{course.headline}}</text>
+    </view>
+    <text class="hero-extra">先按 {{course.price}} 开通，满足全勤后到手最低 {{course.arrivalPrice}}</text>
+
+    <view class="pricing-grid">
+      <view wx:for="{{pricingRows}}" wx:key="label" class="pricing-item">
+        <text class="pricing-label">{{item.label}}</text>
+        <text class="pricing-value">{{item.value}}</text>
+      </view>
+    </view>
+
+    <view class="hero-tag-row">
+      <text wx:for="{{course.heroTags}}" wx:key="*this" class="hero-tag">{{item}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <text class="section-title">适合这类同学</text>
+    <view wx:for="{{fitList}}" wx:key="*this" class="bullet-row">
+      <view class="bullet-dot success-dot"></view>
+      <text class="bullet-text">{{item}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <text class="section-title">你会得到什么</text>
+    <view wx:for="{{serviceList}}" wx:key="*this" class="bullet-row">
+      <view class="bullet-dot primary-dot"></view>
+      <text class="bullet-text">{{item}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <text class="section-title">返现规则</text>
+    <view wx:for="{{refundList}}" wx:key="*this" class="bullet-row">
+      <view class="bullet-dot primary-dot"></view>
+      <text class="bullet-text">{{item}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <text class="section-title">4 周训练节奏</text>
+    <view wx:for="{{weekPlan}}" wx:key="week" class="week-card">
+      <view class="week-top">
+        <text class="week-label">{{item.week}}</text>
+        <text class="week-focus">{{item.focus}}</text>
+      </view>
+      <text class="week-desc">{{item.desc}}</text>
+    </view>
+  </view>
+
+  <view class="card warm-card">
+    <text class="section-title">开通前先确认</text>
+    <text class="warm-copy">刷题班更偏向训练节奏和周计划推进。如果你还没确定主线卡点，也可以先去看卡点课购买页。</text>
+    <view class="ghost-btn" bindtap="goCardPurchase">
+      <text class="ghost-btn-text">先看卡点课购买页</text>
+    </view>
+  </view>
+
+  <view class="bottom-space"></view>
+</view>
+
+<view class="pay-bar">
+  <view class="pay-info">
+    <text class="pay-label">开通价 {{course.price}}</text>
+    <text class="pay-price">全勤后返 99 元</text>
+  </view>
+  <button class="pay-btn" bindtap="confirmPurchase">立即加入刷题班</button>
+</view>
+
+<diagnose-coupon-fab auto-popup="{{true}}"></diagnose-coupon-fab>

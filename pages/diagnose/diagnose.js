@@ -4,7 +4,7 @@ function createDefaultProgress() {
   return {
     step1: { status: '已完成' },
     step2: {
-      status: '待电话沟通',
+      status: '待信息确认',
       scheduledTime: '',
     },
     step3: {
@@ -52,7 +52,7 @@ Page({
   },
 
   scheduleCall() {
-    wx.showToast({ title: '约时间功能开发中', icon: 'none' })
+    wx.showToast({ title: '信息确认功能开发中', icon: 'none' })
   },
 
   openPaper() {
@@ -122,7 +122,7 @@ Page({
   },
 
   scheduleCourse() {
-    wx.showToast({ title: '约课功能开发中', icon: 'none' })
+    wx.showToast({ title: '预约功能开发中', icon: 'none' })
   },
 
   viewPlayback() {

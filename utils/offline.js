@@ -24,8 +24,8 @@ function getAppSafe() {
 
 function isOfflineMode() {
   const app = getAppSafe()
-  if (!app || !app.globalData) return true
-  return app.globalData.offlineMode !== false
+  if (!app || !app.globalData) return false
+  return !!app.globalData.offlineMode
 }
 
 function createDemoSession(studentId) {

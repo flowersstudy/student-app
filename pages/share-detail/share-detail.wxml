@@ -1,0 +1,82 @@
+<view wx:if="{{post}}" class="share-detail-page">
+  <view class="detail-hero">
+    <view class="detail-topline">
+      <text class="detail-tag">{{post.tagText}}</text>
+      <text class="detail-top-meta">{{post.examLabel}} · {{post.stage}}</text>
+    </view>
+
+    <text class="detail-title">{{post.title}}</text>
+    <text class="detail-summary">{{post.summary}}</text>
+
+    <view class="detail-author-card">
+      <view class="detail-author-main">
+        <view class="detail-avatar">{{post.avatarText}}</view>
+        <view class="detail-author-copy">
+          <text class="detail-author-name">{{post.authorName}}</text>
+          <text class="detail-author-role">{{post.authorRole}}</text>
+        </view>
+      </view>
+      <view class="detail-author-side">
+        <text class="detail-publish">{{post.publishDate}}</text>
+        <text class="detail-read-time">{{post.readTime}}</text>
+      </view>
+    </view>
+
+    <view class="detail-meta-row">
+      <view class="detail-meta-chip">
+        <image class="detail-meta-icon" src="{{uiIcons.chart}}" mode="aspectFit" />
+        <text class="detail-meta-text">{{post.viewsText}} 阅读</text>
+      </view>
+      <view class="detail-meta-chip">
+        <image class="detail-meta-icon" src="{{uiIcons.check}}" mode="aspectFit" />
+        <text class="detail-meta-text">{{post.likesText}} 点赞</text>
+      </view>
+      <view class="detail-meta-chip">
+        <image class="detail-meta-icon" src="{{uiIcons.chat}}" mode="aspectFit" />
+        <text class="detail-meta-text">{{post.commentsText}} 评论</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="detail-section">
+    <view class="section-head">
+      <view class="section-copy">
+        <text class="section-title">这篇内容适合谁看</text>
+        <text class="section-subtitle">先告诉用户这篇帖子在解决什么问题</text>
+      </view>
+    </view>
+
+    <view class="tag-row">
+      <text wx:for="{{post.problemTags}}" wx:key="*this" class="info-tag">{{item}}</text>
+    </view>
+  </view>
+
+  <view class="detail-section takeaway-card">
+    <view class="section-head">
+      <view class="section-copy">
+        <text class="section-title">可执行重点</text>
+        <text class="section-subtitle">把论坛长帖先提炼成几句最容易落地的话</text>
+      </view>
+    </view>
+
+    <view wx:for="{{post.keyPoints}}" wx:key="*this" class="takeaway-item">
+      <text class="takeaway-index">{{index + 1}}</text>
+      <text class="takeaway-text">{{item}}</text>
+    </view>
+  </view>
+
+  <view class="detail-section result-card">
+    <view class="result-top">
+      <image class="result-icon" src="{{uiIcons.target}}" mode="aspectFit" />
+      <view class="result-copy">
+        <text class="result-label">阶段结果</text>
+        <text class="result-text">{{post.resultText}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view wx:for="{{post.sections}}" wx:key="title" wx:for-item="section" class="detail-section article-card">
+    <text class="article-title">{{section.title}}</text>
+    <text wx:for="{{section.paragraphs}}" wx:key="*this" class="article-text">{{item}}</text>
+  </view>
+</view>

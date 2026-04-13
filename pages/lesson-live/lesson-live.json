@@ -1,3 +1,6 @@
 {
-  "navigationBarTitleText": "1v1共识课"
+    "navigationBarTitleText":  "1v1共识课",
+    "usingComponents":  {
+                            "diagnose-coupon-fab":  "/components/diagnose-coupon-fab/index"
+                        }
 }

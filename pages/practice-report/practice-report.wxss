@@ -1,0 +1,294 @@
+.practice-report-page {
+  min-height: 100vh;
+  padding: 20rpx 24rpx 120rpx;
+  background:
+    radial-gradient(circle at top right, rgba(37, 99, 235, 0.08), transparent 24%),
+    linear-gradient(180deg, #f7f9fc 0%, #f3f5f8 100%);
+}
+
+.practice-report-hero {
+  margin: 0 0 20rpx;
+  background: linear-gradient(180deg, #f7fbff 0%, #ffffff 100%);
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42rpx;
+  padding: 0 18rpx;
+  border-radius: 999rpx;
+  background: #eaf2ff;
+  color: #2563eb;
+  font-size: 20rpx;
+  font-weight: 700;
+}
+
+.hero-top {
+  margin-top: 18rpx;
+  align-items: flex-start;
+  gap: 18rpx;
+}
+
+.hero-name {
+  display: block;
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.hero-meta {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.hero-type-pill {
+  flex-shrink: 0;
+  padding: 12rpx 18rpx;
+  border-radius: 22rpx;
+  background: linear-gradient(135deg, #fff7ed 0%, #fffbeb 100%);
+  border: 1rpx solid rgba(249, 115, 22, 0.14);
+}
+
+.hero-type-pill-text {
+  font-size: 22rpx;
+  color: #c2410c;
+  font-weight: 700;
+}
+
+.hero-score-row {
+  display: flex;
+  gap: 14rpx;
+  margin-top: 24rpx;
+}
+
+.hero-score-card {
+  flex: 1;
+  min-width: 0;
+  padding: 20rpx 10rpx 18rpx;
+  text-align: center;
+  border-radius: 22rpx;
+  background: #ffffff;
+  border: 1rpx solid rgba(148, 163, 184, 0.12);
+}
+
+.hero-score-value {
+  display: block;
+  font-size: 38rpx;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.hero-score-warn {
+  color: #f97316;
+}
+
+.hero-score-blue {
+  color: #2563eb;
+}
+
+.hero-score-green {
+  color: #16a34a;
+}
+
+.hero-score-label {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: #94a3b8;
+}
+
+.hero-summary {
+  display: block;
+  margin-top: 22rpx;
+  font-size: 26rpx;
+  line-height: 1.75;
+  color: #334155;
+}
+
+.hero-basis {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 22rpx;
+  color: #94a3b8;
+}
+
+.block-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-top: 20rpx;
+}
+
+.block-title-row:first-of-type {
+  margin-top: 0;
+}
+
+.block-title {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.bullet-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12rpx;
+  margin-top: 14rpx;
+}
+
+.bullet-dot,
+.section-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.bullet-dot {
+  margin-top: 12rpx;
+}
+
+.primary-dot {
+  background: #2563eb;
+}
+
+.success-dot {
+  background: #16a34a;
+}
+
+.warn-dot {
+  background: #f59e0b;
+}
+
+.danger-dot {
+  background: #ef4444;
+}
+
+.gray-dot {
+  background: #64748b;
+}
+
+.bullet-text {
+  flex: 1;
+  font-size: 24rpx;
+  line-height: 1.75;
+  color: #475569;
+}
+
+.loss-card {
+  margin-top: 14rpx;
+  padding: 20rpx 22rpx;
+  border-radius: 22rpx;
+  background: linear-gradient(180deg, #fffafb 0%, #ffffff 100%);
+  border: 1rpx solid rgba(239, 68, 68, 0.12);
+}
+
+.loss-top {
+  gap: 16rpx;
+}
+
+.loss-title {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.loss-score {
+  font-size: 24rpx;
+  color: #ef4444;
+  font-weight: 700;
+}
+
+.loss-desc {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 23rpx;
+  line-height: 1.7;
+  color: #64748b;
+}
+
+.core-point-head {
+  gap: 16rpx;
+}
+
+.core-point-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #dc2626;
+}
+
+.core-point-gain {
+  flex-shrink: 0;
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #16a34a;
+}
+
+.core-point-copy {
+  display: block;
+  margin-top: 16rpx;
+  font-size: 24rpx;
+  line-height: 1.75;
+  color: #475569;
+}
+
+.core-point-copy-last {
+  margin-top: 12rpx;
+}
+
+.stage-card {
+  margin-top: 16rpx;
+  padding: 22rpx 24rpx;
+  border-radius: 22rpx;
+  background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
+  border: 1rpx solid rgba(37, 99, 235, 0.1);
+}
+
+.stage-title {
+  display: block;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.stage-duration {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: #2563eb;
+}
+
+.stage-goal {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 23rpx;
+  line-height: 1.7;
+  color: #64748b;
+}
+
+.closing-box {
+  margin-top: 24rpx;
+  padding: 22rpx 24rpx;
+  border-radius: 22rpx;
+  background: linear-gradient(180deg, #fffaf5 0%, #ffffff 100%);
+  border: 1rpx solid rgba(245, 158, 11, 0.12);
+}
+
+.closing-copy {
+  display: block;
+  font-size: 24rpx;
+  line-height: 1.75;
+  color: #475569;
+}
+
+.closing-sign {
+  display: block;
+  margin-top: 16rpx;
+  text-align: right;
+  font-size: 22rpx;
+  color: #94a3b8;
+}

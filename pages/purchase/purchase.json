@@ -1,5 +1,8 @@
 {
-  "navigationBarTitleText": "课程详情",
+  "navigationBarTitleText": "购买方案",
   "navigationBarBackgroundColor": "#f4f7fb",
-  "navigationBarTextStyle": "black"
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "diagnose-coupon-fab": "/components/diagnose-coupon-fab/index"
+  }
 }
