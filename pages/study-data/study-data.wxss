@@ -1,0 +1,376 @@
+.study-data-page {
+  min-height: 100vh;
+  padding: 24rpx 24rpx 120rpx;
+  background: #f5f5f5;
+  box-sizing: border-box;
+}
+
+.study-data-hero,
+.study-data-stat,
+.study-data-record,
+.study-path-card {
+  background: #ffffff;
+  border: 1rpx solid rgba(148, 163, 184, 0.16);
+  box-shadow: 0 16rpx 40rpx rgba(15, 23, 42, 0.06);
+}
+
+.study-data-hero,
+.study-data-record,
+.study-path-card {
+  padding: 30rpx;
+  border-radius: 28rpx;
+}
+
+.study-data-badge {
+  display: inline-flex;
+  padding: 8rpx 18rpx;
+  border-radius: 999rpx;
+  background: #f2f2f2;
+  color: #666666;
+  font-size: 22rpx;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.study-data-title {
+  display: block;
+  margin-top: 20rpx;
+  font-size: 38rpx;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.3;
+}
+
+.study-data-intro {
+  display: block;
+  margin-top: 14rpx;
+  font-size: 26rpx;
+  color: #475569;
+  line-height: 1.7;
+}
+
+.study-data-meta {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-top: 22rpx;
+}
+
+.study-data-meta-text,
+.study-data-meta-dot {
+  font-size: 23rpx;
+  color: #94a3b8;
+}
+
+.study-data-grid {
+  margin-top: 24rpx;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16rpx;
+}
+
+.study-data-stat {
+  min-width: 0;
+  padding: 26rpx 24rpx;
+  border-radius: 24rpx;
+}
+
+.study-data-stat-label {
+  display: block;
+  font-size: 22rpx;
+  color: #666666;
+  line-height: 1.4;
+}
+
+.study-data-stat-value {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 34rpx;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.35;
+}
+
+.study-data-stat-value-text {
+  font-size: 28rpx;
+}
+
+.study-data-record {
+  margin-top: 24rpx;
+}
+
+.study-data-record-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.4;
+}
+
+.study-data-record-desc {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 25rpx;
+  color: #475569;
+  line-height: 1.72;
+}
+
+.study-path-card {
+  margin-top: 24rpx;
+}
+
+.study-path-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+.study-path-head-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.study-path-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.4;
+}
+
+.study-path-desc {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  color: #475569;
+  line-height: 1.68;
+}
+
+.study-path-total {
+  flex-shrink: 0;
+  font-size: 22rpx;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
+.study-path-step-list {
+  margin-top: 18rpx;
+  border-top: 1rpx solid rgba(148, 163, 184, 0.12);
+}
+
+.study-path-review-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+  padding: 22rpx 0;
+}
+
+.study-path-review-row + .study-path-review-row {
+  border-top: 1rpx solid rgba(148, 163, 184, 0.1);
+}
+
+.study-path-step-index {
+  width: 34rpx;
+  height: 34rpx;
+  margin-top: 3rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #d9d9d9;
+  flex-shrink: 0;
+}
+
+.study-path-step-index-done,
+.study-path-step-index-current {
+  background: #58bf17;
+}
+
+.study-path-step-index-locked {
+  background: #d9d9d9;
+}
+
+.study-path-step-index-text {
+  font-size: 18rpx;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.study-path-step-index-locked .study-path-step-index-text {
+  color: #8a95a6;
+}
+
+.study-path-step-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.study-path-review-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.study-path-review-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18rpx;
+}
+
+.study-path-step-title {
+  display: block;
+  font-size: 25rpx;
+  font-weight: 700;
+  color: #1f2329;
+  line-height: 1.45;
+}
+
+.study-path-step-note {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: #6b7280;
+  line-height: 1.55;
+}
+
+.study-path-review-status {
+  flex-shrink: 0;
+  padding: 6rpx 14rpx;
+  border-radius: 999rpx;
+  background: #f2f2f2;
+  color: #666666;
+  font-size: 20rpx;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.study-path-review-status-done {
+  background: #edf8ef;
+  color: #4c8b52;
+}
+
+.study-path-review-status-current {
+  background: #edf4ff;
+  color: #3d7cff;
+}
+
+.study-path-review-status-locked {
+  background: #eceff3;
+  color: #98a1ae;
+}
+
+.study-path-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 18rpx;
+  padding: 24rpx 0;
+}
+
+.study-path-item + .study-path-item {
+  border-top: 1rpx solid rgba(148, 163, 184, 0.12);
+}
+
+.study-path-index {
+  width: 42rpx;
+  height: 42rpx;
+  margin-top: 4rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #d9d9d9;
+  flex-shrink: 0;
+}
+
+.study-path-index-done {
+  background: #9098a4;
+}
+
+.study-path-index-current {
+  background: #6b7280;
+}
+
+.study-path-index-pending {
+  background: #d9d9d9;
+}
+
+.study-path-index-text {
+  font-size: 20rpx;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.study-path-item-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.study-path-item-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18rpx;
+}
+
+.study-path-item-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #1f2329;
+  line-height: 1.45;
+}
+
+.study-path-item-status {
+  flex-shrink: 0;
+  padding: 6rpx 14rpx;
+  border-radius: 999rpx;
+  background: #f2f2f2;
+  color: #666666;
+  font-size: 20rpx;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.study-path-item-status-current {
+  background: #ebedf0;
+  color: #4e5969;
+}
+
+.study-path-item-note {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  color: #5c6675;
+  line-height: 1.68;
+}
+
+.study-path-item-foot {
+  margin-top: 14rpx;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8rpx;
+}
+
+.study-path-item-action {
+  font-size: 22rpx;
+  color: #576b95;
+  line-height: 1.4;
+}
+
+.study-path-item-arrow {
+  width: 10rpx;
+  height: 10rpx;
+  border-top: 2rpx solid #c7c7cc;
+  border-right: 2rpx solid #c7c7cc;
+  transform: rotate(45deg);
+  flex-shrink: 0;
+}
+
+.safe-bottom {
+  height: 24rpx;
+}

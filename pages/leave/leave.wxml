@@ -1,9 +1,6 @@
 <view class="leave-page">
-
-  <!-- ===== 提交后状态卡 ===== -->
   <block wx:if="{{submitted}}">
     <view class="status-card {{approvalStatus === 'approved' ? 'status-card-approved' : ''}}">
-
       <view class="status-icon-wrap">
         <view class="status-icon {{approvalStatus === 'approved' ? 'status-icon-approved' : 'status-icon-pending'}}">
           <image class="status-icon-text" src="{{approvalStatus === 'approved' ? uiIcons.check : uiIcons.pending}}" mode="aspectFit" />
@@ -15,7 +12,6 @@
       </text>
       <text class="status-sub-text" wx:if="{{approvalStatus === 'approved'}}">请假已批准，注意合理安排学习时间</text>
 
-      <!-- 请假详情 -->
       <view class="status-detail-card">
         <view wx:if="{{submittedInfo.leaveType === 'single'}}" class="status-detail-row">
           <text class="status-detail-label">请假卡点</text>
@@ -51,10 +47,7 @@
     </view>
   </block>
 
-  <!-- ===== 请假表单 ===== -->
   <block wx:else>
-
-    <!-- 请假类型 -->
     <view class="card">
       <text class="section-title">请假类型</text>
       <view class="type-row">
@@ -71,7 +64,6 @@
       </view>
     </view>
 
-    <!-- 请假课程（单节课） -->
     <view class="card" wx:if="{{leaveType === 'single'}}">
       <text class="section-title">请假课程</text>
 
@@ -83,17 +75,15 @@
         </view>
       </picker>
 
-      <!-- 已达上限提醒 -->
       <view wx:if="{{warnMaxLeaves}}" class="warn-banner warn-ban-red">
         <image class="warn-icon" src="{{uiIcons.warning}}" mode="aspectFit" />
         <view class="warn-info">
-          <text class="warn-title">该卡点已申请 {{currentPointLeaveCount}} 次请假，已达上限（每卡点最多2次）</text>
+          <text class="warn-title">该卡点已申请 {{currentPointLeaveCount}} 次请假，已达上限（每卡点最多 2 次）</text>
           <text class="warn-sub">如需继续请假，请联系学管处理</text>
         </view>
         <view class="warn-btn-sm" bindtap="goChat">联系学管</view>
       </view>
 
-      <!-- 剩余次数提示 -->
       <view wx:elif="{{currentPointLeaveCount === 1}}" class="warn-banner warn-ban-orange">
         <image class="warn-icon" src="{{uiIcons.info}}" mode="aspectFit" />
         <view class="warn-info">
@@ -111,7 +101,6 @@
       </picker>
     </view>
 
-    <!-- 请假天数 -->
     <view class="card">
       <text class="section-title">请假时长</text>
       <picker mode="selector" range="{{daysOptions}}" value="{{daysIndex}}" bindchange="onDaysChange">
@@ -121,7 +110,6 @@
         </view>
       </picker>
 
-      <!-- 7天以上警告 -->
       <view wx:if="{{warnLongLeave}}" class="warn-banner warn-ban-orange" style="margin-top:20rpx;">
         <image class="warn-icon" src="{{uiIcons.warning}}" mode="aspectFit" />
         <view class="warn-info">
@@ -132,7 +120,6 @@
       </view>
     </view>
 
-    <!-- 请假预警 -->
     <view wx:if="{{leaveWarning}}" class="leave-warn-card">
       <text class="lw-title">进度顺延提示</text>
       <text class="lw-body">请假 {{leaveWarning.days}} 天，学习进度将顺延 {{leaveWarning.days}} 天，预计 <text class="lw-highlight">{{leaveWarning.newResumeDate}}</text> 继续学习。</text>
@@ -142,12 +129,11 @@
       </view>
     </view>
 
-    <!-- 请假原因 -->
     <view class="card">
       <text class="section-title">请假原因</text>
       <textarea
         class="input-area"
-        placeholder="请说明请假原因，方便老师安排调课..."
+        placeholder="请输入请假原因..."
         placeholder-class="input-placeholder"
         maxlength="200"
         bindinput="onReasonInput"
@@ -156,12 +142,10 @@
       <text class="char-count">{{reason.length}}/200</text>
     </view>
 
-    <!-- 提示 -->
     <view class="notice-card">
       <text class="notice-text">提交后，你的带教老师和学管会收到通知。</text>
     </view>
 
-    <!-- 提交按钮 -->
     <view style="padding: 0 24rpx;">
       <button
         class="btn-primary submit-btn {{(warnMaxLeaves && leaveType === 'single') || warnLongLeave ? 'btn-disabled' : ''}}"
@@ -170,7 +154,6 @@
         {{warnMaxLeaves && leaveType === 'single' ? '该卡点已达请假上限' : warnLongLeave ? '请先联系学管' : '提交申请'}}
       </button>
     </view>
-
   </block>
 
   <view class="safe-bottom"></view>

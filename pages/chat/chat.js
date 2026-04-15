@@ -1,5 +1,6 @@
 const app = getApp()
 const { uiIcons } = require('../../utils/ui-icons')
+const { syncCustomTabBar } = require('../../utils/custom-tab-bar')
 const { readStudentSession } = require('../../utils/auth')
 const { clearChatUnreadBadge } = require('../../utils/chat-badge')
 const {
@@ -69,8 +70,8 @@ const ICONS = {
     <circle cx="16.2" cy="13.1" r="1.05" fill="#93C5FD" opacity=".65"/>
   `),
   plus: buildIconSvg(`
-    <path d="M12 5.5V18.5" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"/>
-    <path d="M5.5 12H18.5" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="M12 5.5V18.5" stroke="#2563EB" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="M5.5 12H18.5" stroke="#2563EB" stroke-width="2.2" stroke-linecap="round"/>
   `),
   image: buildIconSvg(`
     <defs>
@@ -210,6 +211,29 @@ const NEW_USER_MEMBERS = [
   { role: '课程顾问', name: '学习规划顾问', avatar: '顾' }
 ]
 
+const MANAGER_FALLBACK_MESSAGES = [
+  {
+    id: 'manager-welcome-1',
+    type: 'assistant',
+    avatar: '学',
+    name: '学管老师',
+    time: '09:00',
+    content: '欢迎回来，我是你的学管老师。你现在还没有开通课程，有学习安排、诊断、课程节奏或报名问题，都可以先在这里咨询我。'
+  },
+  {
+    id: 'manager-welcome-2',
+    type: 'assistant',
+    avatar: '学',
+    name: '学管老师',
+    time: '09:01',
+    content: '如果你不确定下一步怎么学，可以把当前分数、目标分数和备考时间发给我，我会帮你先梳理适合的学习路径。'
+  }
+]
+
+const MANAGER_FALLBACK_MEMBERS = [
+  { role: '学管', name: '学管老师', avatar: '学' }
+]
+
 function cloneMessages(list) {
   return list.map((item) => ({
     ...item,
@@ -233,6 +257,13 @@ function buildConversationState(isNewUser) {
   }
 }
 
+function buildManagerConversationState() {
+  return {
+    messages: cloneMessages(MANAGER_FALLBACK_MESSAGES),
+    members: cloneMembers(MANAGER_FALLBACK_MEMBERS)
+  }
+}
+
 function buildEmptyConversationState() {
   return {
     messages: [],
@@ -245,7 +276,66 @@ function buildDefaultMessages(isNewUser) {
 }
 
 function buildNavigationTitle(isNewUser) {
-  return isNewUser ? '课程助手 · 新人咨询' : '李老师 · 申论基础课'
+  return isNewUser ? '课程助手 · 新人咨询' : '聊天'
+}
+
+function shouldUseNewUserFallback(globalData = {}) {
+  if (globalData.authReady === false) {
+    return true
+  }
+
+  if (globalData.isNewUser) {
+    return true
+  }
+
+  return false
+}
+
+function hasPurchasedCourse(globalData = {}) {
+  return !!(globalData.hasDiagnoseCourse || globalData.hasPracticeCourse)
+}
+
+function shouldUseManagerFallback(globalData = {}) {
+  if (globalData.authReady === false || globalData.isNewUser) {
+    return false
+  }
+
+  return !hasPurchasedCourse(globalData)
+}
+
+function buildFallbackState(globalData = {}) {
+  if (shouldUseNewUserFallback(globalData)) {
+    return {
+      mode: 'new',
+      isNewUser: true,
+      isManagerFallback: false,
+      ...buildConversationState(true),
+    }
+  }
+
+  if (shouldUseManagerFallback(globalData)) {
+    return {
+      mode: 'manager',
+      isNewUser: false,
+      isManagerFallback: true,
+      ...buildManagerConversationState(),
+    }
+  }
+
+  return {
+    mode: 'room',
+    isNewUser: false,
+    isManagerFallback: false,
+    ...buildEmptyConversationState(),
+  }
+}
+
+function buildNavigationTitleByMode(mode, isNewUser) {
+  if (mode === 'manager') {
+    return '学管'
+  }
+
+  return buildNavigationTitle(isNewUser)
 }
 
 function buildStudentProfile() {
@@ -256,6 +346,7 @@ function buildStudentProfile() {
   return {
     name,
     avatar: name.slice(0, 1) || '张',
+    avatarUrl: profile.avatar || '',
     studentId: (session.info && session.info.id) || '',
   }
 }
@@ -307,9 +398,23 @@ function createOutgoingMessage(content) {
     senderRole: 'student',
     name: profile.name,
     avatar: profile.avatar,
+    avatarUrl: profile.avatarUrl,
     content,
     sentAt,
     sendStatus: 'sending',
+  })
+}
+
+function createManagerFallbackReply() {
+  return normalizeChatMessage({
+    id: `manager_reply_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+    type: 'assistant',
+    senderRole: 'assistant',
+    name: '学管老师',
+    avatar: '学',
+    content: '收到啦，我先帮你记录下来。后续如果需要人工跟进，学管会结合你的情况继续联系你。',
+    sentAt: new Date().toISOString(),
+    sendStatus: 'sent',
   })
 }
 
@@ -341,6 +446,8 @@ Page({
     uiIcons,
     isEnrolled: false,
     isNewUser: false,
+    isManagerFallback: false,
+    conversationMode: 'room',
     roomId: '',
     scrollIntoView: '',
     socketConnected: false,
@@ -369,13 +476,11 @@ Page({
   },
 
   onShow() {
+    syncCustomTabBar(this, 'chat')
     clearChatUnreadBadge()
     const globalData = (app && app.globalData) || {}
-    const isNewUser = globalData.authReady === false
-      ? true
-      : !!globalData.isNewUser
     const pendingDraft = wx.getStorageSync(PENDING_CHAT_DRAFT_KEY) || ''
-    const baseState = isNewUser ? buildConversationState(true) : buildEmptyConversationState()
+    const baseState = buildFallbackState(globalData)
 
     this._pageVisible = true
     this._activeRoomId = ''
@@ -383,7 +488,9 @@ Page({
 
     this.setData({
       isEnrolled: !!globalData.isEnrolled,
-      isNewUser,
+      isNewUser: baseState.isNewUser,
+      isManagerFallback: baseState.isManagerFallback,
+      conversationMode: baseState.mode,
       roomId: '',
       socketConnected: false,
       showMemberPanel: false,
@@ -393,7 +500,7 @@ Page({
     })
 
     wx.setNavigationBarTitle({
-      title: buildNavigationTitle(isNewUser),
+      title: buildNavigationTitleByMode(baseState.mode, baseState.isNewUser),
     })
 
     this.bootstrapRoomConversation()
@@ -438,6 +545,9 @@ Page({
 
   clearPendingAckTimer(clientId) {
     if (!clientId || !this._pendingAckTimers) {
+      wx.setNavigationBarTitle({
+        title: buildNavigationTitle(shouldFallbackToNewUser),
+      })
       return
     }
 
@@ -518,6 +628,9 @@ Page({
         clientId: outgoingMessage.clientId,
         sendStatus: 'sent',
       })
+      if (!this.data.socketConnected) {
+        this.loadConversationHistory(this.data.roomId, this.data.isNewUser)
+      }
       wx.showToast({
         title: '实时通道异常，已改用备用发送',
         icon: 'none',
@@ -547,8 +660,11 @@ Page({
       try {
         await devStudentLogin(1)
         const globalData = (app && app.globalData) || {}
+        const fallbackState = buildFallbackState(globalData)
         this.setData({
-          isNewUser: !!globalData.isNewUser,
+          isNewUser: fallbackState.isNewUser,
+          isManagerFallback: fallbackState.isManagerFallback,
+          conversationMode: fallbackState.mode,
           isEnrolled: !!globalData.isEnrolled,
         })
         rooms = normalizeRoomList(await fetchChatRooms())
@@ -564,20 +680,27 @@ Page({
     }
 
     if (!primaryRoom || !primaryRoom.id) {
-      const fallbackState = this.data.isNewUser ? buildConversationState(true) : buildEmptyConversationState()
+      const globalData = (app && app.globalData) || {}
+      const fallbackState = buildFallbackState(globalData)
       this._activeRoomId = ''
       this.setData({
         roomId: '',
+        isNewUser: fallbackState.isNewUser,
+        isManagerFallback: fallbackState.isManagerFallback,
+        conversationMode: fallbackState.mode,
         members: fallbackState.members,
       })
       this.setConversationMessages(fallbackState.messages)
-      if (bootstrapError) {
+      wx.setNavigationBarTitle({
+        title: buildNavigationTitleByMode(fallbackState.mode, fallbackState.isNewUser),
+      })
+      if (bootstrapError && !fallbackState.isNewUser && !fallbackState.isManagerFallback) {
         wx.showToast({
           title: bootstrapError.message || '聊天房间加载失败',
           icon: 'none',
           duration: 2600,
         })
-      } else {
+      } else if (!fallbackState.isNewUser && !fallbackState.isManagerFallback) {
         wx.showToast({
           title: '当前账号还没有分配聊天房间',
           icon: 'none',
@@ -590,6 +713,8 @@ Page({
     this._activeRoomId = primaryRoom.id
     this.setData({
       roomId: primaryRoom.id,
+      isManagerFallback: false,
+      conversationMode: 'room',
     })
 
     wx.setNavigationBarTitle({
@@ -626,6 +751,7 @@ Page({
 
     this._chatSocket = createChatSocket({
       roomId,
+      allowMockFallback: false,
       onEvent: (event) => {
         if (!event || this._activeRoomId !== roomId) {
           return
@@ -779,11 +905,25 @@ Page({
         cancelText: '稍后再说',
         success: (res) => {
           if (!res.confirm) return
-          wx.navigateTo({
-            url: `/pages/account-bind/account-bind?redirect=${encodeURIComponent('/pages/chat/chat')}`,
-          })
+        wx.navigateTo({
+            url: `/pages/account-bind/account-bind?mode=chat&redirect=${encodeURIComponent('/pages/chat/chat')}`,
+        })
         },
       })
+      return
+    }
+
+    if (this.data.isManagerFallback && !this.data.roomId) {
+      const outgoingMessage = createOutgoingMessage(content)
+      this.setData({ inputText: '' })
+      this.applyMessageUpdate({
+        ...outgoingMessage,
+        sendStatus: 'sent',
+      })
+      setTimeout(() => {
+        if (!this._pageVisible || this.data.roomId) return
+        this.applyMessageUpdate(createManagerFallbackReply())
+      }, 350)
       return
     }
 
@@ -810,9 +950,13 @@ Page({
 
     this.setData({ inputText: '' })
     this.applyMessageUpdate(outgoingMessage)
-    this.startPendingAckTimer(outgoingMessage.clientId)
+    if (!this.data.socketConnected || !this._chatSocket) {
+      this.tryFallbackSend(outgoingMessage)
+      return
+    }
 
-    const sendOk = this._chatSocket && this._chatSocket.send(payload)
+    this.startPendingAckTimer(outgoingMessage.clientId)
+    const sendOk = this._chatSocket.send(payload)
     if (!sendOk) {
       this.clearPendingAckTimer(outgoingMessage.clientId)
       this.tryFallbackSend(outgoingMessage)
@@ -831,7 +975,9 @@ Page({
             return
           }
 
-          const baseState = buildConversationState(this.data.isNewUser)
+          const baseState = this.data.isManagerFallback
+            ? buildManagerConversationState()
+            : buildConversationState(this.data.isNewUser)
           this.setData({
             showMemberPanel: false,
           })

@@ -1,123 +1,46 @@
 <view class="path-page">
-  <view class="exam-info-bar">
-    <view class="exam-info-item">
-      <image class="exam-info-icon" src="{{examInfo.subjectIcon}}" mode="aspectFit" />
-      <text class="exam-info-value">{{examInfo.subjectValue}}</text>
-    </view>
-    <view class="exam-info-item">
-      <image class="exam-info-icon" src="{{examInfo.targetIcon}}" mode="aspectFit" />
-      <text class="exam-info-value exam-info-value-blue">{{examInfo.targetValue}}</text>
-    </view>
-    <view class="exam-info-item">
-      <image class="exam-info-icon" src="{{examInfo.deadlineIcon}}" mode="aspectFit" />
-      <text class="exam-info-value">{{examInfo.deadlineValue}}</text>
-    </view>
-  </view>
-
-  <view class="path-card">
-    <view class="path-header">
-      <view class="path-top-row">
-        <view class="path-current-task">
-          <text class="path-current-task-text">{{currentTaskText}}</text>
-        </view>
-        <view class="path-top-actions">
-          <view class="home-notice-btn home-notice-btn-inline" bindtap="handleNotificationsTap">
-            <image class="home-notice-icon" src="{{notificationIcon}}" mode="aspectFit" />
-            <view wx:if="{{unreadNotificationCount > 0}}" class="home-notice-badge home-notice-badge-inline">
-              <text class="home-notice-badge-text">{{unreadNotificationCount > 9 ? '9+' : unreadNotificationCount}}</text>
+  <view class="path-bar-list">
+    <block wx:for="{{pathNodes}}" wx:key="id">
+      <view class="path-item">
+        <view class="path-bar path-bar-{{item.status}}" bindtap="handleNodeTap" data-id="{{item.id}}">
+          <view class="path-bar-main">
+            <text class="path-bar-title">{{item.title}}</text>
+          </view>
+          <view class="path-bar-side">
+            <view class="path-bar-tag path-bar-tag-{{item.status}}">
+              <text class="path-bar-tag-text path-bar-tag-text-{{item.status}}">{{item.note}}</text>
             </view>
-          </view>
-          <view class="path-top-tag" bindtap="handlePlanTap">
-            <text class="path-top-tag-text">{{topTagText}}</text>
+            <text class="path-bar-arrow {{item.expanded ? 'path-bar-arrow-open' : ''}}">v</text>
           </view>
         </view>
-      </view>
-      <view class="path-progress">
-        <view class="path-progress-meta">
-          <text class="path-progress-label">当前卡点进度</text>
-          <text class="path-progress-value">{{currentCardProgress}}%</text>
-        </view>
-        <view class="path-progress-track">
-          <view class="path-progress-fill" style="width: {{currentCardProgress}}%;"></view>
-        </view>
-      </view>
-    </view>
 
-    <view class="path-track-surface">
-      <view class="path-track">
-        <view class="branch-area branch-area-{{branchState}} branch-area-mood-{{bukaScene.mood}}">
-          <view class="branch-guide"></view>
-          <view class="branch-node">
-            <view class="branch-shadow"></view>
-            <view class="branch-glow"></view>
-            <view class="branch-koi-shell branch-koi-shell-left">
-              <image class="branch-koi" src="/assets/buka/buka-koi-mascot-v2.svg" mode="aspectFit" />
-              <view class="branch-koi-shine"></view>
-              <view class="branch-koi-orb branch-koi-orb-top"></view>
-              <view class="branch-koi-orb branch-koi-orb-side"></view>
+        <view wx:if="{{item.expanded}}" class="path-expand">
+          <view class="path-expand-head">
+            <text class="path-expand-title">{{item.pathTitle}}</text>
+            <text class="path-expand-summary">{{item.pathSummary}}</text>
+          </view>
+
+          <view class="path-expand-body" style="{{pathLayout.bodyStyle}}">
+            <view class="path-ip-float" style="{{pathLayout.ipStyle}}">
+              <image class="path-ip-image" src="/assets/buka/buka-koi-mascot-v2.svg" mode="widthFix"></image>
             </view>
-          </view>
-          <view class="branch-bubble branch-bubble-mood-{{bukaScene.mood}}" bindlongpress="handleBukaDebugToggle">
-            <text class="branch-bubble-title">{{bukaScene.title}}</text>
-            <text class="branch-bubble-slogan">{{bukaScene.slogan}}</text>
-            <view class="branch-bubble-action" bindtap="handleBukaAction">
-              <text class="branch-bubble-action-text">{{bukaScene.ctaText}}</text>
-            </view>
-            <view class="branch-bubble-tail"></view>
-          </view>
-        </view>
 
-        <block wx:for="{{pathNodes}}" wx:key="id">
-          <view class="path-node-wrap path-node-wrap-{{item.id}}">
-            <view wx:if="{{item.showCurve}}" class="path-curve path-curve-{{item.id}}"></view>
-            <view wx:if="{{item.showHighlight}}" class="path-node-highlight"></view>
-
-            <view class="path-node-group">
-              <view class="path-node path-node-{{item.status}}" bindtap="handleNodeTap" data-id="{{item.id}}">
-                <view class="path-node-text">
-                  <text class="path-node-title">{{item.title}}</text>
-                  <view class="path-node-note-pill path-node-note-pill-{{item.status}}">
-                    <text class="path-node-note">{{item.note}}</text>
+            <view class="duo-map" style="height: {{item.mapHeight}};">
+              <block wx:for="{{item.steps}}" wx:key="id" wx:for-item="step">
+                <view class="duo-step" style="{{step.positionStyle}}">
+                  <view class="duo-node-wrap" style="{{pathLayout.nodeWrapStyle}}">
+                    <view class="duo-node duo-node-{{step.status}}" style="{{pathLayout.nodeStyle}}" catchtap="handleStepTap" data-url="{{step.url}}">
+                      <text class="duo-node-text" style="{{pathLayout.nodeTextStyle}}">{{step.shortLabel}}</text>
+                    </view>
                   </view>
                 </view>
-              </view>
-
-              <view wx:if="{{item.detailVisible}}" class="path-node-detail path-node-detail-{{item.id}} path-node-detail-{{item.detailStateClass}}">
-                <view class="path-node-detail-card path-node-detail-card-{{item.id}}">
-                  <view class="path-node-detail-connector"></view>
-                  <block wx:for="{{item.detailSections}}" wx:key="index">
-                    <block wx:for="{{item.items}}" wx:key="text" wx:for-item="detail">
-                      <view class="path-node-subpath-item">
-                        <view class="path-node-subpath-rail">
-                          <view wx:if="{{detail.showLine}}" class="path-node-subpath-line path-node-subpath-line-{{detail.statusClass}}"></view>
-                        </view>
-                        <view
-                          class="path-node-subpath-card path-node-subpath-card-{{detail.statusClass}}"
-                          bindtap="handleSubpathTap"
-                          data-point-id="{{detail.pointId}}"
-                          data-status="{{detail.status}}"
-                        >
-                          <view class="path-node-subpath-main">
-                            <text class="path-node-subpath-text path-node-subpath-text-{{detail.statusClass}}">{{detail.text}}</text>
-                            <view class="path-node-subpath-status path-node-subpath-status-{{detail.statusClass}}">
-                              <text class="path-node-subpath-status-text path-node-subpath-status-text-{{detail.statusClass}}">{{detail.statusLabel}}</text>
-                            </view>
-                          </view>
-                        </view>
-                      </view>
-                    </block>
-                  </block>
-                </view>
-              </view>
+              </block>
             </view>
           </view>
-        </block>
-
+        </view>
       </view>
-    </view>
+    </block>
   </view>
-
-
 </view>
 
-<diagnose-coupon-fab auto-popup="{{true}}"></diagnose-coupon-fab>
+<bottom-nav selected="home"></bottom-nav>

@@ -1,10 +1,11 @@
 const { uiIcons } = require('../../utils/ui-icons')
+const { syncCustomTabBar } = require('../../utils/custom-tab-bar')
 
 const stations = [
   {
     key: 'activity',
     title: '活动发布',
-    icon: uiIcons.oceanSeagull,
+    icon: '/assets/study-square/activity-avatar.png',
     position: 'activity',
     size: 'normal',
     tone: 'sky',
@@ -71,6 +72,10 @@ Page({
   data: {
     stations,
     landingGuideText: '在海上坚持，一座一座岛地靠近上岸。',
+  },
+
+  onShow() {
+    syncCustomTabBar(this, 'square')
   },
 
   handleStationTap(e) {

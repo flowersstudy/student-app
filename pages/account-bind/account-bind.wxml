@@ -1,23 +1,50 @@
 <view class="bind-page">
-  <view class="card bind-hero">
-    <text class="bind-title">已购课学员先绑定一下账号</text>
-    <text class="bind-desc">绑定成功后，聊天消息会跟你的正式学习档案关联起来，后续就不用重复操作了。</text>
-  </view>
+  <view class="login-shell">
+    <view class="brand-area">
+      <view class="brand-mark">步知</view>
+      <text class="brand-name">步知 1v1</text>
+      <text class="brand-slogan">做更好的申论教育平台</text>
+    </view>
 
-  <view class="card bind-form">
-    <text class="bind-label">购课手机号</text>
-    <input
-      class="bind-input"
-      type="number"
-      maxlength="11"
-      value="{{phone}}"
-      placeholder="请输入报名时使用的手机号"
-      bindinput="onPhoneInput"
-      confirm-type="done"
-    />
-    <button class="btn-primary bind-submit" loading="{{submitting}}" bindtap="submitBind">
-      绑定并继续发送
-    </button>
-    <text class="bind-hint">如果不是已购课学员，也可以先返回继续浏览咨询内容。</text>
+    <view class="login-card">
+      <view class="tab-row">
+        <view class="tab-pill tab-pill-active">
+          <text class="tab-text tab-text-active">{{mode === 'launch' ? '登录' : '绑定'}}</text>
+        </view>
+      </view>
+
+      <view class="form">
+        <view class="field-group">
+          <text class="field-label">{{pageCopy.label}}</text>
+          <view class="input-wrap">
+            <text class="input-prefix">+86</text>
+            <input
+              class="form-input"
+              type="number"
+              maxlength="11"
+              placeholder="{{pageCopy.placeholder}}"
+              placeholder-class="form-placeholder"
+              value="{{phone}}"
+              bindinput="onPhoneInput"
+              confirm-type="done"
+            />
+          </view>
+        </view>
+      </view>
+
+      <button class="btn-submit" loading="{{submitting}}" disabled="{{submitting || wechatSubmitting}}" bindtap="submitBind">
+        <text>{{pageCopy.submitText}}</text>
+      </button>
+
+      <button
+        class="btn-wechat"
+        open-type="getPhoneNumber"
+        bindgetphonenumber="handleGetPhoneNumber"
+        loading="{{wechatSubmitting}}"
+        disabled="{{submitting || wechatSubmitting}}"
+      >
+        <text>{{mode === 'launch' ? '使用微信绑定手机号登录' : '使用微信绑定手机号'}}</text>
+      </button>
+    </view>
   </view>
 </view>

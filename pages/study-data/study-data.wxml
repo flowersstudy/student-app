@@ -1,0 +1,63 @@
+<view class="study-data-page">
+  <view class="study-data-hero">
+    <text class="study-data-badge">{{badgeText}}</text>
+    <text class="study-data-title">{{pageTitle}}</text>
+    <text class="study-data-intro">{{introText}}</text>
+    <view class="study-data-meta">
+      <text class="study-data-meta-text">{{studentName}}</text>
+      <text class="study-data-meta-dot">·</text>
+      <text class="study-data-meta-text">{{gradeText}}</text>
+    </view>
+  </view>
+
+  <view class="study-data-grid">
+    <view class="study-data-stat">
+      <text class="study-data-stat-label">累计学习时长</text>
+      <text class="study-data-stat-value">{{studyDuration}}</text>
+    </view>
+    <view class="study-data-stat">
+      <text class="study-data-stat-label">当前进度</text>
+      <text class="study-data-stat-value">{{progressText}}</text>
+    </view>
+    <view class="study-data-stat">
+      <text class="study-data-stat-label">目标考试</text>
+      <text class="study-data-stat-value study-data-stat-value-text">{{targetExam}}</text>
+    </view>
+    <view class="study-data-stat">
+      <text class="study-data-stat-label">学习状态</text>
+      <text class="study-data-stat-value study-data-stat-value-text">{{statusText}}</text>
+    </view>
+  </view>
+
+  <view class="study-data-record">
+    <text class="study-data-record-title">{{recordTitle}}</text>
+    <text class="study-data-record-desc">{{recordDesc}}</text>
+  </view>
+
+  <view wx:if="{{showPathSection}}" class="study-path-card">
+    <view class="study-path-head">
+      <view class="study-path-head-main">
+        <text class="study-path-title">诊断课学习过程回顾</text>
+        <text class="study-path-desc">{{pathSummary.desc}}</text>
+      </view>
+      <text class="study-path-total">{{pathSummary.totalText}}</text>
+    </view>
+
+    <view class="study-path-step-list">
+      <view wx:for="{{pathSteps}}" wx:key="id" wx:for-item="step" class="study-path-review-row">
+        <view class="study-path-step-index study-path-step-index-{{step.status}}">
+          <text class="study-path-step-index-text">{{step.shortLabel}}</text>
+        </view>
+        <view class="study-path-review-main">
+          <view class="study-path-review-head">
+            <text class="study-path-step-title">{{step.title}}</text>
+            <text class="study-path-review-status study-path-review-status-{{step.status}}">{{step.statusText}}</text>
+          </view>
+          <text class="study-path-step-note">{{step.note}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="safe-bottom"></view>
+</view>

@@ -5,53 +5,11 @@
     "miniprogram": {
       "list": [
         {
-          "name": "pages/diagnose-report/diagnose-report",
-          "pathName": "pages/diagnose-report/diagnose-report",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "pages/diagnose-detail/diagnose-detail",
-          "pathName": "pages/diagnose-detail/diagnose-detail",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "pages/trial-experience/trial-experience",
-          "pathName": "pages/trial-experience/trial-experience",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "pages/lesson-drill/lesson-drill",
-          "pathName": "pages/lesson-drill/lesson-drill",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "pages/lesson-live/lesson-live",
-          "pathName": "pages/lesson-live/lesson-live",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
           "name": "pages/progress/progress",
           "pathName": "pages/progress/progress",
-          "query": "wx.navigateTo({ url: '/pages/progress/progress?id=1' })",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "pages/home/home",
-          "pathName": "pages/home/home",
           "query": "",
-          "launchMode": "default",
-          "scene": null
+          "scene": null,
+          "launchMode": "default"
         }
       ]
     }

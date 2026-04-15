@@ -10,6 +10,7 @@
     radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 24%),
     linear-gradient(180deg, #f7f9fc 0%, #f3f5f8 100%);
   position: relative;
+  box-sizing: border-box;
 }
 
 /* ========================
@@ -25,13 +26,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
+  background: rgba(226, 232, 240, 0.96);
+  border: 1rpx solid rgba(148, 163, 184, 0.34);
 }
 
 .nav-more-icon {
   width: 38rpx;
   height: 38rpx;
   opacity: 0.92;
-  filter: drop-shadow(0 6rpx 10rpx rgba(15, 23, 42, 0.08));
 }
 
 /* ========================
@@ -308,7 +311,7 @@
 ======================== */
 .input-area-wrap {
   position: fixed;
-  bottom: 0;
+  bottom: calc(56px + env(safe-area-inset-bottom));
   left: 0;
   right: 0;
   background: rgba(255, 255, 255, 0.96);
@@ -332,22 +335,23 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  border-radius: 0;
+  background: transparent;
+  border: none;
 }
 
 .input-action-icon {
   width: 44rpx;
   height: 44rpx;
   opacity: 0.96;
-  filter: drop-shadow(0 8rpx 12rpx rgba(37, 99, 235, 0.1));
 }
 
 .input-action-icon-plus {
-  width: 40rpx;
-  height: 40rpx;
-  padding: 14rpx;
-  border-radius: 50%;
-  background: linear-gradient(180deg, #3b82f6, #2563eb);
-  box-shadow: 0 12rpx 24rpx rgba(37, 99, 235, 0.24);
+  width: 44rpx;
+  height: 44rpx;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
 }
 
 .chat-input {
@@ -447,38 +451,40 @@
 }
 
 .more-icon-stage {
-  width: 120rpx;
-  height: 104rpx;
+  width: 96rpx;
+  height: 96rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  border-radius: 50%;
+  background: rgba(226, 232, 240, 0.96);
+  border: 1rpx solid rgba(148, 163, 184, 0.34);
 }
 
 .more-icon-blue {
-  background: radial-gradient(circle at center, rgba(59, 130, 246, 0.18) 0%, rgba(59, 130, 246, 0.08) 38%, transparent 72%);
+  background: transparent;
 }
 
 .more-icon-slate {
-  background: radial-gradient(circle at center, rgba(100, 116, 139, 0.18) 0%, rgba(100, 116, 139, 0.08) 38%, transparent 72%);
+  background: transparent;
 }
 
 .more-icon-cyan {
-  background: radial-gradient(circle at center, rgba(8, 145, 178, 0.18) 0%, rgba(8, 145, 178, 0.08) 38%, transparent 72%);
+  background: transparent;
 }
 
 .more-icon-amber {
-  background: radial-gradient(circle at center, rgba(217, 119, 6, 0.18) 0%, rgba(217, 119, 6, 0.08) 38%, transparent 72%);
+  background: transparent;
 }
 
 .more-icon-indigo {
-  background: radial-gradient(circle at center, rgba(79, 70, 229, 0.18) 0%, rgba(79, 70, 229, 0.08) 38%, transparent 72%);
+  background: transparent;
 }
 
 .more-icon {
   width: 68rpx;
   height: 68rpx;
-  filter: drop-shadow(0 12rpx 16rpx rgba(15, 23, 42, 0.1));
 }
 
 .more-label {
@@ -608,7 +614,6 @@
   width: 120rpx;
   height: 120rpx;
   margin-bottom: 32rpx;
-  filter: drop-shadow(0 14rpx 22rpx rgba(37, 99, 235, 0.12));
 }
 
 .empty-title {

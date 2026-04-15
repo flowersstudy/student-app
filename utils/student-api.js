@@ -104,6 +104,14 @@ async function submitStudentLeave(data, appInstance) {
   }, appInstance)
 }
 
+async function submitStudentMailbox(data, appInstance) {
+  return studentRequest({
+    url: '/api/student/mailbox',
+    method: 'POST',
+    data,
+  }, appInstance)
+}
+
 module.exports = {
   fetchStudentLeaveRecords,
   fetchStudentNotifications,
@@ -112,5 +120,6 @@ module.exports = {
   markStudentNotificationRead,
   studentRequest,
   submitStudentLeave,
+  submitStudentMailbox,
   unwrapListPayload,
 }

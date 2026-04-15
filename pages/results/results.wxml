@@ -1,162 +1,207 @@
 <view class="results-page">
+  <view class="profile-summary-section">
+    <view class="profile-summary-card">
+      <view class="profile-avatar-box" bindtap="goAvatarPicker">
+        <image
+          wx:if="{{profileSummary.avatarUrl}}"
+          class="profile-avatar-image"
+          src="{{profileSummary.avatarUrl}}"
+          mode="aspectFill"
+        />
+        <view wx:else class="profile-avatar-fallback">
+          <text class="profile-avatar-text">{{profileSummary.avatarText}}</text>
+        </view>
+      </view>
 
-    <view class="summary-section">
-      <view class="summary-board">
-        <view class="summary-top-row">
-          <view class="summary-main">
-            <image class="summary-bg-icon" src="{{uiIcons.calendar}}" mode="aspectFit" />
-            <view class="summary-content">
-              <view class="summary-label-row">
-                <text class="summary-label">累计学习时长</text>
-              </view>
-              <text class="summary-value">{{totalStudyDisplay}}</text>
-            </view>
+      <view class="profile-summary-main">
+        <view class="profile-summary-head">
+          <view class="profile-summary-title">
+            <text class="profile-summary-name">{{studentName}}</text>
+            <text class="profile-summary-tag">{{profileSummary.identityTag}}</text>
           </view>
-
-          <view class="summary-points">
-            <image class="summary-points-bg-icon" src="{{uiIcons.points}}" mode="aspectFit" />
-            <view class="summary-content">
-              <view class="summary-label-row">
-                <text class="summary-points-label">累计积分</text>
-              </view>
-              <text class="summary-points-value">{{totalPoints}}</text>
-            </view>
-          </view>
-
+          <text class="profile-summary-action" bindtap="goAvatarPicker">更换头像</text>
         </view>
 
-        <view class="summary-bottom-row">
-          <view
-            class="stat-chip stat-goal {{!hasDiagnoseCourse ? 'stat-chip-clickable' : ''}}"
-            bindtap="handleGoalGapTap"
-          >
-            <text class="stat-chip-label">目标提分</text>
-            <view class="stat-chip-main">
-              <text class="stat-chip-value">{{stats.scoreGap}}</text>
-              <text class="stat-chip-unit">分</text>
-            </view>
+        <view class="profile-summary-grid">
+          <view class="profile-summary-item">
+            <text class="profile-summary-label">目标考试</text>
+            <text class="profile-summary-value">{{profileSummary.targetExam}}</text>
           </view>
-          <view class="stat-chip stat-solved">
-            <text class="stat-chip-label">已解决</text>
-            <view class="stat-chip-main">
-              <text class="stat-chip-value">{{stats.solved}}</text>
-              <text class="stat-chip-unit">个</text>
-            </view>
+          <view class="profile-summary-item">
+            <text class="profile-summary-label">考试倒计时</text>
+            <text class="profile-summary-value profile-summary-value-accent">{{profileSummary.examCountdown}}</text>
           </view>
-          <view class="stat-chip stat-pending">
-            <text class="stat-chip-label">待突破</text>
-            <view class="stat-chip-main">
-              <text class="stat-chip-value">{{stats.pending}}</text>
-              <text class="stat-chip-unit">个</text>
-            </view>
+          <view class="profile-summary-item">
+            <text class="profile-summary-label">提分目标</text>
+            <text class="profile-summary-value">{{profileSummary.raiseTarget}}</text>
           </view>
         </view>
       </view>
     </view>
+  </view>
 
-    <view class="section-header-bar">
-      <view class="section-dot solved-dot"></view>
-      <text class="section-title-bar resolved-title">已解决卡点</text>
-      <text class="section-count">{{solvedPoints.length}} 个</text>
-    </view>
-
-    <view wx:for="{{solvedPoints}}" wx:key="id" class="card point-block">
-      <view class="row-between">
-        <text class="point-block-name">{{item.name}}</text>
-        <button class="btn-detail" bindtap="goCardDetail" data-id="{{item.id}}">查看详情</button>
-      </view>
-      <text class="point-block-summary">{{item.summary}}</text>
-      <text class="point-block-date">完成时间：{{item.completedAt}}</text>
-    </view>
-
-    <view class="section-header-bar">
-      <view class="section-dot pending-dot"></view>
-      <text class="section-title-bar pending-title">待突破卡点</text>
-      <text class="section-count">{{pendingPoints.length}} 个</text>
-    </view>
-
-    <view wx:for="{{pendingPoints}}" wx:key="id" class="card point-block">
-      <view class="row-between">
-        <text class="point-block-name">{{item.name}}</text>
-      </view>
-      <text class="point-block-summary">{{item.desc}}</text>
-    </view>
-
-    <view id="diagnosis-report-section" class="section-header-bar report-header-bar">
-      <view class="section-dot diagnose-dot"></view>
-      <text class="section-title-bar">诊断报告</text>
-      <text class="section-count">{{diagnosisReport.reportDate}}</text>
-    </view>
-
-    <view class="card report-card diagnose-report-card">
-      <view class="report-top">
-        <view>
-          <text class="report-title">{{hasDiagnoseCourse ? '个性化诊断结论' : '1v1申论诊断课'}}</text>
-          <text class="report-sub">{{studentName}} · {{diagnosisReport.exam}} · {{diagnosisReport.teacher}}</text>
+  <view class="summary-section">
+    <view class="summary-board">
+      <view class="summary-top-row">
+        <view class="summary-main">
+          <image class="summary-bg-icon" src="{{uiIcons.calendar}}" mode="aspectFit" />
+          <view class="summary-content">
+            <view class="summary-label-row">
+              <text class="summary-label">累计学习时长</text>
+            </view>
+            <text class="summary-value">{{totalStudyDisplay}}</text>
+          </view>
         </view>
-        <button class="btn-report-action" bindtap="goDiagnoseReport">{{diagnoseReportActionText}}</button>
-      </view>
 
-      <view class="report-stats">
-        <view class="report-stat-item">
-          <text class="report-stat-value">{{diagnosisReport.diagnosisScore}}</text>
-          <text class="report-stat-label">{{hasDiagnoseCourse ? '诊断分' : '诊断形式'}}</text>
-        </view>
-        <view class="report-stat-item">
-          <text class="report-stat-value">{{diagnosisReport.targetScore}}</text>
-          <text class="report-stat-label">{{hasDiagnoseCourse ? '目标分' : '诊断维度'}}</text>
-        </view>
-        <view class="report-stat-item">
-          <text class="report-stat-value report-stat-warn">{{diagnosisReport.scoreGap}}</text>
-          <text class="report-stat-label">{{hasDiagnoseCourse ? '差距' : '输出结果'}}</text>
+        <view class="summary-points">
+          <image class="summary-points-bg-icon" src="{{uiIcons.points}}" mode="aspectFit" />
+          <view class="summary-content">
+            <view class="summary-label-row">
+              <text class="summary-points-label">累计积分</text>
+            </view>
+            <text class="summary-points-value">{{totalPoints}}</text>
+          </view>
         </view>
       </view>
 
-      <text class="report-summary">{{diagnosisReport.summary}}</text>
+      <view class="summary-bottom-row">
+        <view
+          class="stat-chip stat-goal {{!hasDiagnoseCourse ? 'stat-chip-clickable' : ''}}"
+          bindtap="handleGoalGapTap"
+        >
+          <text class="stat-chip-label">目标提分</text>
+          <view class="stat-chip-main">
+            <text class="stat-chip-value">{{stats.scoreGap}}</text>
+            <text class="stat-chip-unit">分</text>
+          </view>
+        </view>
+        <view class="stat-chip stat-solved">
+          <text class="stat-chip-label">已解决</text>
+          <view class="stat-chip-main">
+            <text class="stat-chip-value">{{stats.solved}}</text>
+            <text class="stat-chip-unit">个</text>
+          </view>
+        </view>
+        <view class="stat-chip stat-pending">
+          <text class="stat-chip-label">待突破</text>
+          <view class="stat-chip-main">
+            <text class="stat-chip-value">{{stats.pending}}</text>
+            <text class="stat-chip-unit">个</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
 
-      <view class="report-tags">
-        <view wx:for="{{diagnosisReport.keyFindings}}" wx:key="*this" class="report-tag">{{item}}</view>
+  <view id="diagnosis-report-section" class="card fold-card fold-card-diagnose">
+    <view class="fold-card-head" bindtap="toggleSection" data-key="diagnose">
+      <view class="fold-card-head-main">
+        <view class="fold-card-title-row">
+          <text class="fold-card-title">诊断课</text>
+          <text class="fold-card-tag">{{hasDiagnoseCourse ? '已开通' : '未开通'}}</text>
+        </view>
+      </view>
+      <view class="fold-card-head-side">
+        <text class="fold-card-meta">{{diagnosisReport.reportDate}}</text>
+        <view class="section-toggle-arrow {{sectionExpanded.diagnose ? 'section-toggle-arrow-open' : ''}}"></view>
       </view>
     </view>
 
-    <view id="practice-report-section" class="section-header-bar report-header-bar">
-      <view class="section-dot practice-dot"></view>
-      <text class="section-title-bar">刷题课报告</text>
-      <text class="section-count">{{practiceCourse.cycleLabel}}</text>
+    <view wx:if="{{sectionExpanded.diagnose}}" class="fold-card-body fold-card-entry-body">
+      <view class="fold-entry-item">
+        <text class="fold-entry-title">{{hasDiagnoseCourse ? '我的诊断报告' : '我的专属学习计划'}}</text>
+        <button class="fold-entry-btn" bindtap="goDiagnoseReport">
+          <text class="fold-entry-btn-text">{{hasDiagnoseCourse ? '查看' : '去生成'}}</text>
+        </button>
+      </view>
+      <view class="fold-entry-item">
+        <text class="fold-entry-title">我的学习数据</text>
+        <button class="fold-entry-btn" bindtap="goStudyData" data-scene="diagnose">
+          <text class="fold-entry-btn-text">查看</text>
+        </button>
+      </view>
     </view>
+  </view>
 
-    <view class="card report-card practice-report-card">
-      <view class="practice-card-hero">
-        <view class="practice-card-title-row">
-          <text class="practice-card-title">{{practiceCourse.title}}</text>
-          <button class="btn-report-action practice-card-report-action" bindtap="goPracticeCourse">{{practiceCourse.statusLabel}}</button>
-        </view>
-        <text class="practice-card-sub">{{practiceCourse.currentWeek}} · {{practiceCourse.currentStage}}</text>
-      </view>
-
-      <view class="practice-card-stats">
-        <view class="practice-card-stat">
-          <text class="practice-card-stat-value">{{practiceCourse.currentWeek}}</text>
-          <text class="practice-card-stat-label">当前周次</text>
-        </view>
-        <view class="practice-card-stat">
-          <text class="practice-card-stat-value">{{practiceCourse.currentTaskCount}}</text>
-          <text class="practice-card-stat-label">当前任务</text>
-        </view>
-        <view class="practice-card-stat">
-          <text class="practice-card-stat-value practice-card-stat-accent">{{practiceCourse.nextLiveDate}}</text>
-          <text class="practice-card-stat-label">下次直播</text>
+  <view class="card fold-card fold-card-solved">
+    <view class="fold-card-head" bindtap="toggleSection" data-key="solved">
+      <view class="fold-card-head-main">
+        <view class="fold-card-title-row">
+          <text class="fold-card-title">已解决卡点</text>
+          <text class="fold-card-tag fold-card-tag-solved">{{solvedPoints.length}} 个</text>
         </view>
       </view>
-
-      <text class="practice-card-summary">{{practiceCourse.summary}}</text>
-
-      <view class="practice-card-tags practice-card-tags-alone">
-        <text wx:for="{{practiceCourse.keyNotes}}" wx:key="*this" class="practice-card-tag">{{item}}</text>
+      <view class="fold-card-head-side">
+        <view class="section-toggle-arrow {{sectionExpanded.solved ? 'section-toggle-arrow-open' : ''}}"></view>
       </view>
     </view>
 
-    <view class="safe-bottom"></view>
+    <view wx:if="{{sectionExpanded.solved}}" class="fold-card-body fold-card-list-body">
+      <view wx:for="{{solvedPoints}}" wx:key="id" class="fold-card-list-item fold-card-list-item-solved">
+        <view class="row-between">
+          <text class="point-block-name">{{item.name}}</text>
+          <button class="btn-detail" bindtap="goCardDetail" data-id="{{item.id}}">查看详情</button>
+        </view>
+        <text class="point-block-summary">{{item.summary}}</text>
+        <text class="point-block-date">完成时间：{{item.completedAt}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card fold-card fold-card-pending">
+    <view class="fold-card-head" bindtap="toggleSection" data-key="pending">
+      <view class="fold-card-head-main">
+        <view class="fold-card-title-row">
+          <text class="fold-card-title">待突破卡点</text>
+          <text class="fold-card-tag fold-card-tag-pending">{{pendingPoints.length}} 个</text>
+        </view>
+      </view>
+      <view class="fold-card-head-side">
+        <view class="section-toggle-arrow {{sectionExpanded.pending ? 'section-toggle-arrow-open' : ''}}"></view>
+      </view>
+    </view>
+
+    <view wx:if="{{sectionExpanded.pending}}" class="fold-card-body fold-card-list-body">
+      <view wx:for="{{pendingPoints}}" wx:key="id" class="fold-card-list-item fold-card-list-item-pending">
+        <view class="row-between">
+          <text class="point-block-name">{{item.name}}</text>
+        </view>
+        <text class="point-block-summary">{{item.desc}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view id="practice-report-section" class="card fold-card fold-card-practice">
+    <view class="fold-card-head" bindtap="toggleSection" data-key="practice">
+      <view class="fold-card-head-main">
+        <view class="fold-card-title-row">
+          <text class="fold-card-title">刷题课</text>
+          <text class="fold-card-tag fold-card-tag-practice">{{practiceCourse.cycleLabel}}</text>
+        </view>
+      </view>
+      <view class="fold-card-head-side">
+        <view class="section-toggle-arrow {{sectionExpanded.practice ? 'section-toggle-arrow-open' : ''}}"></view>
+      </view>
+    </view>
+
+    <view wx:if="{{sectionExpanded.practice}}" class="fold-card-body fold-card-entry-body">
+      <view class="fold-entry-item">
+        <text class="fold-entry-title">{{hasPracticeCourse ? '我的刷题报告' : '我的专属刷题计划'}}</text>
+        <button class="fold-entry-btn" bindtap="goPracticeCourse">
+          <text class="fold-entry-btn-text">{{hasPracticeCourse ? '查看' : '去生成'}}</text>
+        </button>
+      </view>
+      <view class="fold-entry-item">
+        <text class="fold-entry-title">我的学习数据</text>
+        <button class="fold-entry-btn" bindtap="goStudyData" data-scene="practice">
+          <text class="fold-entry-btn-text">查看</text>
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <view class="safe-bottom"></view>
 </view>
 
 <diagnose-coupon-fab auto-popup="{{true}}"></diagnose-coupon-fab>
+<bottom-nav selected="results"></bottom-nav>

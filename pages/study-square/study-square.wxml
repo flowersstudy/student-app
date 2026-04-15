@@ -34,7 +34,7 @@
             <view class="station-icon-seat station-icon-seat-{{item.size}}">
               <view class="station-icon-halo station-icon-halo-{{item.size}}"></view>
               <view class="station-icon-gloss station-icon-gloss-{{item.size}}"></view>
-              <image class="station-icon station-icon-{{item.size}}" src="{{item.icon}}" mode="aspectFit" />
+              <image class="station-icon station-icon-{{item.size}} station-icon-{{item.key}}" src="{{item.icon}}" mode="aspectFit" />
             </view>
 
             <view class="island-title-shell island-title-shell-{{item.size}}">
@@ -52,3 +52,4 @@
 </view>
 
 <diagnose-coupon-fab auto-popup="{{true}}"></diagnose-coupon-fab>
+<bottom-nav selected="square"></bottom-nav>

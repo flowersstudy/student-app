@@ -3,7 +3,139 @@
   background:
     radial-gradient(circle at top left, rgba(37, 99, 235, 0.09), transparent 26%),
     linear-gradient(180deg, #f7f9fc 0%, #f3f5f8 100%);
-  padding-bottom: 120rpx;
+  padding-bottom: calc(120rpx + 56px + env(safe-area-inset-bottom));
+}
+
+.profile-summary-section {
+  padding: 24rpx 24rpx 0;
+}
+
+.profile-summary-card {
+  display: flex;
+  align-items: center;
+  gap: 22rpx;
+  padding: 26rpx 24rpx;
+  border-radius: 30rpx;
+  background:
+    radial-gradient(circle at top right, rgba(96, 165, 250, 0.18), transparent 34%),
+    linear-gradient(135deg, #ffffff 0%, #f7fbff 100%);
+  border: 1rpx solid rgba(148, 163, 184, 0.16);
+  box-shadow: 0 16rpx 40rpx rgba(15, 23, 42, 0.06);
+}
+
+.profile-avatar-box {
+  width: 108rpx;
+  height: 108rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 12rpx 24rpx rgba(37, 99, 235, 0.12);
+}
+
+.profile-avatar-box:active {
+  transform: scale(0.97);
+}
+
+.profile-avatar-image,
+.profile-avatar-fallback {
+  width: 100%;
+  height: 100%;
+}
+
+.profile-avatar-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #2563eb 0%, #60a5fa 100%);
+}
+
+.profile-avatar-text {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.profile-summary-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-summary-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14rpx;
+}
+
+.profile-summary-title {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  min-width: 0;
+}
+
+.profile-summary-name {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.profile-summary-tag {
+  padding: 6rpx 16rpx;
+  border-radius: 999rpx;
+  background: rgba(37, 99, 235, 0.1);
+  color: #2563eb;
+  font-size: 20rpx;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.profile-summary-action {
+  flex-shrink: 0;
+  padding: 8rpx 16rpx;
+  border-radius: 999rpx;
+  background: #eef4ff;
+  color: #2563eb;
+  font-size: 22rpx;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.profile-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12rpx;
+  margin-top: 18rpx;
+}
+
+.profile-summary-item {
+  min-width: 0;
+  padding: 16rpx 14rpx;
+  border-radius: 20rpx;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1rpx solid rgba(148, 163, 184, 0.12);
+}
+
+.profile-summary-label {
+  display: block;
+  font-size: 20rpx;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.profile-summary-value {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.45;
+  word-break: break-all;
+}
+
+.profile-summary-value-accent {
+  color: #2563eb;
 }
 
 .pending-title {
@@ -211,6 +343,26 @@
   padding: 18rpx 24rpx 10rpx;
 }
 
+.section-header-toggle {
+  justify-content: space-between;
+}
+
+.section-header-main,
+.section-header-side {
+  display: flex;
+  align-items: center;
+}
+
+.section-header-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.section-header-side {
+  flex-shrink: 0;
+  gap: 12rpx;
+}
+
 .section-dot {
   width: 12rpx;
   height: 12rpx;
@@ -244,6 +396,294 @@
 .section-count {
   font-size: 23rpx;
   color: #94a3b8;
+}
+
+.section-toggle-arrow {
+  width: 12rpx;
+  height: 12rpx;
+  border-top: 2rpx solid #c7c7cc;
+  border-right: 2rpx solid #c7c7cc;
+  box-sizing: border-box;
+  transform: rotate(45deg);
+  transition: transform 0.18s ease, border-color 0.18s ease;
+  flex-shrink: 0;
+  margin-right: 2rpx;
+  opacity: 0.95;
+}
+
+.section-toggle-arrow-open {
+  transform: rotate(135deg);
+}
+
+.fold-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.fold-card-diagnose {
+  background: linear-gradient(180deg, #f7fbff 0%, #ffffff 100%);
+  border-color: rgba(37, 99, 235, 0.14);
+}
+
+.fold-card-solved {
+  background: linear-gradient(180deg, #f7fdf9 0%, #ffffff 100%);
+  border-color: rgba(34, 197, 94, 0.16);
+}
+
+.fold-card-pending {
+  background: linear-gradient(180deg, #fffaf5 0%, #ffffff 100%);
+  border-color: rgba(249, 115, 22, 0.16);
+}
+
+.fold-card-practice {
+  background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
+  border-color: rgba(37, 99, 235, 0.12);
+}
+
+.fold-card-head {
+  min-height: 88rpx;
+  padding: 20rpx 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18rpx;
+}
+
+.fold-card-head-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.fold-card-head-side {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  flex-shrink: 0;
+}
+
+.fold-card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  flex-wrap: wrap;
+}
+
+.fold-card-title {
+  font-size: 29rpx;
+  font-weight: 800;
+  color: #1f2329;
+  line-height: 1.25;
+}
+
+.fold-card-tag {
+  height: 42rpx;
+  padding: 0 16rpx;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999rpx;
+  background: #eaf2ff;
+  color: #2563eb;
+  font-size: 20rpx;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.fold-card-tag-solved {
+  background: #eefbf3;
+  color: #15803d;
+}
+
+.fold-card-tag-pending {
+  background: #fff1e8;
+  color: #c2410c;
+}
+
+.fold-card-tag-practice {
+  background: #eef4ff;
+  color: #2563eb;
+}
+
+.fold-card-sub {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 23rpx;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.fold-card-meta {
+  font-size: 21rpx;
+  color: #94a3b8;
+}
+
+.fold-card-body {
+  padding: 0 30rpx 30rpx;
+  border-top: 1rpx solid rgba(37, 99, 235, 0.08);
+}
+
+.fold-card-entry-body {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.fold-card-list-body {
+  padding-top: 8rpx;
+}
+
+.fold-card-list-item {
+  padding: 24rpx 0;
+}
+
+.fold-card-list-item + .fold-card-list-item {
+  border-top: 1rpx solid rgba(148, 163, 184, 0.14);
+}
+
+.fold-card-list-item-solved {
+  border-color: rgba(34, 197, 94, 0.14);
+}
+
+.fold-card-list-item-pending {
+  border-color: rgba(249, 115, 22, 0.14);
+}
+
+.fold-card-action-row {
+  padding-top: 20rpx;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.fold-card-row-top {
+  align-items: flex-start;
+}
+
+.fold-card-section-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.4;
+}
+
+.fold-card-section-desc {
+  display: block;
+  margin-top: 14rpx;
+  font-size: 24rpx;
+  color: #475569;
+  line-height: 1.7;
+}
+
+.fold-card-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12rpx;
+}
+
+.fold-card-metric {
+  min-width: 0;
+  padding: 18rpx 10rpx 16rpx;
+  border-radius: 18rpx;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1rpx solid rgba(148, 163, 184, 0.12);
+  text-align: center;
+}
+
+.fold-card-metric-value {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #2563eb;
+  line-height: 1.15;
+}
+
+.fold-card-metric-value-warn {
+  color: #c2410c;
+}
+
+.fold-card-metric-label {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 20rpx;
+  color: #94a3b8;
+  line-height: 1.45;
+}
+
+.fold-card-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+  margin-top: 14rpx;
+}
+
+.fold-card-chip {
+  padding: 8rpx 14rpx;
+  border-radius: 999rpx;
+  background: #edf4ff;
+  color: #2563eb;
+  font-size: 20rpx;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.fold-card-chip-practice {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.fold-entry-item {
+  min-height: 0;
+  padding: 24rpx 4rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+  box-sizing: border-box;
+}
+
+.fold-entry-item + .fold-entry-item {
+  border-top: 1rpx solid rgba(148, 163, 184, 0.14);
+}
+
+.fold-entry-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 27rpx;
+  font-weight: 600;
+  color: #1f2329;
+  line-height: 38rpx;
+}
+
+.fold-entry-btn {
+  min-width: 108rpx;
+  height: 52rpx;
+  margin: 0;
+  padding: 0 22rpx;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999rpx;
+  border: none;
+  background: #3d8bfd;
+  color: #ffffff;
+  font-size: 22rpx;
+  font-weight: 600;
+  line-height: 52rpx;
+  flex-shrink: 0;
+}
+
+.fold-entry-btn::after {
+  border: none;
+}
+
+.fold-entry-btn-text {
+  color: #ffffff;
+  font-size: 22rpx;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.fold-entry-btn:active {
+  opacity: 0.88;
 }
 
 .point-block {

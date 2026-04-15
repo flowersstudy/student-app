@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "\u8bca\u65ad\u8bfe\u5b66\u4e60\u8def\u5f84",
+  "usingComponents": {
+    "diagnose-coupon-fab": "/components/diagnose-coupon-fab/index"
+  }
+}

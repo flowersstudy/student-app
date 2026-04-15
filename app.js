@@ -1,4 +1,5 @@
 const { readStudentSession, silentLogin, saveStudentSession } = require('./utils/auth')
+const { getStoredStudentAvatar } = require('./utils/avatar-options')
 const { syncChatUnreadBadge } = require('./utils/chat-badge')
 const { getRuntimeConfig } = require('./utils/runtime-config')
 const PRACTICE_COURSE_STORAGE_KEY = 'student_has_practice_course'
@@ -52,12 +53,20 @@ App({
     const runtimeConfig = getRuntimeConfig()
     const hasPracticeCourse = wx.getStorageSync(PRACTICE_COURSE_STORAGE_KEY) === true
     const session = readStudentSession()
+    const avatarUrl = getStoredStudentAvatar()
+    const sessionInfo = session.info || {}
 
     this.globalData.serverBase = runtimeConfig.serverBase
     this.globalData.offlineMode = runtimeConfig.offlineMode
     this.globalData.chatMockMode = runtimeConfig.chatMockMode
     this.globalData.runtimeEnv = runtimeConfig.envVersion
     this.globalData.hasPracticeCourse = hasPracticeCourse
+    this.globalData.userProfile = {
+      ...(this.globalData.userProfile || {}),
+      name: sessionInfo.name || (this.globalData.userProfile || {}).name || '张三',
+      phone: sessionInfo.phone || (this.globalData.userProfile || {}).phone || '',
+      avatar: avatarUrl || (this.globalData.userProfile || {}).avatar || '',
+    }
     syncChatUnreadBadge(this)
 
     console.log('运行配置:', runtimeConfig)

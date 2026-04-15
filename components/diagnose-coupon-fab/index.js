@@ -8,8 +8,9 @@ const {
   formatCouponCountdown,
 } = require('../../utils/diagnose-coupon')
 
+const DIAGNOSE_COUPON_ENABLED = false
 const DIAGNOSE_COUPON_TEST_MODE = false
-const DIAGNOSE_COUPON_POPUP_ON_LAUNCH = true
+const DIAGNOSE_COUPON_POPUP_ON_LAUNCH = false
 
 Component({
   properties: {
@@ -45,7 +46,11 @@ Component({
 
   methods: {
     isCouponEligible() {
-      if (DIAGNOSE_COUPON_TEST_MODE || DIAGNOSE_COUPON_POPUP_ON_LAUNCH) {
+      if (!DIAGNOSE_COUPON_ENABLED) {
+        return false
+      }
+
+      if (DIAGNOSE_COUPON_TEST_MODE) {
         return true
       }
 
@@ -102,16 +107,8 @@ Component({
         app.globalData.diagnoseCouponPopupShownInSession = true
       }
 
-      let showPopup = false
-      let showMini = false
-
-      if (this._popupOpenInCurrentPage) {
-        showPopup = true
-      } else if (shouldPopupForLaunch || !state.popupShownAt) {
-        showPopup = true
-      } else {
-        showMini = true
-      }
+      const showPopup = !!this._popupOpenInCurrentPage
+      const showMini = !showPopup
 
       if (!state.popupShownAt) {
         state = {

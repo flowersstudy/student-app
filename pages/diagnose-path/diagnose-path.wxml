@@ -1,0 +1,46 @@
+<view class="diagnose-path-page">
+  <view class="path-hero-card">
+    <text class="path-hero-badge">学习路径</text>
+    <text class="path-hero-title">{{summary.title}}</text>
+    <text class="path-hero-desc">{{summary.desc}}</text>
+    <view class="path-hero-meta">
+      <text class="path-hero-meta-text">{{summary.totalText}}</text>
+      <text class="path-hero-meta-dot">·</text>
+      <text class="path-hero-meta-text">人工诊断</text>
+    </view>
+  </view>
+
+  <view class="path-timeline">
+    <view wx:for="{{pathSteps}}" wx:key="title" class="path-step path-step-{{item.status}}">
+      <view class="path-step-left">
+        <view class="path-step-dot path-step-dot-{{item.status}}">
+          <text class="path-step-dot-text">{{index + 1}}</text>
+        </view>
+        <view wx:if="{{index !== pathSteps.length - 1}}" class="path-step-line"></view>
+      </view>
+
+      <view class="path-step-card" bindtap="handleStepTap" data-url="{{item.url}}">
+        <view class="path-step-head">
+          <view class="path-step-main">
+            <text class="path-step-title">{{item.title}}</text>
+            <text class="path-step-note">{{item.note}}</text>
+          </view>
+          <text class="path-step-status path-step-status-{{item.status}}">{{item.statusText}}</text>
+        </view>
+        <view class="path-step-footer">
+          <text class="path-step-action">{{item.actionText}}</text>
+          <view class="path-step-arrow"></view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="path-footer-card">
+    <text class="path-footer-title">完成路径后会得到什么？</text>
+    <text class="path-footer-desc">你会拿到失分原因、核心卡点、优先级排序和后续学习建议，不再只靠感觉安排学习。</text>
+  </view>
+
+  <view class="safe-bottom"></view>
+</view>
+
+<diagnose-coupon-fab auto-popup="{{true}}"></diagnose-coupon-fab>

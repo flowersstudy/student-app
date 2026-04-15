@@ -1,0 +1,22 @@
+<view class="avatar-picker-page">
+  <view class="picker-hero">
+    <text class="picker-title">选择你的头像</text>
+    <text class="picker-desc">点击任意一张图片，返回后会立即更新到复盘页。</text>
+  </view>
+
+  <view class="avatar-grid">
+    <view
+      wx:for="{{avatarOptions}}"
+      wx:key="id"
+      class="avatar-card {{selectedAvatar === item.url ? 'avatar-card-active' : ''}}"
+      bindtap="handleAvatarTap"
+      data-url="{{item.url}}"
+    >
+      <image class="avatar-image" src="{{item.url}}" mode="aspectFill" />
+      <view class="avatar-card-footer">
+        <text class="avatar-label">{{item.label}}</text>
+        <text wx:if="{{selectedAvatar === item.url}}" class="avatar-selected">已选中</text>
+      </view>
+    </view>
+  </view>
+</view>

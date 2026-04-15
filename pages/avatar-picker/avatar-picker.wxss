@@ -1,0 +1,81 @@
+.avatar-picker-page {
+  min-height: 100vh;
+  padding: 24rpx;
+  background:
+    radial-gradient(circle at top right, rgba(96, 165, 250, 0.18), transparent 28%),
+    linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  box-sizing: border-box;
+}
+
+.picker-hero {
+  padding: 28rpx 28rpx 24rpx;
+  border-radius: 28rpx;
+  background: #ffffff;
+  box-shadow: 0 16rpx 40rpx rgba(15, 23, 42, 0.06);
+}
+
+.picker-title {
+  display: block;
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.picker-desc {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: #64748b;
+}
+
+.avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20rpx;
+  margin-top: 24rpx;
+}
+
+.avatar-card {
+  overflow: hidden;
+  border-radius: 26rpx;
+  background: #ffffff;
+  border: 3rpx solid transparent;
+  box-shadow: 0 16rpx 34rpx rgba(15, 23, 42, 0.05);
+}
+
+.avatar-card-active {
+  border-color: #2563eb;
+  box-shadow: 0 20rpx 40rpx rgba(37, 99, 235, 0.14);
+}
+
+.avatar-image {
+  display: block;
+  width: 100%;
+  height: 320rpx;
+  background: #e2e8f0;
+}
+
+.avatar-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+  padding: 18rpx 18rpx 20rpx;
+}
+
+.avatar-label {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.avatar-selected {
+  flex-shrink: 0;
+  padding: 6rpx 14rpx;
+  border-radius: 999rpx;
+  background: rgba(37, 99, 235, 0.1);
+  color: #2563eb;
+  font-size: 20rpx;
+  font-weight: 700;
+}

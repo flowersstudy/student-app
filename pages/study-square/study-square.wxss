@@ -6,7 +6,7 @@
   flex-direction: column;
   overflow: hidden;
   box-sizing: border-box;
-  padding: 8rpx 20rpx 8rpx;
+  padding: 8rpx 20rpx calc(8rpx + 56px + env(safe-area-inset-bottom));
   gap: 12rpx;
   background:
     radial-gradient(circle at 50% -10%, rgba(255, 255, 255, 0.92), transparent 24%),
@@ -371,6 +371,7 @@
 
 .station-icon-primary { width: 108rpx; height: 108rpx; }
 .station-icon-normal { width: 72rpx; height: 72rpx; }
+.station-icon-activity { width: 78rpx; height: 78rpx; }
 
 .station-badge {
   position: absolute;

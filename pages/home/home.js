@@ -1,61 +1,113 @@
-const { uiIcons } = require('../../utils/ui-icons')
-const { fetchStudentNotifications, fetchStudentProfile } = require('../../utils/student-api')
-const { syncChatUnreadBadge } = require('../../utils/chat-badge')
+const { fetchStudentProfile } = require('../../utils/student-api')
+const { getPointVersionData } = require('../../utils/card-paths')
+const { syncCustomTabBar } = require('../../utils/custom-tab-bar')
 
 const CURRENT_LEARNING_TASK_KEY = 'current_learning_task'
-const DIAGNOSE_COUPON_STORAGE_KEY = 'new_user_diagnose_coupon'
-const DIAGNOSE_COUPON_DURATION = 30 * 60 * 1000
-const BUKA_LAST_ACTIVE_AT_KEY = 'buka_last_active_at'
-const BUKA_REVIEW_HINT_KEY = 'buka_review_hint'
-const OFFLINE_SUBMISSIONS_KEY = 'offline_submissions'
-const BUKA_DEBUG_SCENE_KEY = 'buka_debug_scene'
-const BUKA_INACTIVE_THRESHOLD = 3 * 24 * 60 * 60 * 1000
-const BUKA_ACHIEVEMENT_WINDOW = 6 * 60 * 60 * 1000
-const BUKA_REVIEW_WINDOW_START = 18 * 60 * 60 * 1000
-const BUKA_REVIEW_WINDOW_END = 72 * 60 * 60 * 1000
-const BUKA_DEBUG_SCENE_ORDER = [
-  '',
-  'class_reminder',
-  'homework_due',
-  'task_continue',
-  'review_due',
-  'inactive',
-  'achievement',
-]
-const TAB_BAR_PAGE_PATHS = [
-  '/pages/home/home',
-  '/pages/chat/chat',
-  '/pages/study-square/study-square',
-  '/pages/results/results',
-]
+const PATH_MAP_HEIGHT_RPX = 660
+const PATH_VERTICAL_GAP_RPX = 92
+const PATH_NODE_SIZE_RPX = 88
+const PATH_LAYOUT_PRESETS = {
+  compact: {
+    key: 'compact',
+    mapHeight: 620,
+    nodeSize: 84,
+    nodeTextSize: 22,
+    bodyRightPadding: 84,
+    ipTop: 206,
+    ipRight: 4,
+    ipWidth: 78,
+    ipOpacity: 0.24,
+    pointLayoutsByCount: {
+      6: [
+        { x: 0, y: 0 },
+        { x: -14, y: 88 },
+        { x: -62, y: 180 },
+        { x: 30, y: 264 },
+        { x: -58, y: 354 },
+        { x: -12, y: 446 },
+      ],
+      7: [
+        { x: 0, y: 0 },
+        { x: -12, y: 82 },
+        { x: -58, y: 170 },
+        { x: 34, y: 246 },
+        { x: -66, y: 334 },
+        { x: -18, y: 420 },
+        { x: 8, y: 504 },
+      ],
+    },
+  },
+  standard: {
+    key: 'standard',
+    mapHeight: PATH_MAP_HEIGHT_RPX,
+    nodeSize: PATH_NODE_SIZE_RPX,
+    nodeTextSize: 24,
+    bodyRightPadding: 104,
+    ipTop: 232,
+    ipRight: 6,
+    ipWidth: 102,
+    ipOpacity: 0.26,
+    pointLayoutsByCount: {
+      6: [
+        { x: 0, y: 0 },
+        { x: -18, y: 96 },
+        { x: -74, y: 194 },
+        { x: 40, y: 286 },
+        { x: -72, y: 382 },
+        { x: -18, y: 478 },
+      ],
+      7: [
+        { x: 0, y: 0 },
+        { x: -16, y: 90 },
+        { x: -76, y: 186 },
+        { x: 44, y: 270 },
+        { x: -84, y: 364 },
+        { x: -24, y: 458 },
+        { x: 10, y: 548 },
+      ],
+    },
+  },
+  wide: {
+    key: 'wide',
+    mapHeight: 700,
+    nodeSize: 90,
+    nodeTextSize: 22,
+    bodyRightPadding: 102,
+    ipTop: 244,
+    ipRight: 10,
+    ipWidth: 92,
+    ipOpacity: 0.22,
+    pointLayoutsByCount: {
+      6: [
+        { x: 0, y: 0 },
+        { x: -12, y: 96 },
+        { x: -58, y: 198 },
+        { x: 34, y: 292 },
+        { x: -56, y: 392 },
+        { x: -10, y: 490 },
+      ],
+      7: [
+        { x: 0, y: 0 },
+        { x: -10, y: 92 },
+        { x: -56, y: 190 },
+        { x: 32, y: 280 },
+        { x: -62, y: 380 },
+        { x: -18, y: 478 },
+        { x: 8, y: 572 },
+      ],
+    },
+  },
+}
 
 const DEFAULT_CURRENT_TASK = {
   pointId: 2,
   pointName: '总结转述难',
   day: 'Day 1',
   taskLabel: '1v1共识课',
+  progress: 0,
 }
 
-const LEARNING_POINT_ORDER = [1, 2, 5, 3, 4, 6, 7, 8]
-const FORCED_ACTIVE_POINT_IDS = [5, 3]
-
-const SUBPATH_STATUS_META = {
-  completed: {
-    label: '已完成',
-    className: 'completed',
-    locked: false,
-  },
-  active: {
-    label: '学习中',
-    className: 'active',
-    locked: false,
-  },
-  locked: {
-    label: '待解锁',
-    className: 'locked',
-    locked: true,
-  },
-}
+const POINT_ORDER = [1, 2, 5, 3, 4, 6, 7, 8]
 
 const POINT_NAME_BY_ID = {
   1: '游走式找点',
@@ -69,61 +121,25 @@ const POINT_NAME_BY_ID = {
 }
 
 const POINT_NAME_ALIASES = {
-  '游走式找点': 1,
-  '总结转述难': 2,
-  '提炼转述错误': 2,
-  '分析结构不清': 3,
-  '分析结构错误': 3,
-  '公文结构不清': 4,
-  '公文结构错误': 4,
-  '对策推导难': 5,
-  '对策推导错误': 5,
-  '作文立意不准': 6,
-  '作文立意错误': 6,
-  '作文逻辑不清': 7,
-  '作文逻辑不清晰': 7,
-  '作文表达不畅': 8,
-  '作文表达不流畅': 8,
-}
-
-function createDiagnoseCouponState(now = Date.now()) {
-  return {
-    createdAt: now,
-    expiresAt: now + DIAGNOSE_COUPON_DURATION,
-    claimed: false,
-  }
-}
-
-function readDiagnoseCouponState() {
-  return wx.getStorageSync(DIAGNOSE_COUPON_STORAGE_KEY) || null
-}
-
-function writeDiagnoseCouponState(state) {
-  wx.setStorageSync(DIAGNOSE_COUPON_STORAGE_KEY, state)
-}
-
-function formatCouponCountdown(remainingMs) {
-  const safeRemaining = Math.max(0, remainingMs)
-  const totalSeconds = Math.floor(safeRemaining / 1000)
-  const minutes = Math.floor(totalSeconds / 60)
-  const seconds = totalSeconds % 60
-  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+  游走式找点: 1,
+  总结转述难: 2,
+  提炼转述错误: 2,
+  分析结构不清: 3,
+  分析结构错误: 3,
+  公文结构不清: 4,
+  公文结构错误: 4,
+  对策推导难: 5,
+  对策推导错误: 5,
+  作文立意不准: 6,
+  作文立意错误: 6,
+  作文逻辑不清: 7,
+  作文逻辑不清晰: 7,
+  作文表达不畅: 8,
+  作文表达不流畅: 8,
 }
 
 function getPointIdByName(pointName = '') {
   return Number(POINT_NAME_ALIASES[pointName] || DEFAULT_CURRENT_TASK.pointId)
-}
-
-function splitCoursesBySubject(courses = []) {
-  return courses.reduce((acc, item) => {
-    const subject = String(item.subject || '')
-    if (subject.includes('行测')) {
-      acc.xingce.push(item)
-    } else {
-      acc.shenlun.push(item)
-    }
-    return acc
-  }, { xingce: [], shenlun: [] })
 }
 
 function toPointItem(course = {}) {
@@ -159,276 +175,20 @@ function buildCurrentTaskFromCourse(course = {}) {
     pointName,
     day,
     taskLabel,
+    progress,
   }
 }
 
 function resolveCurrentTask(taskState = {}) {
   const pointId = Number(taskState.pointId) || getPointIdByName(taskState.pointName)
+
   return {
     pointId,
     pointName: taskState.pointName || POINT_NAME_BY_ID[pointId] || DEFAULT_CURRENT_TASK.pointName,
     day: taskState.day || DEFAULT_CURRENT_TASK.day,
     taskLabel: taskState.taskLabel || DEFAULT_CURRENT_TASK.taskLabel,
+    progress: Number(taskState.progress || 0),
   }
-}
-
-function getDefaultCurrentTaskText() {
-  return `${DEFAULT_CURRENT_TASK.pointName} · ${DEFAULT_CURRENT_TASK.day} ${DEFAULT_CURRENT_TASK.taskLabel}`
-}
-
-function getCurrentTaskText(taskState = {}) {
-  const pointName = taskState.pointName || ''
-  const day = taskState.day || ''
-  const taskLabel = taskState.taskLabel || ''
-
-  if (pointName && day && taskLabel) {
-    return `${pointName} · ${day} ${taskLabel}`
-  }
-
-  if (pointName && taskLabel) {
-    return `${pointName} · ${taskLabel}`
-  }
-
-  if (taskLabel) {
-    return taskLabel
-  }
-
-  return getDefaultCurrentTaskText()
-}
-
-function normalizePageUrl(url = '') {
-  if (!url) return ''
-  return url.startsWith('/') ? url : `/${url}`
-}
-
-function navigateByUrl(url = '') {
-  const normalizedUrl = normalizePageUrl(url)
-  if (!normalizedUrl) return
-
-  const pagePath = normalizedUrl.split('?')[0]
-  if (TAB_BAR_PAGE_PATHS.includes(pagePath)) {
-    wx.switchTab({ url: pagePath })
-    return
-  }
-
-  wx.navigateTo({ url: normalizedUrl })
-}
-
-function createBukaScene({
-  code = 'task_continue',
-  priority = 0,
-  mood = 'normal',
-  title = '',
-  slogan = '',
-  ctaText = '',
-  ctaUrl = '',
-} = {}) {
-  return {
-    code,
-    priority,
-    mood,
-    title,
-    slogan,
-    ctaText,
-    ctaUrl,
-  }
-}
-
-function getDaysBetween(now, pastTime) {
-  if (!pastTime) return 0
-  const diff = now - pastTime
-  if (diff <= 0) return 0
-  return Math.max(1, Math.floor(diff / (24 * 60 * 60 * 1000)))
-}
-
-function getReviewSceneUrl(task) {
-  return `/pages/review/review?type=cycle_end&pointName=${task.pointName}`
-}
-
-function createBukaDebugScene(debugSceneCode, taskState = {}) {
-  const safeTask = resolveCurrentTask(taskState)
-  const currentTaskUrl = `/pages/progress/progress?id=${safeTask.pointId}`
-  const sceneMap = {
-    class_reminder: createBukaScene({
-      code: 'class_reminder',
-      priority: 100,
-      mood: 'urgent',
-      title: '19:00 直播课提醒',
-      slogan: '课前材料先过一遍，进教室会更顺。',
-      ctaText: '进入课程',
-      ctaUrl: '/pages/lesson-live/lesson-live',
-    }),
-    homework_due: createBukaScene({
-      code: 'homework_due',
-      priority: 90,
-      mood: 'remind',
-      title: '作业待提交',
-      slogan: '先交当前版本，老师才能帮你看问题。',
-      ctaText: '去提交',
-      ctaUrl: '/pages/lesson-correct/lesson-correct',
-    }),
-    task_continue: createBukaScene({
-      code: 'task_continue',
-      priority: 10,
-      mood: 'normal',
-      title: `今天先推进「${safeTask.pointName}」`,
-      slogan: `先完成 ${safeTask.day} 的 ${safeTask.taskLabel}，一步一步来。`,
-      ctaText: '去学习',
-      ctaUrl: currentTaskUrl,
-    }),
-    review_due: createBukaScene({
-      code: 'review_due',
-      priority: 60,
-      mood: 'calm',
-      title: '该复习一下啦',
-      slogan: `「${safeTask.pointName}」回顾一次，会比硬往前冲更稳。`,
-      ctaText: '去复盘',
-      ctaUrl: getReviewSceneUrl(safeTask),
-    }),
-    inactive: createBukaScene({
-      code: 'inactive',
-      priority: 50,
-      mood: 'remind',
-      title: '你已经 3 天没学了',
-      slogan: '没关系，今天先回来 10 分钟，把状态接上就行。',
-      ctaText: '继续学习',
-      ctaUrl: currentTaskUrl,
-    }),
-    achievement: createBukaScene({
-      code: 'achievement',
-      priority: 30,
-      mood: 'warm',
-      title: '这一步完成啦',
-      slogan: `「${safeTask.pointName}」已提交，接下来等反馈就好。`,
-      ctaText: '查看成果',
-      ctaUrl: '/pages/results/results',
-    }),
-  }
-
-  return sceneMap[debugSceneCode] || null
-}
-
-function readLatestOfflineSubmission() {
-  const submissions = wx.getStorageSync(OFFLINE_SUBMISSIONS_KEY) || []
-  if (!Array.isArray(submissions) || submissions.length === 0) {
-    return null
-  }
-  return submissions[0]
-}
-
-function getLatestSubmissionTime(latestSubmission) {
-  if (!latestSubmission || !latestSubmission.createdAt) return 0
-  const timestamp = new Date(latestSubmission.createdAt).getTime()
-  return Number.isFinite(timestamp) ? timestamp : 0
-}
-
-function pickFirstNotification(notifications = [], types = []) {
-  return notifications.find((item) => types.includes(item.type))
-}
-
-function resolveBukaScene({
-  currentTask,
-  notifications,
-  latestSubmission,
-  reviewHint,
-  lastActiveAt,
-  now = Date.now(),
-} = {}) {
-  const safeTask = resolveCurrentTask(currentTask)
-  const currentTaskUrl = `/pages/progress/progress?id=${safeTask.pointId}`
-  const scenes = []
-
-  const classNotification = pickFirstNotification(notifications, ['class', 'exam'])
-  if (classNotification) {
-    scenes.push(createBukaScene({
-      code: 'class_reminder',
-      priority: 100,
-      mood: 'urgent',
-      title: classNotification.label || '马上要上课啦',
-      slogan: classNotification.desc || '课前材料先过一遍，进教室会更顺。',
-      ctaText: '进入课程',
-      ctaUrl: classNotification.url || (classNotification.type === 'exam' ? '/pages/lesson-exam/lesson-exam' : '/pages/lesson-live/lesson-live'),
-    }))
-  }
-
-  const homeworkNotification = pickFirstNotification(notifications, ['hw', 'drill', 'video'])
-  if (homeworkNotification) {
-    scenes.push(createBukaScene({
-      code: 'homework_due',
-      priority: 90,
-      mood: 'remind',
-      title: homeworkNotification.label || '作业还没交哦',
-      slogan: homeworkNotification.desc || '先交当前版本，老师才能帮你看问题。',
-      ctaText: '去提交',
-      ctaUrl: homeworkNotification.url || '/pages/lesson-correct/lesson-correct',
-    }))
-  }
-
-  if (reviewHint && reviewHint.enabled) {
-    scenes.push(createBukaScene({
-      code: 'review_due',
-      priority: 60,
-      mood: 'calm',
-      title: reviewHint.title || '该复习一下啦',
-      slogan: reviewHint.slogan || `「${safeTask.pointName}」回顾一次，会比硬往前冲更稳。`,
-      ctaText: reviewHint.ctaText || '去复盘',
-      ctaUrl: reviewHint.ctaUrl || getReviewSceneUrl(safeTask),
-    }))
-  }
-
-  const latestSubmissionTime = getLatestSubmissionTime(latestSubmission)
-  if (latestSubmissionTime) {
-    const sinceLatestSubmission = now - latestSubmissionTime
-
-    if (sinceLatestSubmission <= BUKA_ACHIEVEMENT_WINDOW) {
-      scenes.push(createBukaScene({
-        code: 'achievement',
-        priority: 30,
-        mood: 'warm',
-        title: '这一步完成啦',
-        slogan: `「${latestSubmission.checkpoint || safeTask.pointName}」已提交，接下来等反馈就好。`,
-        ctaText: '查看成果',
-        ctaUrl: getReviewSceneUrl(safeTask),
-      }))
-    }
-
-    if (sinceLatestSubmission >= BUKA_REVIEW_WINDOW_START && sinceLatestSubmission <= BUKA_REVIEW_WINDOW_END) {
-      scenes.push(createBukaScene({
-        code: 'review_due',
-        priority: 60,
-        mood: 'calm',
-        title: '该复习一下啦',
-        slogan: '趁还记得，回顾一遍更容易真正记住。',
-        ctaText: '去复盘',
-        ctaUrl: '/pages/results/results',
-      }))
-    }
-  }
-
-  if (lastActiveAt && now - lastActiveAt >= BUKA_INACTIVE_THRESHOLD) {
-    const inactiveDays = getDaysBetween(now, lastActiveAt)
-    scenes.push(createBukaScene({
-      code: 'inactive',
-      priority: 50,
-      mood: 'remind',
-      title: `你已经 ${inactiveDays} 天没学了`,
-      slogan: '没关系，今天先回来 10 分钟，把状态接上就行。',
-      ctaText: '继续学习',
-      ctaUrl: currentTaskUrl,
-    }))
-  }
-
-  scenes.push(createBukaScene({
-    code: 'task_continue',
-    priority: 10,
-    mood: 'normal',
-    title: `今天先推进「${safeTask.pointName}」`,
-    slogan: `先完成 ${safeTask.day} 的 ${safeTask.taskLabel}，一步一步来。`,
-    ctaText: '去学习',
-    ctaUrl: currentTaskUrl,
-  }))
-
-  return scenes.sort((a, b) => b.priority - a.priority)[0]
 }
 
 function hasDiagnoseCourse() {
@@ -438,257 +198,324 @@ function hasDiagnoseCourse() {
   return globalData.hasDiagnoseCourse === true || !!userProfile.phone
 }
 
-function getDiagnoseEntryConfig() {
-  if (hasDiagnoseCourse()) {
-    return {
-      text: '查看诊断',
-      url: '/pages/diagnose-report/diagnose-report',
-    }
-  }
-
-  return {
-    text: '立即诊断',
-    url: '/pages/diagnose-detail/diagnose-detail',
-  }
+function getSectionNoteByStatus(status = '') {
+  if (status === 'done') return '已完成'
+  if (status === 'current') return '当前学习'
+  if (status === 'locked') return '待解锁'
+  return '可查看'
 }
 
 function getPointStatus(pointId, currentPointId) {
-  if (FORCED_ACTIVE_POINT_IDS.includes(pointId)) {
-    return 'active'
-  }
-
-  const pointIndex = LEARNING_POINT_ORDER.indexOf(pointId)
-  const currentIndex = LEARNING_POINT_ORDER.indexOf(currentPointId)
+  const pointIndex = POINT_ORDER.indexOf(pointId)
+  const currentIndex = POINT_ORDER.indexOf(currentPointId)
 
   if (pointIndex === -1 || currentIndex === -1) {
     return 'locked'
   }
 
   if (pointIndex < currentIndex) {
-    return 'completed'
+    return 'done'
   }
 
   if (pointIndex === currentIndex) {
-    return 'active'
+    return 'current'
   }
 
   return 'locked'
 }
 
-function buildDetailItems(items, currentPointId) {
-  return items.map((item, index) => {
-    const status = getPointStatus(item.pointId, currentPointId)
-    const statusMeta = SUBPATH_STATUS_META[status]
+function getExpandedMap(list = []) {
+  return list.reduce((acc, item) => {
+    if (item && item.id && item.expanded) {
+      acc[item.id] = true
+    }
+    return acc
+  }, {})
+}
+
+function pickVersionData(pointData = {}) {
+  const versions = pointData.versions || {}
+
+  if (versions.progressive && versions.progressive.available !== false) {
+    return {
+      key: 'progressive',
+      label: '循序渐进',
+      data: versions.progressive,
+    }
+  }
+
+  const fallbackKey = Object.keys(versions).find((key) => versions[key] && versions[key].available !== false)
+
+  if (!fallbackKey) {
+    return {
+      key: 'progressive',
+      label: '学习路径',
+      data: { steps: [] },
+    }
+  }
+
+  return {
+    key: fallbackKey,
+    label: fallbackKey === 'fast' ? '极速提升' : fallbackKey === 'premium' ? '尊享路径' : '学习路径',
+    data: versions[fallbackKey],
+  }
+}
+
+function resolveTaskUrl(stepTitle = '', pointId = 0) {
+  if (/测试|模考/.test(stepTitle)) {
+    return '/pages/lesson-exam/lesson-exam'
+  }
+
+  if (/训练|刷题/.test(stepTitle)) {
+    return `/pages/lesson-drill/lesson-drill?pointId=${pointId}`
+  }
+
+  if (/讲义/.test(stepTitle)) {
+    return '/pages/lesson-recorded/lesson-recorded'
+  }
+
+  if (/纠偏/.test(stepTitle)) {
+    return '/pages/lesson-correct/lesson-correct'
+  }
+
+  if (/理论/.test(stepTitle)) {
+    return '/pages/lesson-recorded/lesson-recorded'
+  }
+
+  return `/pages/progress/progress?id=${pointId}`
+}
+
+function resolveCurrentStepIndex(progress = 0, stepCount = 0) {
+  if (!stepCount) return 0
+
+  const normalized = Math.max(0, Math.min(99, Number(progress || 0)))
+  return Math.min(stepCount - 1, Math.floor(normalized / (100 / stepCount)))
+}
+
+function getPathLayoutPreset(windowWidth = 375) {
+  if (windowWidth <= 360) return PATH_LAYOUT_PRESETS.compact
+  if (windowWidth >= 768) return PATH_LAYOUT_PRESETS.wide
+  return PATH_LAYOUT_PRESETS.standard
+}
+
+function buildPathLayoutData(layoutPreset = PATH_LAYOUT_PRESETS.standard) {
+  return {
+    key: layoutPreset.key,
+    bodyStyle: `padding-right:${layoutPreset.bodyRightPadding}rpx;`,
+    ipStyle: `top:${layoutPreset.ipTop}rpx; right:${layoutPreset.ipRight}rpx; width:${layoutPreset.ipWidth}rpx; opacity:${layoutPreset.ipOpacity};`,
+    nodeWrapStyle: `width:${layoutPreset.nodeSize}rpx;`,
+    nodeStyle: `width:${layoutPreset.nodeSize}rpx; height:${layoutPreset.nodeSize}rpx;`,
+    nodeTextStyle: `font-size:${layoutPreset.nodeTextSize}rpx;`,
+  }
+}
+
+function decoratePathSteps(rawSteps = [], sectionStatus = 'locked', currentStepIndex = 0, layoutPreset = PATH_LAYOUT_PRESETS.standard) {
+  const total = rawSteps.length
+  const pointLayouts = layoutPreset.pointLayoutsByCount[total] || layoutPreset.pointLayoutsByCount[7] || []
+  const contentHeight = pointLayouts.length
+    ? pointLayouts[pointLayouts.length - 1].y + layoutPreset.nodeSize
+    : layoutPreset.nodeSize
+  const topOffset = Math.max(0, Math.floor((layoutPreset.mapHeight - contentHeight) / 2))
+
+  return rawSteps.map((step, index) => {
+    let status = 'locked'
+
+    if (sectionStatus === 'done') {
+      status = 'done'
+    } else if (sectionStatus === 'current') {
+      if (index < currentStepIndex) {
+        status = 'done'
+      } else if (index === currentStepIndex) {
+        status = 'current'
+      }
+    }
+
+    const point = pointLayouts[index] || { x: 0, y: index * PATH_VERTICAL_GAP_RPX }
+    const offsetRpx = point.x
+    const topRpx = topOffset + point.y
+    let layout = 'center'
+
+    if (offsetRpx > 8) {
+      layout = 'right'
+    } else if (offsetRpx < -8) {
+      layout = 'left'
+    }
 
     return {
-      ...item,
+      ...step,
+      id: `${step.id || 'step'}-${index + 1}`,
+      index: index + 1,
       status,
-      statusLabel: statusMeta.label,
-      statusClass: statusMeta.className,
-      locked: statusMeta.locked,
-      showLine: index !== items.length - 1,
+      layout,
+      positionStyle: `top:${topRpx}rpx; left:50%; margin-left:${offsetRpx}rpx;`,
+      shortLabel: String(index + 1),
+      isLast: index === rawSteps.length - 1,
     }
   })
 }
 
-function createPathNodes(currentPointId = DEFAULT_CURRENT_TASK.pointId) {
-  const isInBasicStage = [1, 2].includes(currentPointId)
-  const isInSpecialStage = [5, 3, 4, 6, 7, 8].includes(currentPointId) || FORCED_ACTIVE_POINT_IDS.length > 0
+function buildDiagnosePath(sectionStatus = 'current') {
+  const rawSteps = [
+    {
+      title: '预约诊断',
+      note: '确认考试方向、目标分和当前问题',
+      url: '/pages/diagnose-detail/diagnose-detail',
+    },
+    {
+      title: '填写信息',
+      note: '补充基础信息与学习背景',
+      url: '/pages/diagnose/diagnose',
+    },
+    {
+      title: '下载试卷',
+      note: '领取诊断题并开始作答',
+      url: '/pages/diagnose/diagnose',
+    },
+    {
+      title: '上传答案',
+      note: '提交答案进入人工批改',
+      url: '/pages/diagnose/diagnose',
+    },
+    {
+      title: '1v1诊断课',
+      note: '老师拆解失分原因与后续路径',
+      url: '/pages/diagnose-report/diagnose-report',
+    },
+    {
+      title: '查看报告',
+      note: '生成专属诊断报告和建议',
+      url: '/pages/diagnose-report/diagnose-report',
+    },
+  ]
+
+  return {
+    pathTitle: '诊断课学习路径',
+    pathSummary: `共 ${rawSteps.length} 步`,
+    mapHeight: `${PATH_MAP_HEIGHT_RPX}rpx`,
+    steps: decoratePathSteps(rawSteps, sectionStatus, sectionStatus === 'current' ? 0 : 0),
+  }
+}
+
+function buildPointPath(pointId, sectionStatus = 'locked', currentProgress = 0) {
+  const pointData = getPointVersionData(pointId)
+  const version = pickVersionData(pointData)
+  const rawSteps = []
+
+  if (version.data && Array.isArray(version.data.stages)) {
+    version.data.stages.forEach((stage) => {
+      const stageLabel = stage.label || '阶段学习'
+      ;(stage.steps || []).forEach((step, index) => {
+        rawSteps.push({
+          id: `${stage.key || 'stage'}-${index + 1}`,
+          title: step.title || `步骤 ${index + 1}`,
+          note: step.note || `${version.label} · ${stageLabel}`,
+          url: resolveTaskUrl(step.title || '', pointId),
+        })
+      })
+    })
+  } else {
+    ;((version.data && version.data.steps) || []).forEach((step, index) => {
+      rawSteps.push({
+        id: `${version.key}-${index + 1}`,
+        title: step.title || `步骤 ${index + 1}`,
+        note: step.note || `${version.label} · 核心路径`,
+        url: resolveTaskUrl(step.title || '', pointId),
+      })
+    })
+  }
+
+  const currentStepIndex = sectionStatus === 'current'
+    ? resolveCurrentStepIndex(currentProgress, rawSteps.length)
+    : 0
+
+  return {
+    pathTitle: `${POINT_NAME_BY_ID[pointId]}学习路径`,
+    pathSummary: `${version.label} · 共 ${rawSteps.length} 步`,
+    mapHeight: `${PATH_MAP_HEIGHT_RPX}rpx`,
+    steps: decoratePathSteps(rawSteps, sectionStatus, currentStepIndex),
+  }
+}
+
+function applyLayoutPresetToPath(path = {}, layoutPreset = PATH_LAYOUT_PRESETS.standard, sectionStatus = 'locked', currentStepIndex = 0) {
+  const rawSteps = (path.steps || []).map((step, index) => ({
+    id: step.id || `step-${index + 1}`,
+    title: step.title || '',
+    note: step.note || '',
+    url: step.url || '',
+  }))
+
+  return {
+    ...path,
+    mapHeight: `${layoutPreset.mapHeight}rpx`,
+    steps: decoratePathSteps(rawSteps, sectionStatus, currentStepIndex, layoutPreset),
+  }
+}
+
+function createPathNodes(currentTask = DEFAULT_CURRENT_TASK, expandedMap = {}, layoutPreset = PATH_LAYOUT_PRESETS.standard) {
+  const currentPointId = Number(currentTask.pointId) || DEFAULT_CURRENT_TASK.pointId
+  const currentProgress = Number(currentTask.progress || 0)
+  const diagnoseStatus = hasDiagnoseCourse() ? 'done' : 'current'
+  const diagnosePath = buildDiagnosePath(diagnoseStatus)
+  const diagnoseSection = applyLayoutPresetToPath(diagnosePath, layoutPreset, diagnoseStatus, 0)
 
   return [
     {
       id: 'diagnose',
+      pointId: 0,
       title: '诊断',
-      status: 'done',
-      note: '已完成',
-      icon: '诊',
-      action: '/pages/diagnose-detail/diagnose-detail',
-      showCurve: false,
-      showHighlight: false,
-      hasDetail: false,
-      expanded: false,
-      detailVisible: false,
-      detailStateClass: 'close',
-      expandText: '',
-      detailSections: [],
+      status: diagnoseStatus,
+      note: diagnoseStatus === 'done' ? '已完成' : '待诊断',
+      expanded: !!expandedMap.diagnose,
+      ...diagnoseSection,
     },
-    {
-      id: 'final-card',
-      title: '底层卡点',
-      status: isInBasicStage ? 'current' : 'done',
-      note: isInBasicStage ? '当前在学' : '已完成',
-      icon: '底',
-      action: '',
-      showCurve: true,
-      showHighlight: isInBasicStage,
-      hasDetail: true,
-      expanded: false,
-      detailVisible: false,
-      detailStateClass: 'close',
-      expandText: '展开',
-      detailSections: [
-        {
-          items: buildDetailItems(
-            [
-              { pointId: 1, text: '游走式找点' },
-              { pointId: 2, text: '总结转述难' },
-            ],
-            currentPointId
-          ),
-        },
-      ],
-    },
-    {
-      id: 'yellow-card',
-      title: '专项卡点',
-      status: isInSpecialStage ? 'current' : 'browse',
-      note: isInSpecialStage ? '当前在学' : '下一阶段',
-      icon: '专',
-      action: '',
-      showCurve: true,
-      showHighlight: isInSpecialStage,
-      hasDetail: true,
-      expanded: false,
-      detailVisible: false,
-      detailStateClass: 'close',
-      expandText: '展开',
-      detailSections: [
-        {
-          items: buildDetailItems(
-            [
-              { pointId: 5, text: '对策推导难' },
-              { pointId: 3, text: '分析结构不清' },
-              { pointId: 4, text: '公文结构不清' },
-              { pointId: 6, text: '作文立意不准' },
-              { pointId: 7, text: '作文逻辑不清' },
-              { pointId: 8, text: '作文表达不畅' },
-            ],
-            currentPointId
-          ),
-        },
-      ],
-    },
-    {
-      id: 'blue-card',
-      title: '靶向卡点',
-      status: 'locked',
-      note: '后续解锁',
-      icon: '靶',
-      action: '',
-      showCurve: true,
-      showHighlight: false,
-      hasDetail: false,
-      expanded: false,
-      detailVisible: false,
-      detailStateClass: 'close',
-      expandText: '',
-      detailSections: [],
-    },
+    ...POINT_ORDER.map((pointId) => {
+      const status = getPointStatus(pointId, currentPointId)
+      const path = buildPointPath(pointId, status, pointId === currentPointId ? currentProgress : 0)
+      const currentStepIndex = status === 'current'
+        ? resolveCurrentStepIndex(pointId === currentPointId ? currentProgress : 0, (path.steps || []).length)
+        : 0
+      const section = applyLayoutPresetToPath(path, layoutPreset, status, currentStepIndex)
+
+      return {
+        id: `point-${pointId}`,
+        pointId,
+        title: POINT_NAME_BY_ID[pointId] || `卡点 ${pointId}`,
+        status,
+        note: getSectionNoteByStatus(status),
+        expanded: !!expandedMap[`point-${pointId}`],
+        ...section,
+      }
+    }),
   ]
-}
-
-function getBranchDisplay(expanded) {
-  return {
-    state: expanded ? 'expanded' : 'default',
-    title: '布卡',
-    subtitle: '',
-    slogan: '思路不卡，上岸稳了！',
-  }
-}
-
-function updateNodeState(node, expanded) {
-  return {
-    ...node,
-    expanded,
-    detailVisible: expanded,
-    detailStateClass: expanded ? 'open' : 'close',
-    expandText: node.hasDetail ? (expanded ? '收起' : '展开') : '',
-  }
-}
-
-function getSubpathTarget(pointId, status) {
-  if (status === 'completed') {
-    return `/pages/card-detail/card-detail?id=${pointId}`
-  }
-
-  if (status === 'active') {
-    return `/pages/progress/progress?id=${pointId}`
-  }
-
-  return `/pages/course-intro/course-intro?id=${pointId}`
 }
 
 Page({
   data: {
-    notificationIcon: uiIcons.bell,
-    unreadNotificationCount: 0,
-    examInfo: {
-      subjectIcon: uiIcons.class,
-      subjectValue: '申论',
-      targetIcon: uiIcons.target,
-      targetValue: '+20分',
-      deadlineIcon: uiIcons.calendar,
-      deadlineValue: '04/25',
-    },
-    topTagText: '生成专属学习报告',
-    currentTaskText: getDefaultCurrentTaskText(),
-    currentCardProgress: 36,
-    branchState: 'default',
-    branchNode: getBranchDisplay(false),
-    bukaScene: createBukaScene({
-      code: 'task_continue',
-      priority: 10,
-      mood: 'normal',
-      title: `今天先推进「${DEFAULT_CURRENT_TASK.pointName}」`,
-      slogan: `先完成 ${DEFAULT_CURRENT_TASK.day} 的 ${DEFAULT_CURRENT_TASK.taskLabel}，一步一步来。`,
-      ctaText: '去学习',
-      ctaUrl: `/pages/progress/progress?id=${DEFAULT_CURRENT_TASK.pointId}`,
-    }),
+    pathLayout: buildPathLayoutData(),
     pathNodes: createPathNodes(),
-    showDiagnoseCoupon: false,
-    diagnoseCoupon: {
-      badge: '新用户专享',
-      title: '1v1申论诊断课限时优惠券',
-      subtitle: '先看清失分原因，再决定后续怎么学',
-      countdownLabel: '倒计时 30 分钟',
-      remainingText: '30:00',
-      originalPrice: '¥380',
-      price: '¥199',
-      saveText: '限时立省 ¥181',
-      featureTags: ['8维人工诊断', '电话沟通分析', '书面诊断报告'],
-      summary: '适合先定位问题、再决定课程和学习路径的新用户。',
-    },
   },
 
   onLoad() {
-    syncChatUnreadBadge(getApp())
-    this.refreshHomeData()
-    this.refreshNotificationsData()
+    this.updatePathLayout()
     this.syncCurrentTask()
-    this.syncNotifications()
-    this.syncDiagnoseEntry()
-    this.syncBukaScene()
-    this.markBukaActivity()
+    this.refreshHomeData()
   },
 
   onShow() {
-    syncChatUnreadBadge(getApp())
-    this.refreshHomeData()
-    this.refreshNotificationsData()
+    syncCustomTabBar(this, 'home')
+    this.updatePathLayout()
     this.syncCurrentTask()
-    this.syncNotifications()
-    this.syncDiagnoseEntry()
-    this.syncBukaScene()
-    this.markBukaActivity()
+    this.refreshHomeData()
   },
 
   syncCurrentTask() {
     const savedTask = wx.getStorageSync(CURRENT_LEARNING_TASK_KEY) || {}
     const currentTask = resolveCurrentTask(savedTask)
+    const expandedMap = getExpandedMap(this.data.pathNodes)
+    const layoutPreset = getPathLayoutPreset((wx.getSystemInfoSync() || {}).windowWidth || 375)
 
     this.setData({
-      currentTaskText: getCurrentTaskText(currentTask),
-      pathNodes: createPathNodes(currentTask.pointId),
+      pathNodes: createPathNodes(currentTask, expandedMap, layoutPreset),
     })
   },
 
@@ -705,255 +532,52 @@ Page({
         return
       }
 
-      const courseGroups = splitCoursesBySubject(allCourses)
       const currentCourse = toPointItem(inProgress[0] || completed[completed.length - 1] || allCourses[0])
       const currentTask = buildCurrentTaskFromCourse(currentCourse)
+      const expandedMap = getExpandedMap(this.data.pathNodes)
+      const layoutPreset = getPathLayoutPreset((wx.getSystemInfoSync() || {}).windowWidth || 375)
 
-      app.globalData.xingcePoints = courseGroups.xingce
-      app.globalData.shenlunPoints = courseGroups.shenlun
       app.globalData.hasPracticeCourse = allCourses.length > 0
-
       wx.setStorageSync(CURRENT_LEARNING_TASK_KEY, currentTask)
 
       this.setData({
-        currentTaskText: getCurrentTaskText(currentTask),
-        currentCardProgress: Math.max(0, Math.min(100, Number(currentCourse.progress || 0))),
-        pathNodes: createPathNodes(currentTask.pointId),
-        'examInfo.subjectValue': currentCourse.subject || this.data.examInfo.subjectValue,
+        pathNodes: createPathNodes(currentTask, expandedMap, layoutPreset),
       })
     } catch (error) {
-      console.warn('首页真实数据加载失败:', error && error.message ? error.message : error)
+      console.warn('首页数据加载失败:', error && error.message ? error.message : error)
     }
   },
 
-  syncNotifications() {
-    const app = getApp()
-    const notifications = (app && app.globalData && app.globalData.notifications) || []
-    const unreadNotificationCount = notifications.filter((item) => item.read !== true).length
-
-    this.setData({
-      unreadNotificationCount,
-    })
-  },
-
-  async refreshNotificationsData() {
-    const app = getApp()
-
-    try {
-      const notifications = await fetchStudentNotifications(app)
-      app.globalData.notifications = notifications
-      this.syncNotifications()
-      this.syncBukaScene()
-    } catch (error) {
-      console.warn('通知加载失败:', error && error.message ? error.message : error)
-    }
-  },
-
-  syncDiagnoseEntry() {
-    const entry = getDiagnoseEntryConfig()
-    this._diagnoseEntryUrl = entry.url
-    this.setData({
-      topTagText: entry.text,
-    })
-  },
-
-  syncBukaScene() {
-    const app = getApp()
-    const globalData = (app && app.globalData) || {}
-    const notifications = (globalData.notifications || []).filter((item) => item.read !== true)
+  updatePathLayout() {
+    const systemInfo = wx.getSystemInfoSync() || {}
+    const layoutPreset = getPathLayoutPreset(systemInfo.windowWidth || 375)
     const currentTask = resolveCurrentTask(wx.getStorageSync(CURRENT_LEARNING_TASK_KEY) || {})
-    const latestSubmission = readLatestOfflineSubmission()
-    const reviewHint = wx.getStorageSync(BUKA_REVIEW_HINT_KEY) || null
-    const lastActiveAt = wx.getStorageSync(BUKA_LAST_ACTIVE_AT_KEY) || 0
-    const debugSceneCode = wx.getStorageSync(BUKA_DEBUG_SCENE_KEY) || ''
-    const debugScene = createBukaDebugScene(debugSceneCode, currentTask)
-    const bukaScene = resolveBukaScene({
-      currentTask,
-      notifications,
-      latestSubmission,
-      reviewHint,
-      lastActiveAt,
-      now: Date.now(),
-    })
-
-    this.setData({ bukaScene: debugScene || bukaScene })
-  },
-
-  markBukaActivity() {
-    wx.setStorageSync(BUKA_LAST_ACTIVE_AT_KEY, Date.now())
-  },
-
-  tryShowDiagnoseCoupon() {
-    const app = getApp()
-    const isNewUser = !!(app && app.globalData && app.globalData.isNewUser)
-
-    if (!isNewUser || this._diagnoseCouponDismissed) {
-      return
-    }
-
-    const now = Date.now()
-    let couponState = readDiagnoseCouponState()
-
-    if (!couponState) {
-      couponState = createDiagnoseCouponState(now)
-      writeDiagnoseCouponState(couponState)
-    }
-
-    if (couponState.claimed || couponState.expiresAt <= now) {
-      this.stopDiagnoseCouponTimer()
-      this.setData({
-        showDiagnoseCoupon: false,
-        'diagnoseCoupon.remainingText': '00:00',
-      })
-      return
-    }
+    const expandedMap = getExpandedMap(this.data.pathNodes)
 
     this.setData({
-      showDiagnoseCoupon: true,
-      'diagnoseCoupon.remainingText': formatCouponCountdown(couponState.expiresAt - now),
+      pathLayout: buildPathLayoutData(layoutPreset),
+      pathNodes: createPathNodes(currentTask, expandedMap, layoutPreset),
     })
-
-    this.startDiagnoseCouponTimer()
-  },
-
-  startDiagnoseCouponTimer() {
-    this.stopDiagnoseCouponTimer()
-    this._diagnoseCouponTimer = setInterval(() => {
-      const couponState = readDiagnoseCouponState()
-      if (!couponState) {
-        this.stopDiagnoseCouponTimer()
-        return
-      }
-
-      const remaining = couponState.expiresAt - Date.now()
-      if (remaining <= 0) {
-        this.stopDiagnoseCouponTimer()
-        this.setData({
-          showDiagnoseCoupon: false,
-          'diagnoseCoupon.remainingText': '00:00',
-        })
-        return
-      }
-
-      this.setData({
-        'diagnoseCoupon.remainingText': formatCouponCountdown(remaining),
-      })
-    }, 1000)
-  },
-
-  stopDiagnoseCouponTimer() {
-    if (this._diagnoseCouponTimer) {
-      clearInterval(this._diagnoseCouponTimer)
-      this._diagnoseCouponTimer = null
-    }
-  },
-
-  closeDiagnoseCoupon() {
-    this._diagnoseCouponDismissed = true
-    this.stopDiagnoseCouponTimer()
-    this.setData({
-      showDiagnoseCoupon: false,
-    })
-  },
-
-  handleDiagnoseCouponTap() {
-    const couponState = readDiagnoseCouponState()
-    const now = Date.now()
-
-    if (!couponState || couponState.expiresAt <= now) {
-      this.setData({
-        showDiagnoseCoupon: false,
-        'diagnoseCoupon.remainingText': '00:00',
-      })
-      wx.showToast({
-        title: '优惠券已过期',
-        icon: 'none',
-      })
-      return
-    }
-
-    writeDiagnoseCouponState({
-      ...couponState,
-      claimed: true,
-    })
-    this.stopDiagnoseCouponTimer()
-    this.setData({
-      showDiagnoseCoupon: false,
-    })
-    wx.navigateTo({ url: '/pages/diagnose-detail/diagnose-detail' })
-  },
-
-  handlePlanTap() {
-    wx.navigateTo({ url: this._diagnoseEntryUrl || '/pages/diagnose-detail/diagnose-detail' })
-  },
-
-  handleBukaAction() {
-    const { bukaScene } = this.data
-    if (!bukaScene || !bukaScene.ctaUrl) return
-    navigateByUrl(bukaScene.ctaUrl)
-  },
-
-  handleBukaDebugToggle() {
-    const currentCode = wx.getStorageSync(BUKA_DEBUG_SCENE_KEY) || ''
-    const currentIndex = BUKA_DEBUG_SCENE_ORDER.indexOf(currentCode)
-    const nextIndex = currentIndex >= 0 ? (currentIndex + 1) % BUKA_DEBUG_SCENE_ORDER.length : 0
-    const nextCode = BUKA_DEBUG_SCENE_ORDER[nextIndex]
-
-    if (nextCode) {
-      wx.setStorageSync(BUKA_DEBUG_SCENE_KEY, nextCode)
-    } else {
-      wx.removeStorageSync(BUKA_DEBUG_SCENE_KEY)
-    }
-
-    this.syncBukaScene()
-
-    const nextScene = this.data.bukaScene
-    wx.showToast({
-      title: nextCode ? `布卡场景：${nextScene.title}` : '布卡场景：自动',
-      icon: 'none',
-      duration: 1400,
-    })
-  },
-
-  handleNotificationsTap() {
-    wx.navigateTo({ url: '/pages/notifications/notifications' })
-  },
-
-  handleBranchTap() {
-    return
   },
 
   handleNodeTap(e) {
     const { id } = e.currentTarget.dataset
-    const node = this.data.pathNodes.find((item) => item.id === id)
-    if (!node) return
+    if (!id) return
 
-    if (!node.hasDetail) {
-      if (node.action) {
-        wx.navigateTo({ url: node.action })
-      }
-      return
-    }
+    const nextNodes = this.data.pathNodes.map((item) => ({
+      ...item,
+      expanded: item.id === id ? !item.expanded : false,
+    }))
 
-    const nextNodes = this.data.pathNodes.map((item) => {
-      if (item.id === id) {
-        return updateNodeState(item, !item.expanded)
-      }
-      if (!item.hasDetail) return item
-      return updateNodeState(item, false)
-    })
-
-    const activeNode = nextNodes.find((item) => item.id === id)
     this.setData({
       pathNodes: nextNodes,
-      branchState: activeNode && activeNode.expanded ? 'expanded' : 'default',
-      branchNode: getBranchDisplay(activeNode && activeNode.expanded),
     })
   },
 
-  handleSubpathTap(e) {
-    const { pointId, status } = e.currentTarget.dataset
-    if (!pointId) return
-    wx.navigateTo({ url: getSubpathTarget(pointId, status) })
+  handleStepTap(e) {
+    const { url } = e.currentTarget.dataset
+    if (!url) return
+
+    wx.navigateTo({ url })
   },
 })

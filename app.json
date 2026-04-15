@@ -3,6 +3,8 @@
     "pages/splash/splash",
     "pages/account-bind/account-bind",
     "pages/diagnose-detail/diagnose-detail",
+    "pages/diagnose-path/diagnose-path",
+    "pages/study-data/study-data",
     "pages/home/home",
     "pages/progress/progress",
     "pages/chat/chat",
@@ -13,6 +15,7 @@
     "pages/practice-submit/practice-submit",
     "pages/practice-review/practice-review",
     "pages/practice-live/practice-live",
+    "pages/avatar-picker/avatar-picker",
     "pages/study-square/study-square",
     "pages/square-activity/square-activity",
     "pages/square-team/square-team",
@@ -39,6 +42,7 @@
     "pages/teacher/teacher"
   ],
   "tabBar": {
+    "custom": true,
     "color": "#999999",
     "selectedColor": "#1A6EFF",
     "backgroundColor": "#ffffff",
@@ -73,7 +77,7 @@
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#ffffff",
-    "navigationBarTitleText": "学习助手",
+    "navigationBarTitleText": "瀛︿範鍔╂墜",
     "navigationBarTextStyle": "black"
   },
   "usingComponents": {

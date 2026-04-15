@@ -1,8 +1,9 @@
 {
-    "navigationBarTitleText":  "一起学",
-    "navigationBarBackgroundColor":  "#ffffff",
-    "navigationBarTextStyle":  "black",
-    "usingComponents":  {
-                            "diagnose-coupon-fab":  "/components/diagnose-coupon-fab/index"
-                        }
+  "navigationBarTitleText": "一起学",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "diagnose-coupon-fab": "/components/diagnose-coupon-fab/index",
+    "bottom-nav": "/components/bottom-nav/index"
+  }
 }

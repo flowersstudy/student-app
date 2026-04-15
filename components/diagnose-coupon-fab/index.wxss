@@ -49,7 +49,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 32rpx;
+  padding: 24rpx 32rpx calc(144rpx + env(safe-area-inset-bottom));
   background: rgba(15, 23, 42, 0.52);
   box-sizing: border-box;
 }
@@ -58,6 +58,7 @@
   position: relative;
   width: 100%;
   max-width: 670rpx;
+  max-height: calc(100vh - 220rpx - env(safe-area-inset-bottom));
   padding: 40rpx 34rpx 34rpx;
   background:
     radial-gradient(circle at top right, rgba(255, 227, 195, 0.72) 0%, rgba(255, 227, 195, 0) 34%),
@@ -66,6 +67,7 @@
   box-shadow: 0 22rpx 56rpx rgba(15, 23, 42, 0.22);
   box-sizing: border-box;
   overflow: hidden;
+  transform: translateY(-36rpx);
 }
 
 .coupon-glow {

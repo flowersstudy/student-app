@@ -1,5 +1,70 @@
 const app = getApp()
 const { uiIcons } = require('../../utils/ui-icons')
+const { syncCustomTabBar } = require('../../utils/custom-tab-bar')
+const DAY_MS = 24 * 60 * 60 * 1000
+
+function buildAvatarText(name = '') {
+  const safeName = String(name || '').trim()
+  return safeName ? safeName.slice(0, 1) : '\u5b66'
+}
+
+function parseExamDate(rawValue = '') {
+  const text = String(rawValue || '').trim()
+  if (!text) return null
+
+  let year = 0
+  let month = 0
+  let day = 1
+
+  let matched = text.match(/^(\d{4})[-/](\d{1,2})(?:[-/](\d{1,2}))?$/)
+  if (matched) {
+    year = Number(matched[1])
+    month = Number(matched[2])
+    day = Number(matched[3] || 1)
+  } else {
+    matched = text.match(/(\d{4})\D+(\d{1,2})(?:\D+(\d{1,2}))?/)
+    if (!matched) {
+      return null
+    }
+    year = Number(matched[1])
+    month = Number(matched[2])
+    day = Number(matched[3] || 1)
+  }
+
+  if (!year || !month || month > 12 || day > 31) {
+    return null
+  }
+
+  const examDate = new Date(year, month - 1, day)
+  if (Number.isNaN(examDate.getTime())) {
+    return null
+  }
+
+  examDate.setHours(0, 0, 0, 0)
+  return examDate
+}
+
+function formatExamCountdown(rawValue = '') {
+  const examDate = parseExamDate(rawValue)
+  if (!examDate) return '\u5f85\u8bbe\u7f6e'
+
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  const diffDays = Math.ceil((examDate.getTime() - today.getTime()) / DAY_MS)
+  if (diffDays < 0) return '\u5df2\u7ed3\u675f'
+  if (diffDays === 0) return '\u4eca\u5929'
+  return `${diffDays}\u5929`
+}
+
+function formatRaiseTarget(scoreGap) {
+  const numericGap = Number(scoreGap)
+  if (!Number.isFinite(numericGap) || numericGap <= 0) {
+    return '\u5f85\u8bc4\u4f30'
+  }
+
+  return `+${numericGap}\u5206`
+}
 
 Page({
   data: {
@@ -7,7 +72,21 @@ Page({
     isEnrolled: false,
     hasDiagnoseCourse: false,
     hasPracticeCourse: false,
+    sectionExpanded: {
+      diagnose: true,
+      solved: true,
+      pending: true,
+      practice: true,
+    },
     studentName: '张三',
+    profileSummary: {
+      avatarUrl: '',
+      avatarText: '学',
+      identityTag: '体验用户',
+      targetExam: '未设置目标考试',
+      examCountdown: '待设置',
+      raiseTarget: '待评估',
+    },
     diagnosisScore: 108,
     targetScore: 130,
     stats: {
@@ -54,11 +133,14 @@ Page({
   },
 
   onShow() {
+    syncCustomTabBar(this, 'results')
     const profile = app.globalData.userProfile || {}
     const diagnosis = app.globalData.diagnosis || {}
     const hasDiagnoseCourse = !!app.globalData.hasDiagnoseCourse
     const hasPracticeCourse = !!app.globalData.hasPracticeCourse
     const diagnosisScoreGap = Number(diagnosis.scoreGap)
+    const studentName = profile.name || '张三'
+    const examTime = profile.examTime || diagnosis.examTime || ''
     const defaultDiagnosisReport = {
       reportDate: '2026-04-10',
       teacher: '何可心',
@@ -84,7 +166,15 @@ Page({
       isEnrolled: app.globalData.isEnrolled,
       hasDiagnoseCourse,
       hasPracticeCourse,
-      studentName: profile.name || '张三',
+      studentName,
+      profileSummary: {
+        avatarUrl: profile.avatar || '',
+        avatarText: buildAvatarText(studentName),
+        identityTag: hasDiagnoseCourse ? '在读学员' : '体验用户',
+        targetExam: diagnosis.targetExam || '未设置目标考试',
+        examCountdown: formatExamCountdown(examTime),
+        raiseTarget: formatRaiseTarget(diagnosis.scoreGap),
+      },
       diagnosisScore: diagnosis.diagnosisScore || this.data.diagnosisScore,
       targetScore: diagnosis.targetScore || this.data.targetScore,
       diagnosisReport: hasDiagnoseCourse ? {
@@ -111,6 +201,15 @@ Page({
 
   onLoad() {},
 
+  toggleSection(e) {
+    const { key } = e.currentTarget.dataset
+    if (!key) return
+
+    this.setData({
+      [`sectionExpanded.${key}`]: !this.data.sectionExpanded[key],
+    })
+  },
+
   goEnroll() {
     wx.switchTab({ url: '/pages/home/home' })
   },
@@ -120,13 +219,12 @@ Page({
     wx.navigateTo({ url: `/pages/card-detail/card-detail?id=${id}` })
   },
 
-  goDiagnoseReport() {
-    if (!this.data.hasDiagnoseCourse) {
-      wx.navigateTo({ url: '/pages/diagnose-detail/diagnose-detail?source=results_report_intro' })
-      return
-    }
+  goAvatarPicker() {
+    wx.navigateTo({ url: '/pages/avatar-picker/avatar-picker' })
+  },
 
-    wx.navigateTo({ url: '/pages/diagnose-report/diagnose-report' })
+  goDiagnoseReport() {
+    wx.navigateTo({ url: '/pages/diagnose-path/diagnose-path' })
   },
 
   handleGoalGapTap() {
@@ -136,6 +234,15 @@ Page({
     }
 
     this.goDiagnoseReport()
+  },
+
+  goDiagnosePath() {
+    wx.navigateTo({ url: '/pages/diagnose-path/diagnose-path' })
+  },
+
+  goStudyData(e) {
+    const scene = (e && e.currentTarget && e.currentTarget.dataset && e.currentTarget.dataset.scene) || 'diagnose'
+    wx.navigateTo({ url: `/pages/study-data/study-data?scene=${scene}` })
   },
 
   goPracticeCourse() {

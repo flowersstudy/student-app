@@ -1,6 +1,6 @@
 {
-    "navigationBarTitleText":  "申请请假",
-    "usingComponents":  {
-                            "diagnose-coupon-fab":  "/components/diagnose-coupon-fab/index"
-                        }
+  "navigationBarTitleText": "申请请假",
+  "usingComponents": {
+    "diagnose-coupon-fab": "/components/diagnose-coupon-fab/index"
+  }
 }

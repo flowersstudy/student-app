@@ -167,3 +167,4 @@
 </view>
 
 <diagnose-coupon-fab auto-popup="{{true}}"></diagnose-coupon-fab>
+<bottom-nav selected="chat"></bottom-nav>
