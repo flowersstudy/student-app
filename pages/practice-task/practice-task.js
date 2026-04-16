@@ -4,12 +4,12 @@ Page({
   data: {
     uiIcons,
     taskInfo: {
-      title: '第 2 周 · 对策推导难刷题任务',
+      title: '第 2 周 · 对策推导困难刷题任务',
       dueText: '今日 23:59 前完成',
-      pointName: '对策推导难',
+      pointName: '对策推导困难',
       setName: '专题 01 · 针对性对策',
       teacher: '李老师',
-      pdfName: '对策推导难-本周刷题任务.pdf',
+      pdfName: '对策推导困难-本周刷题任务.pdf',
       uploadTime: '今天 09:20',
       pages: '12 页',
     },

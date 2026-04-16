@@ -7,7 +7,7 @@ const {
 
 const courseMap = {
   1: {
-    name: '游走式找点',
+    name: '要点不全不准',
     code: 'K-D1',
     level: '底层卡点',
     subject: '申论',
@@ -66,7 +66,7 @@ const courseMap = {
     optionalLessonCodes: [],
   },
   2: {
-    name: '总结转述难',
+    name: '提炼转述困难',
     code: 'K-D2',
     level: '底层卡点',
     subject: '申论',
@@ -223,7 +223,7 @@ const courseMap = {
     optionalLessonCodes: [],
   },
   5: {
-    name: '对策推导难',
+    name: '对策推导困难',
     code: 'K-Z1',
     level: '专项卡点',
     subject: '申论',
@@ -317,7 +317,7 @@ const courseMap = {
     optionalLessonCodes: [],
   },
   7: {
-    name: '作文逻辑不清',
+    name: '作文论证不清',
     code: 'K-Z5',
     level: '专项卡点',
     subject: '申论',

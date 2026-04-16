@@ -1,7 +1,6 @@
 {
   "navigationBarTitleText": "学生端",
   "usingComponents": {
-    "diagnose-coupon-fab": "/components/diagnose-coupon-fab/index",
-    "bottom-nav": "/components/bottom-nav/index"
+    "diagnose-coupon-fab": "/components/diagnose-coupon-fab/index"
   }
 }

@@ -142,7 +142,7 @@ function buildProgressSummary(stageGroups) {
 Page({
   data: {
     pointId: 1,
-    pointName: '游走式找点',
+    pointName: '要点不全不准',
     currentVersionKey: 'progressive',
     currentVersionMeta: VERSION_META.progressive,
     stageGroups: [],

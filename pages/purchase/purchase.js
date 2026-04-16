@@ -1,6 +1,5 @@
 const {
   PATH_SYSTEM_OVERVIEW,
-  POINT_VERSION_PATHS,
   VERSION_META,
   getPointVersionData,
 } = require('../../utils/card-paths')
@@ -22,6 +21,8 @@ const POINT_LEVEL_META = {
   7: { level: '专项卡点', levelClass: 'special' },
   8: { level: '专项卡点', levelClass: 'special' },
 }
+
+const POINT_DISPLAY_ORDER = [1, 2, 5, 3, 4, 6, 7, 8]
 
 const DIAGNOSE_PURCHASE_META = {
   heroTitle: '先找到失分病因，再决定怎么提分',
@@ -46,7 +47,7 @@ const DIAGNOSE_PURCHASE_META = {
     {
       tier: 'high',
       tierText: '优先排查',
-      name: '总结转述失真',
+      name: '提炼转述困难',
       desc: '不是看不懂材料，而是写出来时容易照抄原文，抓不到真正该概括的核心信息。',
     },
     {
@@ -58,7 +59,7 @@ const DIAGNOSE_PURCHASE_META = {
     {
       tier: 'follow',
       tierText: '持续跟进',
-      name: '作文逻辑不稳',
+      name: '作文论证不清',
       desc: '不是不会写，而是段落推进和总分结构不稳，写到后面容易发散。',
     },
   ],
@@ -116,8 +117,7 @@ const DIAGNOSE_PURCHASE_META = {
 }
 
 function buildOtherPoints(currentPointId) {
-  return Object.keys(POINT_VERSION_PATHS)
-    .map((key) => Number(key))
+  return POINT_DISPLAY_ORDER
     .filter((pointId) => pointId !== currentPointId)
     .map((pointId) => {
       const pointData = getPointVersionData(pointId)
@@ -224,7 +224,7 @@ Page({
   data: {
     diagnoseMode: false,
     pointId: 1,
-    pointName: '游走式找点',
+    pointName: '要点不全不准',
     pointLevel: '底层卡点',
     pointLevelClass: 'foundation',
     hasPointContext: false,

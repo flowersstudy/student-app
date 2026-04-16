@@ -2,7 +2,8 @@ const STUDENT_TOKEN_KEY = 'student_token'
 const STUDENT_INFO_KEY = 'student_info'
 const STUDENT_PHONE_BOUND_KEY = 'student_phone_bound'
 const LOCAL_STUDENT_NAME = '新同学'
-const { getRuntimeConfig } = require('./runtime-config')
+
+const { request } = require('./request')
 
 function getAppSafe() {
   try {
@@ -10,11 +11,6 @@ function getAppSafe() {
   } catch (error) {
     return null
   }
-}
-
-function getServerBase(appInstance) {
-  const app = appInstance || getAppSafe()
-  return (app && app.globalData && app.globalData.serverBase) || getRuntimeConfig().serverBase
 }
 
 function getStudentToken() {
@@ -40,7 +36,7 @@ function updateAppAuthState(session = {}, appInstance) {
   app.globalData.token = token
   app.globalData.authReady = true
   app.globalData.isLoggedIn = !!token
-  app.globalData.isEnrolled = info.status && info.status !== 'new'
+  app.globalData.isEnrolled = !!(info.status && info.status !== 'new')
   app.globalData.isNewUser = isNewUser
   app.globalData.userProfile = {
     ...(app.globalData.userProfile || {}),
@@ -139,28 +135,12 @@ function saveLocalStudentPhone(phone, appInstance) {
 }
 
 function requestApi({ url, method = 'GET', data = {}, header = {} }, appInstance) {
-  const serverBase = getServerBase(appInstance)
-
-  return new Promise((resolve, reject) => {
-    wx.request({
-      url: `${serverBase}${url}`,
-      method,
-      data,
-      header: {
-        'Content-Type': 'application/json',
-        ...header,
-      },
-      success: (res) => {
-        if (res.statusCode >= 200 && res.statusCode < 300) {
-          resolve(res.data)
-          return
-        }
-
-        const msg = (res.data && (res.data.message || res.data.error)) || '请求失败'
-        reject(new Error(msg))
-      },
-      fail: reject,
-    })
+  return request({
+    url,
+    method,
+    data,
+    header,
+    appInstance,
   })
 }
 

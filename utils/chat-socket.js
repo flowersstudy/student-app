@@ -1,22 +1,18 @@
 const { readStudentSession, saveStudentSession } = require('./auth')
-const { getRuntimeConfig } = require('./runtime-config')
+const {
+  getAppSafe,
+  getServerBase: getRequestServerBase,
+  handleUnauthorizedRedirect,
+  requestWithAuth,
+} = require('./request')
 
 const CHAT_HISTORY_CACHE_PREFIX = 'chat_history_cache_'
 const HEARTBEAT_INTERVAL = 25000
 const INITIAL_RECONNECT_DELAY = 1500
 const MAX_RECONNECT_DELAY = 12000
 
-function getAppSafe() {
-  try {
-    return getApp()
-  } catch (error) {
-    return null
-  }
-}
-
 function getServerBase() {
-  const app = getAppSafe()
-  return (app && app.globalData && app.globalData.serverBase) || getRuntimeConfig().serverBase
+  return getRequestServerBase()
 }
 
 function isExplicitMockMode() {
@@ -32,29 +28,37 @@ function buildConversationId({ isNewUser = false, studentId = '' } = {}) {
 }
 
 function requestWithSession({ url, method = 'GET', data = {} } = {}) {
-  const session = readStudentSession()
-  const serverBase = getServerBase()
-
-  return new Promise((resolve, reject) => {
-    wx.request({
-      url: `${serverBase}${url}`,
-      method,
-      data,
-      header: {
-        'Content-Type': 'application/json',
-        Authorization: session.token ? `Bearer ${session.token}` : '',
-      },
-      success: (res) => {
-        if (res.statusCode >= 200 && res.statusCode < 300) {
-          resolve(res.data)
-          return
-        }
-
-        reject(new Error((res.data && (res.data.message || res.data.error)) || '请求失败'))
-      },
-      fail: reject,
-    })
+  return requestWithAuth({
+    url,
+    method,
+    data,
   })
+}
+
+async function requestChatApi(options = {}, requestOptions = {}) {
+  const { allowDevLoginRetry = false } = requestOptions
+  const executeRequest = () => requestWithSession(options)
+
+  try {
+    return await executeRequest()
+  } catch (error) {
+    if (!allowDevLoginRetry || !canUseDevChatLogin()) {
+      if (error && error.statusCode === 401) {
+        handleUnauthorizedRedirect()
+      }
+      throw error
+    }
+
+    try {
+      await devStudentLogin(1)
+      return await executeRequest()
+    } catch (retryError) {
+      if (retryError && retryError.statusCode === 401) {
+        handleUnauthorizedRedirect()
+      }
+      throw retryError
+    }
+  }
 }
 
 function canUseDevChatLogin() {
@@ -64,7 +68,7 @@ function canUseDevChatLogin() {
 
 function devStudentLogin(studentId = 1) {
   if (!canUseDevChatLogin()) {
-    return Promise.reject(new Error('当前环境不允许开发登录'))
+    return Promise.reject(new Error('\u5f53\u524d\u73af\u5883\u4e0d\u5141\u8bb8\u5f00\u53d1\u767b\u5f55'))
   }
 
   return requestWithSession({
@@ -96,7 +100,7 @@ function isBrokenText(value) {
   if (value === null || value === undefined) return true
   const raw = String(value).trim()
   if (!raw) return true
-  const cleaned = raw.replace(/[?？\s,，.。!！:：;；、'"“”‘’\-_/\\|()[\]{}<>~`@#$%^&*+=]+/g, '')
+  const cleaned = raw.replace(/[?\uFF1F\s,\uFF0C.\u3002!\uFF01:\uFF1A;\uFF1B\u3001'\"\u201C\u201D\u2018\u2019\-_/\\|()\[\]{}<>~`@#$%^&*+=]+/g, '')
   return cleaned.length === 0
 }
 
@@ -134,14 +138,14 @@ function inferAvatar(raw = {}, name = '') {
   }
 
   if (raw.senderRole === 'assistant') {
-    return '助'
+    return '\u52a9'
   }
 
   if (raw.senderRole === 'student') {
-    return '我'
+    return '\u6211'
   }
 
-  return '师'
+  return '\u5e08'
 }
 
 function createMessageKey(message = {}) {
@@ -153,10 +157,10 @@ function normalizeChatMessage(raw = {}) {
   const senderType = inferMessageType(raw)
   const rawName = raw.name || raw.senderName || ''
   const nameFallback = senderType === 'student'
-    ? '张同学'
+    ? '\u5f20\u540c\u5b66'
     : senderType === 'assistant'
-      ? '课程助手'
-      : '李老师'
+      ? '\u8bfe\u7a0b\u52a9\u624b'
+      : '\u674e\u8001\u5e08'
   const name = sanitizeDisplayText(rawName, nameFallback)
   const sentAt = raw.sentAt || raw.createdAt || raw.updatedAt || ''
   const id = raw.id || raw.messageId || raw.clientId || `msg_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
@@ -167,12 +171,12 @@ function normalizeChatMessage(raw = {}) {
     clientId,
     type: senderType,
     senderRole: raw.senderRole || senderType,
-    avatar: sanitizeDisplayText(inferAvatar(raw, name), name.slice(0, 1) || '师'),
+    avatar: sanitizeDisplayText(inferAvatar(raw, name), name.slice(0, 1) || '\u5e08'),
     avatarUrl: raw.avatarUrl || '',
     name,
     time: raw.time || formatChatTime(sentAt || Date.now()),
     sentAt: sentAt || new Date().toISOString(),
-    content: sanitizeDisplayText(raw.content, '欢迎来到聊天房间，我们可以在这里实时沟通。'),
+    content: sanitizeDisplayText(raw.content, '\u6b22\u8fce\u6765\u5230\u804a\u5929\u623f\u95f4\uff0c\u6211\u4eec\u53ef\u4ee5\u5728\u8fd9\u91cc\u5b9e\u65f6\u6c9f\u901a\u3002'),
     messageType,
     imageUrl: raw.imageUrl || '',
     imageCaption: raw.imageCaption || '',
@@ -247,17 +251,10 @@ function fetchChatRooms() {
     return Promise.resolve([])
   }
 
-  return requestWithSession({
+  return requestChatApi({
     url: '/api/chat/rooms',
-  }).catch(async (error) => {
-    if (!canUseDevChatLogin()) {
-      throw error
-    }
-
-    await devStudentLogin(1)
-    return requestWithSession({
-      url: '/api/chat/rooms',
-    })
+  }, {
+    allowDevLoginRetry: true,
   })
 }
 
@@ -266,8 +263,10 @@ function fetchChatRoomMembers(roomId) {
     return Promise.resolve([])
   }
 
-  return requestWithSession({
+  return requestChatApi({
     url: `/api/chat/rooms/${roomId}/members`,
+  }, {
+    allowDevLoginRetry: true,
   }).catch(() => [])
 }
 
@@ -286,11 +285,13 @@ function fetchChatHistory({ roomId, seedMessages = [] } = {}) {
     return Promise.resolve(fallback)
   }
 
-  return requestWithSession({
+  return requestChatApi({
     url: `/api/chat/rooms/${roomId}/messages`,
     data: {
       limit: 30,
     },
+  }, {
+    allowDevLoginRetry: true,
   }).then((result) => {
     const messages = normalizeHistoryResponse(result, seedMessages)
     persistChatHistory(cacheKey, messages)
@@ -302,58 +303,12 @@ function fetchChatHistory({ roomId, seedMessages = [] } = {}) {
   })
 }
 
-/*
-function postChatMessage(roomId, { content, messageType = 'text', replyToId = null } = {}) {
-  if (!roomId) {
-    return Promise.reject(new Error('鑱婂ぉ鎴块棿涓嶅瓨鍦?))
-  }
-
-  const doRequest = () => requestWithSession({
-    url: `/api/chat/rooms/${roomId}/messages`,
-    method: 'POST',
-    data: {
-      content,
-      type: messageType,
-      reply_to_id: replyToId || null,
-    },
-  }).then((result) => normalizeChatMessage({
-    ...result,
-    messageType: result.messageType || result.type || messageType,
-    sendStatus: 'sent',
-  }))
-
-  if (isExplicitMockMode()) {
-    return Promise.resolve(normalizeChatMessage({
-      id: `mock_http_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
-      clientId: `mock_http_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
-      senderType: 'student',
-      senderRole: 'student',
-      name: '张三',
-      avatar: '张',
-      content,
-      messageType,
-      createdAt: new Date().toISOString(),
-      sendStatus: 'sent',
-    }))
-  }
-
-  return doRequest().catch(async (error) => {
-    if (!canUseDevChatLogin()) {
-      throw error
-    }
-
-    await devStudentLogin(1)
-    return doRequest()
-  })
-}
-*/
-
 function postChatMessage(roomId, { content, messageType = 'text', replyToId = null } = {}) {
   if (!roomId) {
     return Promise.reject(new Error('Chat room is missing'))
   }
 
-  const doRequest = () => requestWithSession({
+  const doRequest = () => requestChatApi({
     url: `/api/chat/rooms/${roomId}/messages`,
     method: 'POST',
     data: {
@@ -361,6 +316,8 @@ function postChatMessage(roomId, { content, messageType = 'text', replyToId = nu
       type: messageType,
       reply_to_id: replyToId || null,
     },
+  }, {
+    allowDevLoginRetry: true,
   }).then((result) => normalizeChatMessage({
     ...result,
     messageType: result.messageType || result.type || messageType,
@@ -383,14 +340,7 @@ function postChatMessage(roomId, { content, messageType = 'text', replyToId = nu
     }))
   }
 
-  return doRequest().catch(async (error) => {
-    if (!canUseDevChatLogin()) {
-      throw error
-    }
-
-    await devStudentLogin(1)
-    return doRequest()
-  })
+  return doRequest()
 }
 
 function buildSocketUrl(serverBase, { roomId, token } = {}) {
@@ -424,9 +374,9 @@ function normalizeRoomList(list = []) {
   if (!Array.isArray(list)) return []
   return list.map((item) => ({
     id: item.id ? String(item.id) : '',
-    name: sanitizeDisplayText(item.name, item.contactType === 'teacher' ? '李老师' : '张同学'),
-    avatar: sanitizeDisplayText(item.avatar, sanitizeDisplayText(item.name, item.contactType === 'teacher' ? '李老师' : '张同学').slice(0, 1)),
-    preview: sanitizeDisplayText(item.preview, '欢迎来到聊天房间，我们可以在这里实时沟通。'),
+    name: sanitizeDisplayText(item.name, item.contactType === 'teacher' ? '\u674e\u8001\u5e08' : '\u5f20\u540c\u5b66'),
+    avatar: sanitizeDisplayText(item.avatar, sanitizeDisplayText(item.name, item.contactType === 'teacher' ? '\u674e\u8001\u5e08' : '\u5f20\u540c\u5b66').slice(0, 1)),
+    preview: sanitizeDisplayText(item.preview, '\u6b22\u8fce\u6765\u5230\u804a\u5929\u623f\u95f4\uff0c\u6211\u4eec\u53ef\u4ee5\u5728\u8fd9\u91cc\u5b9e\u65f6\u6c9f\u901a\u3002'),
     time: item.time || '',
     unreadCount: Number(item.unreadCount || 0),
     contactType: item.contactType || '',
@@ -514,17 +464,17 @@ function createMockSocket({ roomId, onEvent }) {
 function buildMockReply(payload = {}, roomId = '') {
   const content = `${payload.content || ''}`.trim()
   const isNewUser = /diagnose|guest/.test(roomId)
-  const name = isNewUser ? '课程助手' : '李老师'
-  const avatar = isNewUser ? '助' : '李'
+  const name = isNewUser ? '\u8bfe\u7a0b\u52a9\u624b' : '\u674e\u8001\u5e08'
+  const avatar = isNewUser ? '\u52a9' : '\u674e'
 
-  let replyContent = '收到啦，我先帮你记下，稍后会继续跟进你的问题。'
+  let replyContent = '\u6536\u5230\u5566\uff0c\u6211\u5148\u5e2e\u4f60\u8bb0\u4e0b\uff0c\u7a0d\u540e\u4f1a\u7ee7\u7eed\u8ddf\u8fdb\u4f60\u7684\u95ee\u9898\u3002'
 
-  if (/几点|时间|上课|开始/.test(content)) {
-    replyContent = '课程时间我已经帮你记下，正式排课后会第一时间在这里同步给你。'
-  } else if (/总结转述|主题句|概括/.test(content)) {
-    replyContent = '这个问题很典型，后面我们会重点看“先判断段落主旨，再压缩表达”的步骤。'
-  } else if (/优惠|多少钱|价格|诊断/.test(content)) {
-    replyContent = '诊断课这边会先帮你看失分病因，再决定后续课程，价格和权益我也可以继续发你。'
+  if (/\u51e0\u70b9|\u65f6\u95f4|\u4e0a\u8bfe|\u5f00\u59cb/.test(content)) {
+    replyContent = '\u8bfe\u7a0b\u65f6\u95f4\u6211\u5df2\u7ecf\u5e2e\u4f60\u8bb0\u4e0b\uff0c\u6b63\u5f0f\u6392\u8bfe\u540e\u4f1a\u7b2c\u4e00\u65f6\u95f4\u5728\u8fd9\u91cc\u540c\u6b65\u7ed9\u4f60\u3002'
+  } else if (/\u603b\u7ed3\u8f6c\u8ff0|\u4e3b\u9898\u53e5|\u6982\u62ec/.test(content)) {
+    replyContent = '\u8fd9\u4e2a\u95ee\u9898\u5f88\u5178\u578b\uff0c\u540e\u9762\u6211\u4eec\u4f1a\u91cd\u70b9\u770b\u5148\u5224\u65ad\u6bb5\u843d\u4e3b\u65e8\u518d\u538b\u7f29\u8868\u8fbe\u7684\u6b65\u9aa4\u3002'
+  } else if (/\u4f18\u60e0|\u591a\u5c11\u94b1|\u4ef7\u683c|\u8bca\u65ad/.test(content)) {
+    replyContent = '\u8bca\u65ad\u8bfe\u4f1a\u5148\u5e2e\u4f60\u770b\u5931\u5206\u539f\u56e0\uff0c\u518d\u51b3\u5b9a\u540e\u7eed\u8bfe\u7a0b\uff0c\u4ef7\u683c\u548c\u6743\u76ca\u6211\u4e5f\u53ef\u4ee5\u7ee7\u7eed\u53d1\u7ed9\u4f60\u3002'
   }
 
   return normalizeChatMessage({
@@ -695,7 +645,7 @@ function createChatSocket({ roomId, onEvent, allowMockFallback = true } = {}) {
       try {
         socketTask.close()
       } catch (error) {
-        console.warn('关闭失败的聊天 socket 时出错:', error)
+        console.warn('\u5173\u95ed\u5931\u8d25\u7684\u804a\u5929 socket \u65f6\u51fa\u9519:', error)
       }
       socketTask = null
     }
@@ -842,3 +792,5 @@ module.exports = {
   postChatMessage,
   persistChatHistory,
 }
+
+

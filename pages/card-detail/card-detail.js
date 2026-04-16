@@ -1,100 +1,127 @@
+const { buildStageUrl } = require('../../utils/path-stage-routes')
+
 const pointMap = {
-  1: { name: '游走式找点',    type: '行测卡点' },
-  2: { name: '总结转述难',  type: '行测卡点' },
-  3: { name: '分析结构不清',  type: '行测卡点' },
-  4: { name: '公文结构不清',  type: '申论卡点' },
-  5: { name: '对策推导难',  type: '申论卡点' },
-  6: { name: '作文立意不准',  type: '申论卡点' },
-  7: { name: '作文逻辑不清', type: '申论卡点' },
-  8: { name: '作文表达不畅', type: '申论卡点' }
+  1: { name: '要点不全不准', type: '申论卡点' },
+  2: { name: '提炼转述困难', type: '申论卡点' },
+  3: { name: '分析结构不清', type: '申论卡点' },
+  4: { name: '公文结构不清', type: '申论卡点' },
+  5: { name: '对策推导困难', type: '申论卡点' },
+  6: { name: '作文立意不准', type: '申论卡点' },
+  7: { name: '作文论证不清', type: '申论卡点' },
+  8: { name: '作文表达不畅', type: '申论卡点' },
+}
+
+const PATH_STAGE_TEMPLATE = [
+  {
+    key: 'diagnose',
+    title: '诊断',
+    shortTitle: '诊断',
+    desc: '先确认这个卡点的核心问题、目标分差和后续突破方向。',
+    hint: '这里后续可展开诊断内容',
+  },
+  {
+    key: 'theory',
+    title: '理论',
+    shortTitle: '理论',
+    desc: '补齐方法理解，先知道这个卡点到底应该怎么做。',
+    hint: '这里后续可展开理论内容',
+  },
+  {
+    key: 'training',
+    title: '实训',
+    shortTitle: '实训',
+    desc: '围绕该卡点进入针对性训练，把方法真正练熟。',
+    hint: '这里后续可展开实训内容',
+  },
+  {
+    key: 'exam',
+    title: '测试',
+    shortTitle: '测试',
+    desc: '通过阶段测试检查是否掌握，验证当前训练效果。',
+    hint: '这里后续可展开测试内容',
+  },
+  {
+    key: 'drill',
+    title: '刷题',
+    shortTitle: '刷题',
+    desc: '回到做题场景里稳定输出，把卡点真正打通。',
+    hint: '这里后续可展开刷题内容',
+  },
+  {
+    key: 'report',
+    title: '报告',
+    shortTitle: '报告',
+    desc: '最后沉淀本卡点的阶段结论、问题复盘和成长记录。',
+    hint: '这里后续可展开报告内容',
+  },
+]
+
+function buildPathStages(courseStatus = 'pending', pointId = 0, pointName = '') {
+  const currentIndex = courseStatus === 'solved' ? 5 : 2
+
+  return PATH_STAGE_TEMPLATE.map((item, index) => {
+    let status = 'pending'
+
+    if (index < currentIndex) {
+      status = 'done'
+    } else if (index === currentIndex) {
+      status = 'current'
+    }
+
+    return {
+      ...item,
+      index: index + 1,
+      status,
+      isLast: index === PATH_STAGE_TEMPLATE.length - 1,
+      routeUrl: buildStageUrl(item.key, pointId, pointName),
+    }
+  })
+}
+
+function buildStageSummary(stages = []) {
+  const currentStage = stages.find((item) => item.status === 'current') || stages[0]
+
+  return {
+    pathText: '诊断 → 理论 → 实训 → 测试 → 刷题 → 报告',
+    currentStageTitle: currentStage ? currentStage.title : '诊断',
+    currentStageDesc: currentStage ? currentStage.desc : '',
+  }
 }
 
 Page({
   data: {
     pointId: 2,
-    pointName: '总结转述难',
-    pointType: '行测卡点',
-
-    // 1. 学习时长
-    studyDisplay: '6h 20m',
-
-    // 2. 刷题数据
-    drillTotal: 48,
-    drillCorrect: 35,
-    drillAccuracy: 72.9,
-    drillExpanded: false,
-    drillRecords: [
-      { id: 1, date: '2026-03-08', label: 'Day 4 · 第一套刷题', correct: 8, total: 10, status: '已批改' },
-      { id: 2, date: '2026-03-09', label: 'Day 5 · 第二套刷题', correct: 7, total: 10, status: '已批改' },
-      { id: 3, date: '2026-03-10', label: 'Day 6 · 第三套刷题', correct: 9, total: 10, status: '已批改' }
-    ],
-
-    // 3. 考试
-    examExpanded: false,
-    examRecords: [
-      { id: 1, date: '2026-03-11', label: '阶段考试', score: 82, passLine: 75, status: '已批改' }
-    ],
-
-    // 4. 学习纪录（"历史上的今天"风格）
-    studyRecords: [
-      { id: 1, title: '最晚学习',    value: '23:47',   desc: '你曾在深夜还坚持学习，这份执着令人钦佩' },
-      { id: 2, title: '最早开始',    value: '06:58',   desc: '黎明即起，争分夺秒，是最勤奋的备考人' },
-      { id: 3, title: '最长专注',    value: '2h 33m',  desc: '单次专注超2小时，专注力令人赞叹' },
-      { id: 4, title: '老师最晚批改', value: '00:23',   desc: '老师深夜0点还在认真批改，感谢老师的辛勤付出' }
-    ],
-
-    // 5. 请假记录
-    leaveCount: 1,
-    leaveMax: 2,
-
-    // 老师寄语
-    teacherMessage: '同学你好！通过这段时间的学习，我观察到你在"总结转述难"这个卡点上有了明显的进步。你已经能够准确抓住材料的主要论点，不再像之前那样容易被次要信息带偏。\n\n接下来建议你继续加强在复杂材料中快速定位核心主题的练习。遇到长段落时，先找关键词，再梳理逻辑关系，这样能让你的提炼更加精准。\n\n相信你一定能在考试中取得好成绩，加油！',
-    messageExpanded: false
+    pointName: '提炼转述困难',
+    pointType: '申论卡点',
+    courseStatus: 'pending',
+    statusText: '待突破',
+    statusTone: 'orange',
+    pathStages: buildPathStages('pending', 2, '提炼转述困难'),
+    stageSummary: buildStageSummary(buildPathStages('pending', 2, '提炼转述困难')),
   },
 
   onLoad(options) {
-    const id = parseInt(options.id) || 2
+    const id = parseInt(options.id, 10) || 2
+    const courseStatus = options.status === 'solved' ? 'solved' : 'pending'
     const point = pointMap[id] || pointMap[2]
-    this.setData({ pointId: id, pointName: point.name, pointType: point.type })
+    const pathStages = buildPathStages(courseStatus, id, point.name)
+
+    this.setData({
+      pointId: id,
+      pointName: point.name,
+      pointType: point.type,
+      courseStatus,
+      statusText: courseStatus === 'solved' ? '已解决' : '待突破',
+      statusTone: courseStatus === 'solved' ? 'green' : 'orange',
+      pathStages,
+      stageSummary: buildStageSummary(pathStages),
+    })
   },
 
-  // 1. 跳转到该卡点学习路径（含课程回放与资料）
-  goProgress() {
-    wx.navigateTo({ url: `/pages/progress/progress?id=${this.data.pointId}` })
-  },
+  onStageTap(e) {
+    const { url } = e.currentTarget.dataset
+    if (!url) return
 
-  // 2. 刷题展开
-  toggleDrillExpand() {
-    this.setData({ drillExpanded: !this.data.drillExpanded })
+    wx.navigateTo({ url })
   },
-
-  viewDrillRecord() {
-    wx.showToast({ title: '加载批改文件…', icon: 'loading', duration: 1500 })
-  },
-
-  // 3. 考试展开
-  toggleExamExpand() {
-    this.setData({ examExpanded: !this.data.examExpanded })
-  },
-
-  viewExamRecord() {
-    wx.showToast({ title: '加载批改文件…', icon: 'loading', duration: 1500 })
-  },
-
-  // 5. 请假记录入口
-  goLeave() {
-    wx.navigateTo({ url: `/pages/leave/leave?pointId=${this.data.pointId}` })
-  },
-
-  toggleMessage() {
-    this.setData({ messageExpanded: !this.data.messageExpanded })
-  },
-
-  goDiagnoseReport() {
-    wx.showToast({ title: '诊断报告生成中', icon: 'loading' })
-  },
-
-  goChat() {
-    wx.switchTab({ url: '/pages/chat/chat' })
-  }
 })

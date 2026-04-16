@@ -33,7 +33,7 @@ const SCHEDULE_WEEKS = [
   {
     label: '第 1 周',
     days: [
-      { date: '4/13', weekday: '日', title: '完成 1 道游走式找点 + 总结转述难的刷题', type: 'task' },
+      { date: '4/13', weekday: '日', title: '完成 1 道要点不全不准 + 提炼转述困难的刷题', type: 'task' },
       { date: '4/14', weekday: '一', title: '提交刷题作业', note: 'AI 批改', type: 'submit' },
       { date: '4/15', weekday: '二', title: '根据指导完成刷题复盘', type: 'review' },
       { date: '4/16', weekday: '三', title: '提交刷题复盘', type: 'submit' },
@@ -45,7 +45,7 @@ const SCHEDULE_WEEKS = [
   {
     label: '第 2 周',
     days: [
-      { date: '4/20', weekday: '日', title: '完成 1 道对策推导难的刷题', type: 'task' },
+      { date: '4/20', weekday: '日', title: '完成 1 道对策推导困难的刷题', type: 'task' },
       { date: '4/21', weekday: '一', title: '提交刷题作业', note: 'AI 批改', type: 'submit' },
       { date: '4/22', weekday: '二', title: '根据指导完成刷题复盘', type: 'review' },
       { date: '4/23', weekday: '三', title: '提交刷题复盘', type: 'submit' },
@@ -70,7 +70,7 @@ const SCHEDULE_WEEKS = [
     label: '第 4 周',
     days: [
       { date: '5/4', weekday: '日', title: '完成 1 道作文立意不准的刷题', note: '完成立意', type: 'task' },
-      { date: '5/5', weekday: '一', title: '完成 1 道作文逻辑不清 + 作文表达不畅的刷题', note: '完成开头 + 1 个分论点论证 + 结尾', type: 'task' },
+      { date: '5/5', weekday: '一', title: '完成 1 道作文论证不清 + 作文表达不畅的刷题', note: '完成开头 + 1 个分论点论证 + 结尾', type: 'task' },
       { date: '5/6', weekday: '二', title: '提交刷题作业', note: 'AI 批改', type: 'submit' },
       { date: '5/7', weekday: '三', title: '根据指导完成刷题复盘并提交', type: 'review' },
       { date: '5/8', weekday: '四', title: '直播 4：探讨写好作文的技巧', note: '19:00-21:00', type: 'live' },

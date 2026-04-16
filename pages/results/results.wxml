@@ -14,112 +14,133 @@
       </view>
 
       <view class="profile-summary-main">
-        <view class="profile-summary-head">
-          <view class="profile-summary-title">
-            <text class="profile-summary-name">{{studentName}}</text>
-            <text class="profile-summary-tag">{{profileSummary.identityTag}}</text>
-          </view>
-          <text class="profile-summary-action" bindtap="goAvatarPicker">更换头像</text>
-        </view>
-
-        <view class="profile-summary-grid">
-          <view class="profile-summary-item">
-            <text class="profile-summary-label">目标考试</text>
-            <text class="profile-summary-value">{{profileSummary.targetExam}}</text>
-          </view>
-          <view class="profile-summary-item">
-            <text class="profile-summary-label">考试倒计时</text>
-            <text class="profile-summary-value profile-summary-value-accent">{{profileSummary.examCountdown}}</text>
-          </view>
-          <view class="profile-summary-item">
-            <text class="profile-summary-label">提分目标</text>
-            <text class="profile-summary-value">{{profileSummary.raiseTarget}}</text>
-          </view>
+        <view class="profile-summary-inline">
+          <text class="profile-summary-name">{{studentName}}</text>
+          <text class="profile-summary-divider">·</text>
+          <text class="profile-summary-goal-inline">{{profileSummary.targetExam}}</text>
         </view>
       </view>
     </view>
   </view>
 
-  <view class="summary-section">
-    <view class="summary-board">
-      <view class="summary-top-row">
-        <view class="summary-main">
-          <image class="summary-bg-icon" src="{{uiIcons.calendar}}" mode="aspectFit" />
-          <view class="summary-content">
-            <view class="summary-label-row">
-              <text class="summary-label">累计学习时长</text>
-            </view>
-            <text class="summary-value">{{totalStudyDisplay}}</text>
-          </view>
-        </view>
-
-        <view class="summary-points">
-          <image class="summary-points-bg-icon" src="{{uiIcons.points}}" mode="aspectFit" />
-          <view class="summary-content">
-            <view class="summary-label-row">
-              <text class="summary-points-label">累计积分</text>
-            </view>
-            <text class="summary-points-value">{{totalPoints}}</text>
-          </view>
-        </view>
+  <view class="review-chart-section">
+    <view class="card review-chart-card review-chart-card-progress">
+      <view class="review-chart-head">
+        <text class="review-chart-title">{{progressChart.title}}</text>
+        <text wx:if="{{progressChart.hint}}" class="review-chart-hint">{{progressChart.hint}}</text>
       </view>
 
-      <view class="summary-bottom-row">
+      <view class="progress-timeline {{progressChart.isEmpty ? 'progress-timeline-empty' : ''}}">
+        <view class="progress-axis-scale progress-axis-scale-left">
+          <text class="progress-axis-scale-text">20</text>
+        </view>
+        <view class="progress-axis-scale progress-axis-scale-right">
+          <text class="progress-axis-scale-text">90</text>
+        </view>
+        <view class="progress-track"></view>
+        <view wx:if="{{progressChart.activeLineStyle}}" class="progress-track-active" style="{{progressChart.activeLineStyle}}"></view>
+        <view class="progress-track-arrow"></view>
+
         <view
-          class="stat-chip stat-goal {{!hasDiagnoseCourse ? 'stat-chip-clickable' : ''}}"
-          bindtap="handleGoalGapTap"
+          wx:for="{{progressChart.nodes}}"
+          wx:key="key"
+          class="progress-node progress-node-align-{{item.align}}"
+          style="{{item.style}}"
         >
-          <text class="stat-chip-label">目标提分</text>
-          <view class="stat-chip-main">
-            <text class="stat-chip-value">{{stats.scoreGap}}</text>
-            <text class="stat-chip-unit">分</text>
+          <text class="progress-node-score {{item.active ? 'progress-node-score-active' : 'progress-node-score-inactive'}}">{{item.valueText}}</text>
+          <view class="progress-node-dot-shell {{item.active ? 'progress-node-dot-shell-active' : 'progress-node-dot-shell-inactive'}}">
+            <view class="progress-node-dot-core {{item.active ? 'progress-node-dot-core-active' : 'progress-node-dot-core-inactive'}}"></view>
           </view>
         </view>
-        <view class="stat-chip stat-solved">
-          <text class="stat-chip-label">已解决</text>
-          <view class="stat-chip-main">
-            <text class="stat-chip-value">{{stats.solved}}</text>
-            <text class="stat-chip-unit">个</text>
-          </view>
-        </view>
-        <view class="stat-chip stat-pending">
-          <text class="stat-chip-label">待突破</text>
-          <view class="stat-chip-main">
-            <text class="stat-chip-value">{{stats.pending}}</text>
-            <text class="stat-chip-unit">个</text>
+
+        <view class="progress-caption-layer">
+          <view
+            wx:for="{{progressChart.nodes}}"
+            wx:key="key"
+            class="progress-caption progress-caption-align-{{item.align}}"
+            style="{{item.style}}"
+          >
+            <text class="progress-node-label {{item.active ? 'progress-node-label-active' : 'progress-node-label-inactive'}}">{{item.label}}</text>
           </view>
         </view>
       </view>
     </view>
-  </view>
 
-  <view id="diagnosis-report-section" class="card fold-card fold-card-diagnose">
-    <view class="fold-card-head" bindtap="toggleSection" data-key="diagnose">
-      <view class="fold-card-head-main">
-        <view class="fold-card-title-row">
-          <text class="fold-card-title">诊断课</text>
-          <text class="fold-card-tag">{{hasDiagnoseCourse ? '已开通' : '未开通'}}</text>
+    <view class="card review-chart-card">
+      <view class="review-chart-head">
+        <text class="review-chart-title">{{pointRateChart.title}}</text>
+      </view>
+      <view class="review-chart-legend">
+        <view class="review-chart-legend-item">
+          <view class="legend-bar legend-bar-orange"></view>
+          <text class="legend-text">{{pointRateChart.legendBar}}</text>
+        </view>
+        <view class="review-chart-legend-item">
+          <view class="legend-line legend-line-dark"></view>
+          <text class="legend-text">{{pointRateChart.legendLine}}</text>
         </view>
       </view>
-      <view class="fold-card-head-side">
-        <text class="fold-card-meta">{{diagnosisReport.reportDate}}</text>
-        <view class="section-toggle-arrow {{sectionExpanded.diagnose ? 'section-toggle-arrow-open' : ''}}"></view>
+
+      <view class="mix-chart-shell {{pointRateChart.isEmpty ? 'mix-chart-shell-empty' : ''}}">
+        <view class="mix-chart-axis">
+          <text wx:for="{{pointRateChart.yAxis}}" wx:key="value" class="mix-chart-axis-label" style="bottom: {{item.bottom}};">{{item.label}}</text>
+        </view>
+
+        <view class="mix-chart-plot">
+          <view wx:for="{{pointRateChart.yAxis}}" wx:key="value" class="mix-chart-grid-line" style="bottom: {{item.bottom}};"></view>
+          <image wx:if="{{pointRateChart.lineSvg}}" class="mix-chart-line-image" src="{{pointRateChart.lineSvg}}" mode="scaleToFill" />
+
+          <view class="mix-chart-columns">
+            <view wx:for="{{pointRateChart.items}}" wx:key="id" class="mix-chart-column">
+              <text class="mix-chart-bar-value {{item.isMissing ? 'mix-chart-bar-value-missing' : ''}}">{{item.valueText}}</text>
+              <view class="mix-chart-bar-track">
+                <view class="mix-chart-bar mix-chart-bar-orange {{item.isMissing ? 'mix-chart-bar-missing' : ''}}" style="height: {{item.barHeight}}%;"></view>
+              </view>
+              <view class="mix-chart-label-group">
+                <text class="mix-chart-label-top">{{item.shortTop}}</text>
+                <text class="mix-chart-label-bottom">{{item.shortBottom}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
       </view>
+
+      <text wx:if="{{pointRateChart.hint}}" class="review-chart-footnote">{{pointRateChart.hint}}</text>
     </view>
 
-    <view wx:if="{{sectionExpanded.diagnose}}" class="fold-card-body fold-card-entry-body">
-      <view class="fold-entry-item">
-        <text class="fold-entry-title">{{hasDiagnoseCourse ? '我的诊断报告' : '我的专属学习计划'}}</text>
-        <button class="fold-entry-btn" bindtap="goDiagnoseReport">
-          <text class="fold-entry-btn-text">{{hasDiagnoseCourse ? '查看' : '去生成'}}</text>
-        </button>
+    <view class="card review-chart-card">
+      <view class="review-chart-head">
+        <text class="review-chart-title">{{studyTimeChart.title}}</text>
       </view>
-      <view class="fold-entry-item">
-        <text class="fold-entry-title">我的学习数据</text>
-        <button class="fold-entry-btn" bindtap="goStudyData" data-scene="diagnose">
-          <text class="fold-entry-btn-text">查看</text>
-        </button>
+      <view class="review-chart-legend">
+        <view class="review-chart-legend-item">
+          <view class="legend-bar legend-bar-blue"></view>
+          <text class="legend-text">{{studyTimeChart.legendBar}}</text>
+        </view>
+        <view class="review-chart-legend-item">
+          <view class="legend-line legend-line-green"></view>
+          <text class="legend-text">{{studyTimeChart.legendLine}}</text>
+        </view>
       </view>
+
+      <view class="study-chart-shell {{studyTimeChart.isEmpty ? 'study-chart-shell-empty' : ''}}">
+        <view class="study-chart-plot">
+          <view class="study-chart-baseline"></view>
+          <image wx:if="{{studyTimeChart.lineSvg}}" class="study-chart-line-image" src="{{studyTimeChart.lineSvg}}" mode="scaleToFill" />
+
+          <view class="study-chart-columns">
+            <view wx:for="{{studyTimeChart.items}}" wx:key="key" class="study-chart-column">
+              <text class="study-chart-value {{item.isMissing ? 'study-chart-value-missing' : ''}}">{{item.valueText}}</text>
+              <view class="study-chart-bar-track">
+                <view class="study-chart-bar {{item.isMissing ? 'study-chart-bar-missing' : ''}}" style="height: {{item.barHeight}}%;"></view>
+              </view>
+              <text class="study-chart-label">{{item.label}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <text wx:if="{{studyTimeChart.hint}}" class="review-chart-footnote">{{studyTimeChart.hint}}</text>
     </view>
   </view>
 
@@ -137,13 +158,21 @@
     </view>
 
     <view wx:if="{{sectionExpanded.solved}}" class="fold-card-body fold-card-list-body">
-      <view wx:for="{{solvedPoints}}" wx:key="id" class="fold-card-list-item fold-card-list-item-solved">
+      <view
+        wx:for="{{solvedPoints}}"
+        wx:key="id"
+        class="fold-card-list-item fold-card-list-item-solved fold-card-list-item-clickable"
+        bindtap="goCardDetail"
+        data-id="{{item.id}}"
+        data-status="solved"
+      >
         <view class="row-between">
           <text class="point-block-name">{{item.name}}</text>
-          <button class="btn-detail" bindtap="goCardDetail" data-id="{{item.id}}">查看详情</button>
+          <view class="point-path-entry">
+            <text class="point-path-entry-text">查看路径</text>
+            <view class="point-path-entry-arrow"></view>
+          </view>
         </view>
-        <text class="point-block-summary">{{item.summary}}</text>
-        <text class="point-block-date">完成时间：{{item.completedAt}}</text>
       </view>
     </view>
   </view>
@@ -161,41 +190,22 @@
       </view>
     </view>
 
-    <view wx:if="{{sectionExpanded.pending}}" class="fold-card-body fold-card-list-body">
-      <view wx:for="{{pendingPoints}}" wx:key="id" class="fold-card-list-item fold-card-list-item-pending">
+      <view wx:if="{{sectionExpanded.pending}}" class="fold-card-body fold-card-list-body">
+      <view
+        wx:for="{{pendingPoints}}"
+        wx:key="id"
+        class="fold-card-list-item fold-card-list-item-pending fold-card-list-item-clickable"
+        bindtap="goCardDetail"
+        data-id="{{item.id}}"
+        data-status="pending"
+      >
         <view class="row-between">
           <text class="point-block-name">{{item.name}}</text>
+          <view class="point-path-entry">
+            <text class="point-path-entry-text">查看路径</text>
+            <view class="point-path-entry-arrow"></view>
+          </view>
         </view>
-        <text class="point-block-summary">{{item.desc}}</text>
-      </view>
-    </view>
-  </view>
-
-  <view id="practice-report-section" class="card fold-card fold-card-practice">
-    <view class="fold-card-head" bindtap="toggleSection" data-key="practice">
-      <view class="fold-card-head-main">
-        <view class="fold-card-title-row">
-          <text class="fold-card-title">刷题课</text>
-          <text class="fold-card-tag fold-card-tag-practice">{{practiceCourse.cycleLabel}}</text>
-        </view>
-      </view>
-      <view class="fold-card-head-side">
-        <view class="section-toggle-arrow {{sectionExpanded.practice ? 'section-toggle-arrow-open' : ''}}"></view>
-      </view>
-    </view>
-
-    <view wx:if="{{sectionExpanded.practice}}" class="fold-card-body fold-card-entry-body">
-      <view class="fold-entry-item">
-        <text class="fold-entry-title">{{hasPracticeCourse ? '我的刷题报告' : '我的专属刷题计划'}}</text>
-        <button class="fold-entry-btn" bindtap="goPracticeCourse">
-          <text class="fold-entry-btn-text">{{hasPracticeCourse ? '查看' : '去生成'}}</text>
-        </button>
-      </view>
-      <view class="fold-entry-item">
-        <text class="fold-entry-title">我的学习数据</text>
-        <button class="fold-entry-btn" bindtap="goStudyData" data-scene="practice">
-          <text class="fold-entry-btn-text">查看</text>
-        </button>
       </view>
     </view>
   </view>
@@ -204,4 +214,3 @@
 </view>
 
 <diagnose-coupon-fab auto-popup="{{true}}"></diagnose-coupon-fab>
-<bottom-nav selected="results"></bottom-nav>

@@ -1,19 +1,7 @@
 {
   "libVersion": "2.27.3",
   "projectname": "student-app",
-  "condition": {
-    "miniprogram": {
-      "list": [
-        {
-          "name": "pages/progress/progress",
-          "pathName": "pages/progress/progress",
-          "query": "",
-          "scene": null,
-          "launchMode": "default"
-        }
-      ]
-    }
-  },
+  "condition": {},
   "setting": {
     "urlCheck": false,
     "coverView": true,

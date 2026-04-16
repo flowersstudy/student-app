@@ -4,7 +4,12 @@
     "pages/account-bind/account-bind",
     "pages/diagnose-detail/diagnose-detail",
     "pages/diagnose-path/diagnose-path",
-    "pages/study-data/study-data",
+    "pages/path-diagnose/path-diagnose",
+    "pages/path-theory/path-theory",
+    "pages/path-training/path-training",
+    "pages/path-exam/path-exam",
+    "pages/path-drill/path-drill",
+    "pages/path-report/path-report",
     "pages/home/home",
     "pages/progress/progress",
     "pages/chat/chat",
@@ -51,26 +56,20 @@
       {
         "pagePath": "pages/home/home",
         "text": "首页",
-        "iconPath": "assets/tabbar/home-normal.png",
-        "selectedIconPath": "assets/tabbar/home-active.png"
+        "iconPath": "assets/tabbar/home-normal-hd.png",
+        "selectedIconPath": "assets/tabbar/home-active-hd.png"
       },
       {
         "pagePath": "pages/chat/chat",
         "text": "找老师",
-        "iconPath": "assets/tabbar/teacher-normal.png",
-        "selectedIconPath": "assets/tabbar/teacher-active.png"
-      },
-      {
-        "pagePath": "pages/study-square/study-square",
-        "text": "一起学",
-        "iconPath": "assets/tabbar/together-normal.png",
-        "selectedIconPath": "assets/tabbar/together-active.png"
+        "iconPath": "assets/tabbar/teacher-normal-hd.png",
+        "selectedIconPath": "assets/tabbar/teacher-active-hd.png"
       },
       {
         "pagePath": "pages/results/results",
         "text": "复盘",
-        "iconPath": "assets/tabbar/review-normal.png",
-        "selectedIconPath": "assets/tabbar/review-active.png"
+        "iconPath": "assets/tabbar/review-normal-hd.png",
+        "selectedIconPath": "assets/tabbar/review-active-hd.png"
       }
     ]
   },

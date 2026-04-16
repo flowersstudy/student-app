@@ -1,4 +1,5 @@
-const { ensureSilentLogin, requestApi } = require('./auth')
+const { ensureSilentLogin } = require('./auth')
+const { requestWithStudentAuth } = require('./request')
 
 function unwrapListPayload(payload) {
   if (Array.isArray(payload)) {
@@ -13,17 +14,14 @@ function unwrapListPayload(payload) {
 }
 
 async function studentRequest({ url, method = 'GET', data = {} } = {}, appInstance) {
-  const session = await ensureSilentLogin(appInstance)
-  const header = session && session.token
-    ? { Authorization: `Bearer ${session.token}` }
-    : {}
+  await ensureSilentLogin(appInstance)
 
-  return requestApi({
+  return requestWithStudentAuth({
     url,
     method,
     data,
-    header,
-  }, appInstance)
+    appInstance,
+  })
 }
 
 async function fetchStudentProfile(appInstance) {
@@ -83,6 +81,7 @@ async function fetchStudentNotifications(appInstance) {
 
 async function markStudentNotificationRead(id, appInstance) {
   if (!id) return null
+
   return studentRequest({
     url: `/api/student/notifications/${id}/read`,
     method: 'PATCH',

@@ -3,7 +3,6 @@ const { bindStudentPhone, ensureSilentLogin, hasBoundStudentPhone, saveLocalStud
 const TAB_BAR_PAGES = [
   '/pages/home/home',
   '/pages/chat/chat',
-  '/pages/study-square/study-square',
   '/pages/results/results',
 ]
 

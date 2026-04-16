@@ -23,13 +23,6 @@ Component({
         selectedIconPath: '/assets/tabbar/teacher-active.png',
       },
       {
-        key: 'square',
-        text: '一起学',
-        pagePath: '/pages/study-square/study-square',
-        iconPath: '/assets/tabbar/together-normal.png',
-        selectedIconPath: '/assets/tabbar/together-active.png',
-      },
-      {
         key: 'results',
         text: '复盘',
         pagePath: '/pages/results/results',

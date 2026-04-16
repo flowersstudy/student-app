@@ -31,7 +31,7 @@ Page({
     assignment: {
       title: '第 2 周刷题作业提交',
       dueText: '今日 23:59 截止',
-      pointName: '对策推导难',
+      pointName: '对策推导困难',
       teacher: '李老师',
       weekLabel: '第 2 周',
       taskLabel: '对策专项作业',

@@ -1,155 +1,52 @@
-<view class="detail-page">
+<view class="card-path-page">
+  <view class="path-hero">
+    <view class="path-hero-top">
+      <text class="path-badge">{{pointType}}</text>
+      <text class="path-status-tag path-status-tag-{{statusTone}}">{{statusText}}</text>
+    </view>
+    <text class="path-title">{{pointName}}</text>
+    <text class="path-subtitle">这个卡点统一按同一套路径推进，后续再逐步展开每个阶段的具体内容。</text>
+  </view>
 
-  <!-- 标题 -->
-  <view class="card">
-    <view class="row" style="margin-bottom:8rpx;">
-      <text class="detail-point-name">{{pointName}}</text>
-      <text class="tag tag-blue" style="margin-left:16rpx;">{{pointType}}</text>
+  <view class="path-summary-card">
+    <text class="path-summary-label">当前学习路径</text>
+    <text class="path-summary-route">{{stageSummary.pathText}}</text>
+    <view class="path-summary-current">
+      <text class="path-summary-current-label">当前聚焦阶段</text>
+      <text class="path-summary-current-title">{{stageSummary.currentStageTitle}}</text>
+      <text class="path-summary-current-desc">{{stageSummary.currentStageDesc}}</text>
     </view>
   </view>
 
-  <!-- 1. 学习时长（点击跳转课程回放与资料） -->
-  <view class="card cd-link-card" bindtap="goProgress">
-    <view class="cd-link-left">
-      <text class="cd-section-title">本卡点学习时长</text>
-      <view class="row" style="margin-top:8rpx;align-items:baseline;">
-        <text class="cd-big-value">{{studyDisplay}}</text>
-      </view>
-      <text class="cd-link-hint">点击查看课程回放及全部学习资料 ›</text>
-    </view>
-    <text class="cd-entry-arrow">›</text>
-  </view>
-
-  <!-- 2. 刷题数据 -->
-  <view class="card">
-    <view class="cd-expand-header" bindtap="toggleDrillExpand">
-      <view class="cd-header-left">
-        <text class="cd-section-title">题目训练</text>
-        <view class="row" style="margin-top:8rpx;align-items:baseline;">
-          <text class="cd-big-value">{{drillAccuracy}}%</text>
-          <text class="cd-sub-value"> 正确率</text>
-          <text class="cd-sep">·</text>
-          <text class="cd-sub-value">{{drillTotal}} 题</text>
-          <text class="cd-sep">·</text>
-          <text class="cd-sub-value">答对 {{drillCorrect}} 题</text>
-        </view>
-      </view>
-      <text class="cd-expand-arrow {{drillExpanded ? 'cd-arrow-up' : ''}}">›</text>
+  <view class="path-stage-card">
+    <view class="path-stage-head">
+      <text class="path-stage-title">六阶段学习路径</text>
+      <text class="path-stage-sub">先搭框架，后续再补每一步的展开内容</text>
     </view>
 
-    <view wx:if="{{drillExpanded}}" class="cd-records">
-      <view class="divider" style="margin:12rpx 0;"></view>
-      <view wx:for="{{drillRecords}}" wx:key="id" class="cd-record-row">
-        <view class="cd-record-info">
-          <text class="cd-record-label">{{item.label}}</text>
-          <view class="row" style="margin-top:6rpx;align-items:center;">
-            <text class="cd-record-date">{{item.date}}</text>
-            <view class="cd-record-score">
-              <text class="cd-score-text">{{item.correct}}/{{item.total}}</text>
-            </view>
-            <text class="cd-record-status cd-status-done">{{item.status}}</text>
+    <view class="path-stage-list">
+      <view wx:for="{{pathStages}}" wx:key="key" class="path-stage-item" bindtap="onStageTap" data-url="{{item.routeUrl}}">
+        <view class="path-stage-line-wrap">
+          <view class="path-stage-index path-stage-index-{{item.status}}">
+            <text class="path-stage-index-text">{{item.index}}</text>
           </view>
+          <view wx:if="{{!item.isLast}}" class="path-stage-line"></view>
         </view>
-        <button class="cd-view-btn" bindtap="viewDrillRecord">查看批改</button>
-      </view>
-    </view>
-  </view>
 
-  <!-- 3. 考试通关率 -->
-  <view class="card">
-    <view class="cd-expand-header" bindtap="toggleExamExpand">
-      <view class="cd-header-left">
-        <text class="cd-section-title">阶段考试</text>
-        <view class="cd-score-line">
-          <text class="cd-big-value">{{examRecords[0].score}}</text>
-          <text class="cd-score-unit">分</text>
-        </view>
-      </view>
-      <text class="cd-expand-arrow {{examExpanded ? 'cd-arrow-up' : ''}}">›</text>
-    </view>
-
-    <view wx:if="{{examExpanded}}" class="exam-detail-wrap">
-      <view class="divider" style="margin:16rpx 0 20rpx;"></view>
-      <view wx:for="{{examRecords}}" wx:key="id">
-        <view class="exam-detail-meta">
-          <text class="cd-record-date">{{item.date}} · {{item.label}}</text>
-          <text class="cd-record-status cd-status-done">{{item.status}}</text>
-        </view>
-        <!-- 学生作答 -->
-        <text class="exam-file-label">学生作答</text>
-        <view class="exam-file-block" bindtap="viewExamRecord">
-          <view class="exam-file-info">
-            <text class="exam-file-name">作答文件_{{item.date}}.pdf</text>
-            <text class="exam-file-hint">点击查看</text>
+        <view class="path-stage-main">
+          <view class="path-stage-title-row">
+            <text class="path-stage-item-title">{{item.title}}</text>
+            <text class="path-stage-status path-stage-status-{{item.status}}">
+              {{item.status === 'done' ? '已完成' : item.status === 'current' ? '当前阶段' : '待开始'}}
+            </text>
           </view>
-        </view>
-        <!-- 老师批改 -->
-        <text class="exam-file-label">老师批改</text>
-        <view class="exam-file-block exam-file-corrected" bindtap="viewExamRecord">
-          <view class="exam-file-info">
-            <text class="exam-file-name">批改文件_{{item.date}}.pdf</text>
-            <text class="exam-file-hint">点击查看</text>
+          <text class="path-stage-desc">{{item.desc}}</text>
+          <view class="path-stage-placeholder">
+            <text class="path-stage-placeholder-text">{{item.hint}}</text>
           </view>
         </view>
       </view>
     </view>
-  </view>
-
-  <!-- 4. 学习纪录（"历史上的今天"风格） -->
-  <view class="card">
-    <text class="cd-section-title" style="margin-bottom:20rpx;display:block;">你的学习纪录</text>
-    <view wx:for="{{studyRecords}}" wx:key="id" class="history-item {{index < studyRecords.length - 1 ? 'history-item-border' : ''}}">
-      <view class="history-content">
-        <view class="row" style="align-items:baseline;margin-bottom:4rpx;">
-          <text class="history-title">{{item.title}}</text>
-          <text class="history-value">{{item.value}}</text>
-        </view>
-        <text class="history-desc">{{item.desc}}</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- 5. 请假记录 -->
-  <view class="card cd-leave-card" bindtap="goLeave">
-    <view class="cd-leave-left">
-      <text class="cd-section-title">请假记录</text>
-      <text class="cd-leave-hint">每个卡点最多请假 {{leaveMax}} 次</text>
-    </view>
-    <view class="cd-leave-right">
-      <view class="cd-leave-count-wrap">
-        <text class="cd-leave-count">{{leaveCount}}</text>
-        <text class="cd-leave-total">/{{leaveMax}} 次</text>
-      </view>
-      <view class="cd-leave-dots">
-        <view class="cd-leave-dot cd-dot-used"></view>
-        <view class="cd-leave-dot {{leaveCount >= 2 ? 'cd-dot-used' : 'cd-dot-empty'}}"></view>
-      </view>
-    </view>
-    <text class="cd-entry-arrow" style="color:#aaa;">›</text>
-  </view>
-
-  <!-- 老师寄语 -->
-  <view class="card">
-    <text class="section-title">老师寄语</text>
-    <view class="message-wrap">
-      <text class="teacher-message {{messageExpanded ? '' : 'message-collapsed'}}">{{teacherMessage}}</text>
-    </view>
-    <view class="expand-btn" bindtap="toggleMessage">
-      <text class="expand-text">{{messageExpanded ? '收起' : '展开全文'}}</text>
-      <text class="expand-icon">{{messageExpanded ? '▲' : '▼'}}</text>
-    </view>
-  </view>
-
-  <!-- 诊断报告入口 -->
-  <view class="card diagnose-entry" bindtap="goDiagnoseReport">
-    <view class="diagnose-entry-left">
-      <view class="diagnose-entry-icon">诊</view>
-      <view class="diagnose-entry-info">
-        <text class="diagnose-entry-title">查看诊断报告</text>
-        <text class="diagnose-entry-sub">了解本卡点的初始诊断结果与成长对比</text>
-      </view>
-    </view>
-    <text class="diagnose-entry-arrow">›</text>
   </view>
 
   <view class="safe-bottom"></view>

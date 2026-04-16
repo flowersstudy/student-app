@@ -1,10 +1,11 @@
 <view class="path-page">
   <view class="path-bar-list">
     <block wx:for="{{pathNodes}}" wx:key="id">
-      <view class="path-item">
+      <view id="path-node-{{item.pointId}}" class="path-item {{item.expanded ? 'path-item-expanded' : ''}}">
         <view class="path-bar path-bar-{{item.status}}" bindtap="handleNodeTap" data-id="{{item.id}}">
           <view class="path-bar-main">
             <text class="path-bar-title">{{item.title}}</text>
+            <text wx:if="{{item.currentTaskText}}" class="path-bar-progress">{{item.currentTaskText}}</text>
           </view>
           <view class="path-bar-side">
             <view class="path-bar-tag path-bar-tag-{{item.status}}">
@@ -15,21 +16,16 @@
         </view>
 
         <view wx:if="{{item.expanded}}" class="path-expand">
-          <view class="path-expand-head">
-            <text class="path-expand-title">{{item.pathTitle}}</text>
-            <text class="path-expand-summary">{{item.pathSummary}}</text>
-          </view>
-
-          <view class="path-expand-body" style="{{pathLayout.bodyStyle}}">
-            <view class="path-ip-float" style="{{pathLayout.ipStyle}}">
+          <view class="path-expand-body" style="{{item.bodyStyle}}">
+            <view class="path-ip-float" style="{{item.ipStyle}}">
               <image class="path-ip-image" src="/assets/buka/buka-koi-mascot-v2.svg" mode="widthFix"></image>
             </view>
 
             <view class="duo-map" style="height: {{item.mapHeight}};">
               <block wx:for="{{item.steps}}" wx:key="id" wx:for-item="step">
                 <view class="duo-step" style="{{step.positionStyle}}">
-                  <view class="duo-node-wrap" style="{{pathLayout.nodeWrapStyle}}">
-                    <view class="duo-node duo-node-{{step.status}}" style="{{pathLayout.nodeStyle}}" catchtap="handleStepTap" data-url="{{step.url}}">
+                  <view class="duo-node-wrap duo-node-wrap-{{step.status}}" style="{{pathLayout.nodeWrapStyle}}" catchtap="handleStepTap" data-url="{{step.url}}">
+                    <view class="duo-node duo-node-{{step.status}}" style="{{pathLayout.nodeStyle}}">
                       <text class="duo-node-text" style="{{pathLayout.nodeTextStyle}}">{{step.shortLabel}}</text>
                     </view>
                   </view>
@@ -42,5 +38,3 @@
     </block>
   </view>
 </view>
-
-<bottom-nav selected="home"></bottom-nav>

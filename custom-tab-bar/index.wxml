@@ -1,1 +1,20 @@
-<view class="custom-tabbar custom-tabbar--hidden"></view>
+<view class="custom-tabbar">
+  <view class="custom-tabbar__content">
+    <view
+      wx:for="{{list}}"
+      wx:key="key"
+      class="custom-tabbar__item {{selected === item.key ? 'is-active' : ''}}"
+      data-key="{{item.key}}"
+      data-path="{{item.pagePath}}"
+      bindtap="onTabTap"
+    >
+      <image
+        class="custom-tabbar__icon"
+        src="{{selected === item.key ? item.selectedIconPath : item.iconPath}}"
+        mode="aspectFit"
+      />
+      <text class="custom-tabbar__text">{{item.text}}</text>
+    </view>
+  </view>
+  <view class="custom-tabbar__safe"></view>
+</view>

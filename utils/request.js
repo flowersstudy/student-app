@@ -1,53 +1,216 @@
-/**
- * 小程序统一请求工具
- * 自动携带 student_token，统一处理错误
- */
-
-const app = getApp()
+const { getRuntimeConfig } = require('./runtime-config')
 const { isOfflineMode, mockRequest } = require('./offline')
 
-function request(options) {
-  if (isOfflineMode()) {
-    return mockRequest(options)
+const STUDENT_TOKEN_KEY = 'student_token'
+const DEFAULT_UNAUTHORIZED_REDIRECT = '/pages/home/home'
+
+function getAppSafe() {
+  try {
+    return getApp()
+  } catch (error) {
+    return null
+  }
+}
+
+function getServerBase(appInstance) {
+  const app = appInstance || getAppSafe()
+  return (app && app.globalData && app.globalData.serverBase) || getRuntimeConfig().serverBase
+}
+
+function buildRequestUrl(url = '', appInstance, serverBase = '') {
+  if (/^https?:\/\//i.test(url)) {
+    return url
   }
 
-  const token = wx.getStorageSync('student_token') || ''
+  const base = String(serverBase || getServerBase(appInstance) || '').replace(/\/+$/, '')
+  const path = String(url || '')
+
+  if (!path) {
+    return base
+  }
+
+  return path.startsWith('/')
+    ? `${base}${path}`
+    : `${base}/${path}`
+}
+
+function normalizeErrorMessage(payload, fallback = '请求失败') {
+  return (payload && (payload.message || payload.error)) || fallback
+}
+
+function createRequestError(message, statusCode, data) {
+  const error = new Error(message)
+  error.statusCode = statusCode || 0
+  error.data = data
+  return error
+}
+
+function showToast(title) {
+  if (!title) return
+
+  wx.showToast({
+    title,
+    icon: 'none',
+  })
+}
+
+function handleUnauthorizedRedirect(options = {}) {
+  const {
+    clearStorage = true,
+    redirectUrl = DEFAULT_UNAUTHORIZED_REDIRECT,
+  } = options
+
+  if (clearStorage) {
+    wx.clearStorageSync()
+  }
+
+  if (redirectUrl) {
+    wx.switchTab({ url: redirectUrl })
+  }
+}
+
+function request(options = {}) {
+  const {
+    url = '',
+    method = 'GET',
+    data = {},
+    header = {},
+    appInstance,
+    serverBase = '',
+    withAuth = false,
+    token,
+    allowOffline = false,
+    mockData,
+    showErrorToast = false,
+    showNetworkErrorToast = showErrorToast,
+    clearOnUnauthorized = false,
+    redirectOnUnauthorized = '',
+    onUnauthorized = null,
+  } = options
+
+  if (allowOffline && isOfflineMode()) {
+    return mockRequest({
+      url,
+      method,
+      data,
+      header,
+      mockData,
+    })
+  }
+
+  const resolvedToken = typeof token === 'string'
+    ? token
+    : (withAuth ? (wx.getStorageSync(STUDENT_TOKEN_KEY) || '') : '')
+  const finalHeader = {
+    'Content-Type': 'application/json',
+    ...header,
+  }
+
+  if (resolvedToken && !finalHeader.Authorization) {
+    finalHeader.Authorization = `Bearer ${resolvedToken}`
+  }
+
   return new Promise((resolve, reject) => {
     wx.request({
-      url: app.globalData.serverBase + options.url,
-      method: options.method || 'GET',
-      data: options.data || {},
-      header: {
-        'Content-Type': 'application/json',
-        'Authorization': token ? `Bearer ${token}` : '',
-        ...(options.header || {}),
-      },
+      url: buildRequestUrl(url, appInstance, serverBase),
+      method,
+      data,
+      header: finalHeader,
       success: (res) => {
         if (res.statusCode >= 200 && res.statusCode < 300) {
           resolve(res.data)
-        } else if (res.statusCode === 401) {
-          wx.clearStorageSync()
-          wx.switchTab({ url: '/pages/home/home' })
-          reject(new Error('未登录'))
-        } else {
-          const msg = res.data?.message || res.data?.error || '请求失败'
-          wx.showToast({ title: msg, icon: 'none' })
-          reject(new Error(msg))
+          return
         }
+
+        const message = normalizeErrorMessage(res.data, '请求失败')
+        const error = createRequestError(message, res.statusCode, res.data)
+
+        if (res.statusCode === 401) {
+          if (clearOnUnauthorized) {
+            handleUnauthorizedRedirect({
+              clearStorage: true,
+              redirectUrl: redirectOnUnauthorized || DEFAULT_UNAUTHORIZED_REDIRECT,
+            })
+          }
+
+          if (typeof onUnauthorized === 'function') {
+            onUnauthorized(error, res)
+          }
+        }
+
+        if (showErrorToast) {
+          showToast(message)
+        }
+
+        reject(error)
       },
       fail: (err) => {
-        wx.showToast({ title: '网络错误，请检查后端是否启动', icon: 'none' })
-        reject(err)
+        const message = '网络错误，请检查后端是否启动'
+        const error = createRequestError(message, 0, err)
+
+        if (showNetworkErrorToast) {
+          showToast(message)
+        }
+
+        reject(error)
       },
     })
   })
 }
 
-const http = {
-  get: (url, data) => request({ url, method: 'GET', data }),
-  post: (url, data) => request({ url, method: 'POST', data }),
-  put: (url, data) => request({ url, method: 'PUT', data }),
-  delete: (url) => request({ url, method: 'DELETE' }),
+function requestWithAuth(options = {}) {
+  return request({
+    withAuth: true,
+    ...options,
+  })
 }
 
-module.exports = { http }
+function requestWithStudentAuth(options = {}) {
+  return requestWithAuth({
+    allowOffline: true,
+    clearOnUnauthorized: true,
+    redirectOnUnauthorized: DEFAULT_UNAUTHORIZED_REDIRECT,
+    ...options,
+  })
+}
+
+const http = {
+  get: (url, data, options = {}) => requestWithStudentAuth({
+    ...options,
+    url,
+    data,
+    method: 'GET',
+    showErrorToast: true,
+  }),
+  post: (url, data, options = {}) => requestWithStudentAuth({
+    ...options,
+    url,
+    data,
+    method: 'POST',
+    showErrorToast: true,
+  }),
+  put: (url, data, options = {}) => requestWithStudentAuth({
+    ...options,
+    url,
+    data,
+    method: 'PUT',
+    showErrorToast: true,
+  }),
+  delete: (url, options = {}) => requestWithStudentAuth({
+    ...options,
+    url,
+    method: 'DELETE',
+    showErrorToast: true,
+  }),
+}
+
+module.exports = {
+  DEFAULT_UNAUTHORIZED_REDIRECT,
+  getAppSafe,
+  getServerBase,
+  handleUnauthorizedRedirect,
+  http,
+  request,
+  requestWithAuth,
+  requestWithStudentAuth,
+}

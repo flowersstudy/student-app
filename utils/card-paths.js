@@ -142,11 +142,11 @@ function buildPointVersions(progressiveLastStep = '刷题', premiumAvailable = t
 
 const POINT_VERSION_PATHS = {
   1: {
-    pointName: '游走式找点',
+    pointName: '要点不全不准',
     versions: buildPointVersions('刷题'),
   },
   2: {
-    pointName: '总结转述难',
+    pointName: '提炼转述困难',
     versions: buildPointVersions('刷题 + 积累'),
   },
   3: {
@@ -158,7 +158,7 @@ const POINT_VERSION_PATHS = {
     versions: buildPointVersions('刷题'),
   },
   5: {
-    pointName: '对策推导难',
+    pointName: '对策推导困难',
     versions: buildPointVersions('刷题', false),
   },
   6: {
@@ -166,7 +166,7 @@ const POINT_VERSION_PATHS = {
     versions: buildPointVersions('刷题'),
   },
   7: {
-    pointName: '作文逻辑不清',
+    pointName: '作文论证不清',
     versions: buildPointVersions('刷题'),
   },
   8: {

@@ -9,7 +9,7 @@ Page({
       date: '2026年4月20日 周一',
       time: '15:00 - 16:00',
       teacher: '李老师',
-      subject: '1v1纠偏 - 总结转述难',
+      subject: '1v1纠偏 - 提炼转述困难',
       status: '待开始'
     },
     uploadedFiles: [],

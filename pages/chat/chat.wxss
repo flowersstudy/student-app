@@ -414,7 +414,7 @@
   display: flex;
   flex-wrap: wrap;
   padding: 16rpx 12rpx;
-  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  padding-bottom: 12rpx;
   background: rgba(255, 255, 255, 0.98);
   border-top: 1rpx solid rgba(226, 232, 240, 0.96);
 }
@@ -437,7 +437,7 @@
 .more-panel {
   display: flex;
   flex-direction: row;
-  padding: 30rpx 12rpx calc(28rpx + env(safe-area-inset-bottom));
+  padding: 30rpx 12rpx 12rpx;
   background: rgba(255, 255, 255, 0.98);
   border-top: 1rpx solid rgba(226, 232, 240, 0.96);
 }

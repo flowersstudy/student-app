@@ -5,7 +5,7 @@ Page({
     uiIcons,
     liveInfo: {
       title: '第 2 周直播讲评',
-      subtitle: '对策推导难 · 本周共性问题讲评',
+      subtitle: '对策推导困难 · 本周共性问题讲评',
       time: '4月24日 周四 19:00 - 20:30',
       teacher: '李老师',
       status: '待开课',

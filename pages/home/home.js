@@ -1,30 +1,30 @@
 const { fetchStudentProfile } = require('../../utils/student-api')
-const { getPointVersionData } = require('../../utils/card-paths')
 const { syncCustomTabBar } = require('../../utils/custom-tab-bar')
+const { buildStageUrl } = require('../../utils/path-stage-routes')
 
 const CURRENT_LEARNING_TASK_KEY = 'current_learning_task'
-const PATH_MAP_HEIGHT_RPX = 660
+const PATH_MAP_HEIGHT_RPX = 900
 const PATH_VERTICAL_GAP_RPX = 92
-const PATH_NODE_SIZE_RPX = 88
+const PATH_NODE_SIZE_RPX = 108
 const PATH_LAYOUT_PRESETS = {
   compact: {
     key: 'compact',
-    mapHeight: 620,
-    nodeSize: 84,
+    mapHeight: 850,
+    nodeSize: 108,
     nodeTextSize: 22,
-    bodyRightPadding: 84,
-    ipTop: 206,
-    ipRight: 4,
-    ipWidth: 78,
-    ipOpacity: 0.24,
+    bodyRightPadding: 96,
+    ipTop: 292,
+    ipRight: 0,
+    ipWidth: 112,
+    ipOpacity: 1,
     pointLayoutsByCount: {
       6: [
         { x: 0, y: 0 },
-        { x: -14, y: 88 },
-        { x: -62, y: 180 },
-        { x: 30, y: 264 },
-        { x: -58, y: 354 },
-        { x: -12, y: 446 },
+        { x: -74, y: 128 },
+        { x: -120, y: 262 },
+        { x: -72, y: 404 },
+        { x: 0, y: 548 },
+        { x: 78, y: 688 },
       ],
       7: [
         { x: 0, y: 0 },
@@ -39,22 +39,22 @@ const PATH_LAYOUT_PRESETS = {
   },
   standard: {
     key: 'standard',
-    mapHeight: PATH_MAP_HEIGHT_RPX,
+    mapHeight: 900,
     nodeSize: PATH_NODE_SIZE_RPX,
     nodeTextSize: 24,
-    bodyRightPadding: 104,
-    ipTop: 232,
-    ipRight: 6,
-    ipWidth: 102,
-    ipOpacity: 0.26,
+    bodyRightPadding: 116,
+    ipTop: 306,
+    ipRight: 4,
+    ipWidth: 136,
+    ipOpacity: 1,
     pointLayoutsByCount: {
       6: [
         { x: 0, y: 0 },
-        { x: -18, y: 96 },
-        { x: -74, y: 194 },
-        { x: 40, y: 286 },
-        { x: -72, y: 382 },
-        { x: -18, y: 478 },
+        { x: -80, y: 138 },
+        { x: -128, y: 284 },
+        { x: -78, y: 436 },
+        { x: 0, y: 592 },
+        { x: 86, y: 744 },
       ],
       7: [
         { x: 0, y: 0 },
@@ -69,22 +69,22 @@ const PATH_LAYOUT_PRESETS = {
   },
   wide: {
     key: 'wide',
-    mapHeight: 700,
-    nodeSize: 90,
+    mapHeight: 940,
+    nodeSize: 120,
     nodeTextSize: 22,
-    bodyRightPadding: 102,
-    ipTop: 244,
-    ipRight: 10,
-    ipWidth: 92,
-    ipOpacity: 0.22,
+    bodyRightPadding: 140,
+    ipTop: 320,
+    ipRight: 8,
+    ipWidth: 150,
+    ipOpacity: 1,
     pointLayoutsByCount: {
       6: [
         { x: 0, y: 0 },
-        { x: -12, y: 96 },
-        { x: -58, y: 198 },
-        { x: 34, y: 292 },
-        { x: -56, y: 392 },
-        { x: -10, y: 490 },
+        { x: -86, y: 146 },
+        { x: -138, y: 300 },
+        { x: -84, y: 458 },
+        { x: 0, y: 620 },
+        { x: 96, y: 778 },
       ],
       7: [
         { x: 0, y: 0 },
@@ -101,7 +101,7 @@ const PATH_LAYOUT_PRESETS = {
 
 const DEFAULT_CURRENT_TASK = {
   pointId: 2,
-  pointName: '总结转述难',
+  pointName: '提炼转述困难',
   day: 'Day 1',
   taskLabel: '1v1共识课',
   progress: 0,
@@ -110,29 +110,34 @@ const DEFAULT_CURRENT_TASK = {
 const POINT_ORDER = [1, 2, 5, 3, 4, 6, 7, 8]
 
 const POINT_NAME_BY_ID = {
-  1: '游走式找点',
-  2: '总结转述难',
+  1: '要点不全不准',
+  2: '提炼转述困难',
   3: '分析结构不清',
   4: '公文结构不清',
-  5: '对策推导难',
+  5: '对策推导困难',
   6: '作文立意不准',
-  7: '作文逻辑不清',
+  7: '作文论证不清',
   8: '作文表达不畅',
 }
 
 const POINT_NAME_ALIASES = {
+  要点不全不准: 1,
   游走式找点: 1,
+  提炼转述困难: 2,
   总结转述难: 2,
   提炼转述错误: 2,
   分析结构不清: 3,
   分析结构错误: 3,
   公文结构不清: 4,
   公文结构错误: 4,
+  对策推导困难: 5,
   对策推导难: 5,
   对策推导错误: 5,
   作文立意不准: 6,
   作文立意错误: 6,
+  作文论证不清: 7,
   作文逻辑不清: 7,
+  作文逻辑不稳: 7,
   作文逻辑不清晰: 7,
   作文表达不畅: 8,
   作文表达不流畅: 8,
@@ -141,6 +146,39 @@ const POINT_NAME_ALIASES = {
 function getPointIdByName(pointName = '') {
   return Number(POINT_NAME_ALIASES[pointName] || DEFAULT_CURRENT_TASK.pointId)
 }
+
+const MAIN_PATH_STEPS = [
+  {
+    key: 'diagnose',
+    title: '诊断',
+    note: '诊断群 / 电话沟通 / 诊断试卷 / 听解析课 / 1v1诊断课 / 报告',
+  },
+  {
+    key: 'theory',
+    title: '理论',
+    note: '1v1共识 / 理论课 / 1v1纠偏',
+  },
+  {
+    key: 'training',
+    title: '实训',
+    note: '实训练习与提交',
+  },
+  {
+    key: 'exam',
+    title: '考试',
+    note: '倒计时 / 题目 / 卡点报告 / 课堂反馈',
+  },
+  {
+    key: 'drill',
+    title: '刷题',
+    note: '倒计时 / 题目 / 课堂反馈',
+  },
+  {
+    key: 'report',
+    title: '报告',
+    note: '查看刷题报告',
+  },
+]
 
 function toPointItem(course = {}) {
   return {
@@ -191,13 +229,6 @@ function resolveCurrentTask(taskState = {}) {
   }
 }
 
-function hasDiagnoseCourse() {
-  const app = getApp()
-  const globalData = (app && app.globalData) || {}
-  const userProfile = globalData.userProfile || {}
-  return globalData.hasDiagnoseCourse === true || !!userProfile.phone
-}
-
 function getSectionNoteByStatus(status = '') {
   if (status === 'done') return '已完成'
   if (status === 'current') return '当前学习'
@@ -233,56 +264,32 @@ function getExpandedMap(list = []) {
   }, {})
 }
 
-function pickVersionData(pointData = {}) {
-  const versions = pointData.versions || {}
-
-  if (versions.progressive && versions.progressive.available !== false) {
-    return {
-      key: 'progressive',
-      label: '循序渐进',
-      data: versions.progressive,
-    }
+function ensureExpandedMapWithCurrent(expandedMap = {}, currentPointId = 0) {
+  const nextMap = { ...(expandedMap || {}) }
+  if (currentPointId) {
+    nextMap[`point-${currentPointId}`] = true
   }
-
-  const fallbackKey = Object.keys(versions).find((key) => versions[key] && versions[key].available !== false)
-
-  if (!fallbackKey) {
-    return {
-      key: 'progressive',
-      label: '学习路径',
-      data: { steps: [] },
-    }
-  }
-
-  return {
-    key: fallbackKey,
-    label: fallbackKey === 'fast' ? '极速提升' : fallbackKey === 'premium' ? '尊享路径' : '学习路径',
-    data: versions[fallbackKey],
-  }
+  return nextMap
 }
 
-function resolveTaskUrl(stepTitle = '', pointId = 0) {
-  if (/测试|模考/.test(stepTitle)) {
-    return '/pages/lesson-exam/lesson-exam'
-  }
+function getPointCurveDirection(pointId) {
+  const pointIndex = POINT_ORDER.indexOf(pointId)
+  if (pointIndex === -1) return 1
+  return pointIndex % 2 === 0 ? 1 : -1
+}
 
-  if (/训练|刷题/.test(stepTitle)) {
-    return `/pages/lesson-drill/lesson-drill?pointId=${pointId}`
-  }
+function buildStepUrl(stepKey = '', pointId = 0) {
+  return buildStageUrl(stepKey, pointId, POINT_NAME_BY_ID[pointId] || '')
+}
 
-  if (/讲义/.test(stepTitle)) {
-    return '/pages/lesson-recorded/lesson-recorded'
-  }
-
-  if (/纠偏/.test(stepTitle)) {
-    return '/pages/lesson-correct/lesson-correct'
-  }
-
-  if (/理论/.test(stepTitle)) {
-    return '/pages/lesson-recorded/lesson-recorded'
-  }
-
-  return `/pages/progress/progress?id=${pointId}`
+function buildMainPathSteps(pointId = 0) {
+  return MAIN_PATH_STEPS.map((step, index) => ({
+    id: `${step.key}-${pointId}-${index + 1}`,
+    key: step.key,
+    title: step.title,
+    note: step.note,
+    url: buildStepUrl(step.key, pointId),
+  }))
 }
 
 function resolveCurrentStepIndex(progress = 0, stepCount = 0) {
@@ -301,15 +308,27 @@ function getPathLayoutPreset(windowWidth = 375) {
 function buildPathLayoutData(layoutPreset = PATH_LAYOUT_PRESETS.standard) {
   return {
     key: layoutPreset.key,
-    bodyStyle: `padding-right:${layoutPreset.bodyRightPadding}rpx;`,
-    ipStyle: `top:${layoutPreset.ipTop}rpx; right:${layoutPreset.ipRight}rpx; width:${layoutPreset.ipWidth}rpx; opacity:${layoutPreset.ipOpacity};`,
-    nodeWrapStyle: `width:${layoutPreset.nodeSize}rpx;`,
+    nodeWrapStyle: `width:${layoutPreset.nodeSize + 20}rpx;`,
     nodeStyle: `width:${layoutPreset.nodeSize}rpx; height:${layoutPreset.nodeSize}rpx;`,
     nodeTextStyle: `font-size:${layoutPreset.nodeTextSize}rpx;`,
   }
 }
 
-function decoratePathSteps(rawSteps = [], sectionStatus = 'locked', currentStepIndex = 0, layoutPreset = PATH_LAYOUT_PRESETS.standard) {
+function buildDirectionalChromeStyles(layoutPreset = PATH_LAYOUT_PRESETS.standard, curveDirection = 1) {
+  const bodyStyle = curveDirection === 1
+    ? `padding-right:${layoutPreset.bodyRightPadding}rpx;`
+    : `padding-left:${layoutPreset.bodyRightPadding}rpx;`
+  const sideStyle = curveDirection === 1
+    ? `right:${layoutPreset.ipRight}rpx;`
+    : `left:${layoutPreset.ipRight}rpx;`
+
+  return {
+    bodyStyle,
+    ipStyle: `top:${layoutPreset.ipTop}rpx; ${sideStyle} width:${layoutPreset.ipWidth}rpx; opacity:${layoutPreset.ipOpacity};`,
+  }
+}
+
+function decoratePathSteps(rawSteps = [], sectionStatus = 'locked', currentStepIndex = 0, layoutPreset = PATH_LAYOUT_PRESETS.standard, curveDirection = 1) {
   const total = rawSteps.length
   const pointLayouts = layoutPreset.pointLayoutsByCount[total] || layoutPreset.pointLayoutsByCount[7] || []
   const contentHeight = pointLayouts.length
@@ -331,7 +350,7 @@ function decoratePathSteps(rawSteps = [], sectionStatus = 'locked', currentStepI
     }
 
     const point = pointLayouts[index] || { x: 0, y: index * PATH_VERTICAL_GAP_RPX }
-    const offsetRpx = point.x
+    const offsetRpx = point.x * curveDirection
     const topRpx = topOffset + point.y
     let layout = 'center'
 
@@ -354,75 +373,8 @@ function decoratePathSteps(rawSteps = [], sectionStatus = 'locked', currentStepI
   })
 }
 
-function buildDiagnosePath(sectionStatus = 'current') {
-  const rawSteps = [
-    {
-      title: '预约诊断',
-      note: '确认考试方向、目标分和当前问题',
-      url: '/pages/diagnose-detail/diagnose-detail',
-    },
-    {
-      title: '填写信息',
-      note: '补充基础信息与学习背景',
-      url: '/pages/diagnose/diagnose',
-    },
-    {
-      title: '下载试卷',
-      note: '领取诊断题并开始作答',
-      url: '/pages/diagnose/diagnose',
-    },
-    {
-      title: '上传答案',
-      note: '提交答案进入人工批改',
-      url: '/pages/diagnose/diagnose',
-    },
-    {
-      title: '1v1诊断课',
-      note: '老师拆解失分原因与后续路径',
-      url: '/pages/diagnose-report/diagnose-report',
-    },
-    {
-      title: '查看报告',
-      note: '生成专属诊断报告和建议',
-      url: '/pages/diagnose-report/diagnose-report',
-    },
-  ]
-
-  return {
-    pathTitle: '诊断课学习路径',
-    pathSummary: `共 ${rawSteps.length} 步`,
-    mapHeight: `${PATH_MAP_HEIGHT_RPX}rpx`,
-    steps: decoratePathSteps(rawSteps, sectionStatus, sectionStatus === 'current' ? 0 : 0),
-  }
-}
-
-function buildPointPath(pointId, sectionStatus = 'locked', currentProgress = 0) {
-  const pointData = getPointVersionData(pointId)
-  const version = pickVersionData(pointData)
-  const rawSteps = []
-
-  if (version.data && Array.isArray(version.data.stages)) {
-    version.data.stages.forEach((stage) => {
-      const stageLabel = stage.label || '阶段学习'
-      ;(stage.steps || []).forEach((step, index) => {
-        rawSteps.push({
-          id: `${stage.key || 'stage'}-${index + 1}`,
-          title: step.title || `步骤 ${index + 1}`,
-          note: step.note || `${version.label} · ${stageLabel}`,
-          url: resolveTaskUrl(step.title || '', pointId),
-        })
-      })
-    })
-  } else {
-    ;((version.data && version.data.steps) || []).forEach((step, index) => {
-      rawSteps.push({
-        id: `${version.key}-${index + 1}`,
-        title: step.title || `步骤 ${index + 1}`,
-        note: step.note || `${version.label} · 核心路径`,
-        url: resolveTaskUrl(step.title || '', pointId),
-      })
-    })
-  }
+function buildPointPath(pointId, sectionStatus = 'locked', currentProgress = 0, curveDirection = 1) {
+  const rawSteps = buildMainPathSteps(pointId)
 
   const currentStepIndex = sectionStatus === 'current'
     ? resolveCurrentStepIndex(currentProgress, rawSteps.length)
@@ -430,13 +382,13 @@ function buildPointPath(pointId, sectionStatus = 'locked', currentProgress = 0) 
 
   return {
     pathTitle: `${POINT_NAME_BY_ID[pointId]}学习路径`,
-    pathSummary: `${version.label} · 共 ${rawSteps.length} 步`,
+    pathSummary: '诊断 → 理论 → 实训 → 考试 → 刷题 → 报告',
     mapHeight: `${PATH_MAP_HEIGHT_RPX}rpx`,
-    steps: decoratePathSteps(rawSteps, sectionStatus, currentStepIndex),
+    steps: decoratePathSteps(rawSteps, sectionStatus, currentStepIndex, PATH_LAYOUT_PRESETS.standard, curveDirection),
   }
 }
 
-function applyLayoutPresetToPath(path = {}, layoutPreset = PATH_LAYOUT_PRESETS.standard, sectionStatus = 'locked', currentStepIndex = 0) {
+function applyLayoutPresetToPath(path = {}, layoutPreset = PATH_LAYOUT_PRESETS.standard, sectionStatus = 'locked', currentStepIndex = 0, curveDirection = 1) {
   const rawSteps = (path.steps || []).map((step, index) => ({
     id: step.id || `step-${index + 1}`,
     title: step.title || '',
@@ -447,34 +399,27 @@ function applyLayoutPresetToPath(path = {}, layoutPreset = PATH_LAYOUT_PRESETS.s
   return {
     ...path,
     mapHeight: `${layoutPreset.mapHeight}rpx`,
-    steps: decoratePathSteps(rawSteps, sectionStatus, currentStepIndex, layoutPreset),
+    steps: decoratePathSteps(rawSteps, sectionStatus, currentStepIndex, layoutPreset, curveDirection),
   }
 }
 
 function createPathNodes(currentTask = DEFAULT_CURRENT_TASK, expandedMap = {}, layoutPreset = PATH_LAYOUT_PRESETS.standard) {
   const currentPointId = Number(currentTask.pointId) || DEFAULT_CURRENT_TASK.pointId
   const currentProgress = Number(currentTask.progress || 0)
-  const diagnoseStatus = hasDiagnoseCourse() ? 'done' : 'current'
-  const diagnosePath = buildDiagnosePath(diagnoseStatus)
-  const diagnoseSection = applyLayoutPresetToPath(diagnosePath, layoutPreset, diagnoseStatus, 0)
 
   return [
-    {
-      id: 'diagnose',
-      pointId: 0,
-      title: '诊断',
-      status: diagnoseStatus,
-      note: diagnoseStatus === 'done' ? '已完成' : '待诊断',
-      expanded: !!expandedMap.diagnose,
-      ...diagnoseSection,
-    },
     ...POINT_ORDER.map((pointId) => {
       const status = getPointStatus(pointId, currentPointId)
-      const path = buildPointPath(pointId, status, pointId === currentPointId ? currentProgress : 0)
+      const curveDirection = getPointCurveDirection(pointId)
+      const path = buildPointPath(pointId, status, pointId === currentPointId ? currentProgress : 0, curveDirection)
       const currentStepIndex = status === 'current'
         ? resolveCurrentStepIndex(pointId === currentPointId ? currentProgress : 0, (path.steps || []).length)
         : 0
-      const section = applyLayoutPresetToPath(path, layoutPreset, status, currentStepIndex)
+      const section = applyLayoutPresetToPath(path, layoutPreset, status, currentStepIndex, curveDirection)
+      const chromeStyles = buildDirectionalChromeStyles(layoutPreset, curveDirection)
+      const currentTaskText = status === 'current' && section.steps[currentStepIndex]
+        ? section.steps[currentStepIndex].title
+        : ''
 
       return {
         id: `point-${pointId}`,
@@ -482,7 +427,10 @@ function createPathNodes(currentTask = DEFAULT_CURRENT_TASK, expandedMap = {}, l
         title: POINT_NAME_BY_ID[pointId] || `卡点 ${pointId}`,
         status,
         note: getSectionNoteByStatus(status),
+        currentTaskText,
         expanded: !!expandedMap[`point-${pointId}`],
+        bodyStyle: chromeStyles.bodyStyle,
+        ipStyle: chromeStyles.ipStyle,
         ...section,
       }
     }),
@@ -511,11 +459,14 @@ Page({
   syncCurrentTask() {
     const savedTask = wx.getStorageSync(CURRENT_LEARNING_TASK_KEY) || {}
     const currentTask = resolveCurrentTask(savedTask)
-    const expandedMap = getExpandedMap(this.data.pathNodes)
+    const currentPointId = Number(currentTask.pointId) || DEFAULT_CURRENT_TASK.pointId
+    const expandedMap = ensureExpandedMapWithCurrent(getExpandedMap(this.data.pathNodes), currentPointId)
     const layoutPreset = getPathLayoutPreset((wx.getSystemInfoSync() || {}).windowWidth || 375)
 
     this.setData({
       pathNodes: createPathNodes(currentTask, expandedMap, layoutPreset),
+    }, () => {
+      this.scrollToCurrentPoint(currentPointId)
     })
   },
 
@@ -534,7 +485,8 @@ Page({
 
       const currentCourse = toPointItem(inProgress[0] || completed[completed.length - 1] || allCourses[0])
       const currentTask = buildCurrentTaskFromCourse(currentCourse)
-      const expandedMap = getExpandedMap(this.data.pathNodes)
+      const currentPointId = Number(currentTask.pointId) || DEFAULT_CURRENT_TASK.pointId
+      const expandedMap = ensureExpandedMapWithCurrent(getExpandedMap(this.data.pathNodes), currentPointId)
       const layoutPreset = getPathLayoutPreset((wx.getSystemInfoSync() || {}).windowWidth || 375)
 
       app.globalData.hasPracticeCourse = allCourses.length > 0
@@ -542,6 +494,8 @@ Page({
 
       this.setData({
         pathNodes: createPathNodes(currentTask, expandedMap, layoutPreset),
+      }, () => {
+        this.scrollToCurrentPoint(currentPointId)
       })
     } catch (error) {
       console.warn('首页数据加载失败:', error && error.message ? error.message : error)
@@ -552,11 +506,32 @@ Page({
     const systemInfo = wx.getSystemInfoSync() || {}
     const layoutPreset = getPathLayoutPreset(systemInfo.windowWidth || 375)
     const currentTask = resolveCurrentTask(wx.getStorageSync(CURRENT_LEARNING_TASK_KEY) || {})
-    const expandedMap = getExpandedMap(this.data.pathNodes)
+    const currentPointId = Number(currentTask.pointId) || DEFAULT_CURRENT_TASK.pointId
+    const expandedMap = ensureExpandedMapWithCurrent(getExpandedMap(this.data.pathNodes), currentPointId)
 
     this.setData({
       pathLayout: buildPathLayoutData(layoutPreset),
       pathNodes: createPathNodes(currentTask, expandedMap, layoutPreset),
+    })
+  },
+
+  scrollToCurrentPoint(pointId) {
+    if (!pointId) return
+
+    const query = this.createSelectorQuery()
+    query.selectViewport().scrollOffset()
+    query.select(`#path-node-${pointId}`).boundingClientRect()
+    query.exec((res) => {
+      const viewport = res && res[0] ? res[0] : {}
+      const rect = res && res[1] ? res[1] : null
+
+      if (!rect) return
+
+      const scrollTop = Math.max(0, Number(viewport.scrollTop || 0) + rect.top - 20)
+      wx.pageScrollTo({
+        scrollTop,
+        duration: 280,
+      })
     })
   },
 
@@ -566,7 +541,7 @@ Page({
 
     const nextNodes = this.data.pathNodes.map((item) => ({
       ...item,
-      expanded: item.id === id ? !item.expanded : false,
+      expanded: item.id === id ? !item.expanded : item.expanded,
     }))
 
     this.setData({

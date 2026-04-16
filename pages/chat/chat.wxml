@@ -65,8 +65,8 @@
         </text>
       </view>
     </view>
-    <view style="height:160rpx;"></view>
   </scroll-view>
+    <view style="height:160rpx;"></view>
 
   <view class="input-area-wrap">
     <view class="input-bar">
@@ -167,4 +167,3 @@
 </view>
 
 <diagnose-coupon-fab auto-popup="{{true}}"></diagnose-coupon-fab>
-<bottom-nav selected="chat"></bottom-nav>
