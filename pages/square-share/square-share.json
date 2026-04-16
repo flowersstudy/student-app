@@ -1,4 +1,4 @@
-{
+﻿{
   "navigationBarTitleText": "经验分享",
   "usingComponents": {
     "diagnose-coupon-fab": "/components/diagnose-coupon-fab/index"

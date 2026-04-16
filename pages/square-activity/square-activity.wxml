@@ -1,4 +1,4 @@
-<import src="../square-page-template.wxml" />
+﻿<import src="../square-page-template.wxml" />
 
 <template
   is="squarePage"

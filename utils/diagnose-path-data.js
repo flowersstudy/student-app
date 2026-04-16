@@ -71,32 +71,32 @@ const rawDiagnoseSteps = [
   {
     title: '预约诊断',
     note: '确认考试方向、目标分和当前问题',
-    url: '/pages/diagnose-detail/diagnose-detail',
+    url: '/pkg-diagnose/pages/diagnose-detail/diagnose-detail',
   },
   {
     title: '填写信息',
     note: '补充基础信息与学习背景',
-    url: '/pages/diagnose/diagnose',
+    url: '/pkg-diagnose/pages/diagnose/diagnose',
   },
   {
     title: '下载试卷',
     note: '领取诊断题并开始作答',
-    url: '/pages/diagnose/diagnose',
+    url: '/pkg-diagnose/pages/diagnose/diagnose',
   },
   {
     title: '上传答案',
     note: '提交答案进入人工批改',
-    url: '/pages/diagnose/diagnose',
+    url: '/pkg-diagnose/pages/diagnose/diagnose',
   },
   {
     title: '1v1诊断课',
     note: '老师拆解失分原因与后续路径',
-    url: '/pages/diagnose-report/diagnose-report',
+    url: '/pkg-diagnose/pages/diagnose-report/diagnose-report',
   },
   {
     title: '查看报告',
     note: '生成专属诊断报告和建议',
-    url: '/pages/diagnose-report/diagnose-report',
+    url: '/pkg-diagnose/pages/diagnose-report/diagnose-report',
   },
 ]
 

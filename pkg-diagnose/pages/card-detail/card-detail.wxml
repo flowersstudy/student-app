@@ -1,0 +1,56 @@
+﻿<view class="card-path-page">
+  <view class="path-page-head">
+    <text class="path-page-title">{{pointName}}</text>
+    <view class="path-report-action" bindtap="onViewReport">
+      <text class="path-report-action-text">查看卡点报告</text>
+    </view>
+  </view>
+
+  <view class="learning-summary-card">
+    <view class="learning-summary-left">
+      <text class="learning-summary-label">学习总时长</text>
+      <text class="learning-summary-value">{{learningSummary.totalText}}</text>
+    </view>
+    <view class="learning-summary-right">
+      <text class="learning-summary-message">{{learningSummary.encouragement}}</text>
+      <view wx:if="{{learningSummary.recordItems.length}}" class="learning-summary-records">
+        <text wx:for="{{learningSummary.recordItems}}" wx:key="key" class="learning-summary-record">{{item.label}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="path-stage-card">
+    <view class="path-stage-head">
+      <text class="path-stage-title">六阶段学习路径</text>
+      <text class="path-stage-sub">先搭框架，后续再补每一步的展开内容</text>
+    </view>
+
+    <view class="path-stage-list">
+      <view wx:for="{{pathStages}}" wx:key="key" class="path-stage-item" bindtap="onStageTap" data-url="{{item.routeUrl}}">
+        <view class="path-stage-line-wrap">
+          <view class="path-stage-index path-stage-index-{{item.status}}">
+            <text class="path-stage-index-text">{{item.index}}</text>
+          </view>
+          <view wx:if="{{!item.isLast}}" class="path-stage-line"></view>
+        </view>
+
+        <view class="path-stage-main">
+          <view class="path-stage-title-row">
+            <text class="path-stage-item-title">{{item.title}}</text>
+            <text class="path-stage-status path-stage-status-{{item.status}}">
+              {{item.status === 'done' ? '已完成' : item.status === 'current' ? '当前阶段' : '待开始'}}
+            </text>
+          </view>
+          <text class="path-stage-desc">{{item.desc}}</text>
+          <view class="path-stage-placeholder">
+            <text class="path-stage-placeholder-text">{{item.hint}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="safe-bottom"></view>
+</view>
+
+<diagnose-coupon-fab auto-popup="{{true}}"></diagnose-coupon-fab>

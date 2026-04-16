@@ -189,6 +189,46 @@
   color: #64748b;
 }
 
+.countdown-actions {
+  display: flex;
+  gap: 14rpx;
+  margin-top: 18rpx;
+}
+
+.countdown-action {
+  flex: 1;
+  height: 64rpx;
+  border-radius: 32rpx;
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1rpx #dbe2ea;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.countdown-action-primary {
+  background: #2563eb;
+  box-shadow: none;
+}
+
+.countdown-action-text {
+  display: block;
+  width: 100%;
+  height: 64rpx;
+  font-size: 23rpx;
+  font-weight: 700;
+  color: #2563eb;
+  line-height: 64rpx;
+  text-align: center;
+}
+
+.countdown-action-text-primary {
+  color: #ffffff;
+}
+
 .safe-bottom {
   height: 24rpx;
 }

@@ -31,12 +31,6 @@
       </view>
 
       <view class="progress-timeline {{progressChart.isEmpty ? 'progress-timeline-empty' : ''}}">
-        <view class="progress-axis-scale progress-axis-scale-left">
-          <text class="progress-axis-scale-text">20</text>
-        </view>
-        <view class="progress-axis-scale progress-axis-scale-right">
-          <text class="progress-axis-scale-text">90</text>
-        </view>
         <view class="progress-track"></view>
         <view wx:if="{{progressChart.activeLineStyle}}" class="progress-track-active" style="{{progressChart.activeLineStyle}}"></view>
         <view class="progress-track-arrow"></view>
@@ -44,24 +38,14 @@
         <view
           wx:for="{{progressChart.nodes}}"
           wx:key="key"
-          class="progress-node progress-node-align-{{item.align}}"
+          class="progress-node"
           style="{{item.style}}"
         >
           <text class="progress-node-score {{item.active ? 'progress-node-score-active' : 'progress-node-score-inactive'}}">{{item.valueText}}</text>
           <view class="progress-node-dot-shell {{item.active ? 'progress-node-dot-shell-active' : 'progress-node-dot-shell-inactive'}}">
             <view class="progress-node-dot-core {{item.active ? 'progress-node-dot-core-active' : 'progress-node-dot-core-inactive'}}"></view>
           </view>
-        </view>
-
-        <view class="progress-caption-layer">
-          <view
-            wx:for="{{progressChart.nodes}}"
-            wx:key="key"
-            class="progress-caption progress-caption-align-{{item.align}}"
-            style="{{item.style}}"
-          >
-            <text class="progress-node-label {{item.active ? 'progress-node-label-active' : 'progress-node-label-inactive'}}">{{item.label}}</text>
-          </view>
+          <text class="progress-node-label {{item.active ? 'progress-node-label-active' : 'progress-node-label-inactive'}}">{{item.label}}</text>
         </view>
       </view>
     </view>
@@ -81,26 +65,57 @@
         </view>
       </view>
 
-      <view class="mix-chart-shell {{pointRateChart.isEmpty ? 'mix-chart-shell-empty' : ''}}">
-        <view class="mix-chart-axis">
-          <text wx:for="{{pointRateChart.yAxis}}" wx:key="value" class="mix-chart-axis-label" style="bottom: {{item.bottom}};">{{item.label}}</text>
-        </view>
+      <view class="mix-chart-wrap {{pointRateChart.isEmpty ? 'mix-chart-shell-empty' : ''}}">
+        <view class="mix-chart-shell">
+          <view class="mix-chart-axis">
+            <text wx:for="{{pointRateChart.yAxis}}" wx:key="value" class="mix-chart-axis-label" style="bottom: {{item.bottom}};">{{item.label}}</text>
+          </view>
 
-        <view class="mix-chart-plot">
-          <view wx:for="{{pointRateChart.yAxis}}" wx:key="value" class="mix-chart-grid-line" style="bottom: {{item.bottom}};"></view>
-          <image wx:if="{{pointRateChart.lineSvg}}" class="mix-chart-line-image" src="{{pointRateChart.lineSvg}}" mode="scaleToFill" />
-
-          <view class="mix-chart-columns">
-            <view wx:for="{{pointRateChart.items}}" wx:key="id" class="mix-chart-column">
-              <text class="mix-chart-bar-value {{item.isMissing ? 'mix-chart-bar-value-missing' : ''}}">{{item.valueText}}</text>
-              <view class="mix-chart-bar-track">
-                <view class="mix-chart-bar mix-chart-bar-orange {{item.isMissing ? 'mix-chart-bar-missing' : ''}}" style="height: {{item.barHeight}}%;"></view>
+          <view class="mix-chart-main">
+            <view class="mix-chart-plot">
+              <view wx:for="{{pointRateChart.yAxis}}" wx:key="value" class="mix-chart-grid-line" style="bottom: {{item.bottom}};"></view>
+              <image wx:if="{{pointRateChart.lineSvg}}" class="mix-chart-line-image" src="{{pointRateChart.lineSvg}}" mode="scaleToFill" />
+              <view wx:if="{{pointRateChart.linePoints.length > 0}}" class="mix-chart-line-points">
+                <view
+                  wx:for="{{pointRateChart.linePoints}}"
+                  wx:key="key"
+                  class="chart-line-point chart-line-point-dark"
+                  style="{{item.style}}"
+                >
+                  <view class="chart-line-point-core"></view>
+                </view>
               </view>
-              <view class="mix-chart-label-group">
-                <text class="mix-chart-label-top">{{item.shortTop}}</text>
-                <text class="mix-chart-label-bottom">{{item.shortBottom}}</text>
+
+              <view class="mix-chart-columns">
+                <view wx:for="{{pointRateChart.items}}" wx:key="id" class="mix-chart-column">
+                  <text class="mix-chart-bar-value {{item.isMissing ? 'mix-chart-bar-value-missing' : ''}}">{{item.valueText}}</text>
+                  <view class="mix-chart-bar-track">
+                    <view class="mix-chart-bar mix-chart-bar-orange {{item.isMissing ? 'mix-chart-bar-missing' : ''}}" style="height: {{item.barHeight}}%;"></view>
+                  </view>
+                </view>
               </view>
             </view>
+          </view>
+        </view>
+
+        <view class="mix-chart-label-shell">
+          <view class="mix-chart-label-spacer"></view>
+          <view class="mix-chart-label-row">
+            <view wx:for="{{pointRateChart.items}}" wx:key="id" class="mix-chart-label-column">
+              <text class="mix-chart-index-label">{{item.indexLabel}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="mix-chart-reference-box">
+        <view class="mix-chart-reference-head" bindtap="togglePointRateLegend">
+          <text class="mix-chart-reference-title">卡点说明</text>
+          <text class="mix-chart-reference-toggle">{{pointRateLegendExpanded ? '收起' : '展开'}}</text>
+        </view>
+        <view wx:if="{{pointRateLegendExpanded}}" class="mix-chart-reference">
+          <view wx:for="{{pointRateChart.items}}" wx:key="id" class="mix-chart-reference-item">
+            <text class="mix-chart-reference-text">{{item.indexLabel}}. {{item.name}}</text>
           </view>
         </view>
       </view>
@@ -111,6 +126,17 @@
     <view class="card review-chart-card">
       <view class="review-chart-head">
         <text class="review-chart-title">{{studyTimeChart.title}}</text>
+      </view>
+      <view class="study-time-tabs">
+        <view
+          wx:for="{{studyTimeTabs}}"
+          wx:key="key"
+          class="study-time-tab {{item.active ? 'study-time-tab-active' : ''}}"
+          bindtap="switchStudyTimeRange"
+          data-range="{{item.key}}"
+        >
+          <text class="study-time-tab-text {{item.active ? 'study-time-tab-text-active' : ''}}">{{item.label}}</text>
+        </view>
       </view>
       <view class="review-chart-legend">
         <view class="review-chart-legend-item">
@@ -127,6 +153,16 @@
         <view class="study-chart-plot">
           <view class="study-chart-baseline"></view>
           <image wx:if="{{studyTimeChart.lineSvg}}" class="study-chart-line-image" src="{{studyTimeChart.lineSvg}}" mode="scaleToFill" />
+          <view wx:if="{{studyTimeChart.linePoints.length > 0}}" class="study-chart-line-points">
+            <view
+              wx:for="{{studyTimeChart.linePoints}}"
+              wx:key="key"
+              class="chart-line-point chart-line-point-green"
+              style="{{item.style}}"
+            >
+              <view class="chart-line-point-core"></view>
+            </view>
+          </view>
 
           <view class="study-chart-columns">
             <view wx:for="{{studyTimeChart.items}}" wx:key="key" class="study-chart-column">

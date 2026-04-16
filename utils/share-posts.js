@@ -1,4 +1,4 @@
-const shareCategories = [
+﻿const shareCategories = [
   { key: 'all', label: '全部' },
   { key: 'score', label: '提分案例' },
   { key: 'method', label: '方法经验' },

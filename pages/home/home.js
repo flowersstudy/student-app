@@ -3,6 +3,7 @@ const { syncCustomTabBar } = require('../../utils/custom-tab-bar')
 const { buildStageUrl } = require('../../utils/path-stage-routes')
 
 const CURRENT_LEARNING_TASK_KEY = 'current_learning_task'
+const STAGE_KEYS = ['diagnose', 'theory', 'training', 'exam', 'drill', 'report']
 const PATH_MAP_HEIGHT_RPX = 900
 const PATH_VERTICAL_GAP_RPX = 92
 const PATH_NODE_SIZE_RPX = 108
@@ -118,6 +119,89 @@ const POINT_NAME_BY_ID = {
   6: '作文立意不准',
   7: '作文论证不清',
   8: '作文表达不畅',
+}
+
+const POINT_THEME_BY_ID = {
+  1: {
+    tone: 'red',
+    color: '#EA5A52',
+    cardBg: '#FFF4F3',
+    expandBg: '#FFF9F8',
+    border: '#FFD5D4',
+    divider: '#FFD9D8',
+    shadow: 'rgba(255, 94, 91, 0.12)',
+    shadowStrong: 'rgba(255, 94, 91, 0.16)',
+  },
+  2: {
+    tone: 'red',
+    color: '#EA5A52',
+    cardBg: '#FFF4F3',
+    expandBg: '#FFF9F8',
+    border: '#FFD5D4',
+    divider: '#FFD9D8',
+    shadow: 'rgba(255, 94, 91, 0.12)',
+    shadowStrong: 'rgba(255, 94, 91, 0.16)',
+  },
+  3: {
+    tone: 'yellow',
+    color: '#FFC94A',
+    cardBg: '#FFF9EC',
+    expandBg: '#FFFDF6',
+    border: '#FFE4A0',
+    divider: '#FFE9B8',
+    shadow: 'rgba(255, 201, 74, 0.14)',
+    shadowStrong: 'rgba(255, 201, 74, 0.18)',
+  },
+  4: {
+    tone: 'yellow',
+    color: '#FFC94A',
+    cardBg: '#FFF9EC',
+    expandBg: '#FFFDF6',
+    border: '#FFE4A0',
+    divider: '#FFE9B8',
+    shadow: 'rgba(255, 201, 74, 0.14)',
+    shadowStrong: 'rgba(255, 201, 74, 0.18)',
+  },
+  5: {
+    tone: 'yellow',
+    color: '#FFC94A',
+    cardBg: '#FFF9EC',
+    expandBg: '#FFFDF6',
+    border: '#FFE4A0',
+    divider: '#FFE9B8',
+    shadow: 'rgba(255, 201, 74, 0.14)',
+    shadowStrong: 'rgba(255, 201, 74, 0.18)',
+  },
+  6: {
+    tone: 'blue',
+    color: '#46AFFF',
+    cardBg: '#F2F8FF',
+    expandBg: '#F8FBFF',
+    border: '#CBE7FF',
+    divider: '#D9EEFF',
+    shadow: 'rgba(70, 175, 255, 0.14)',
+    shadowStrong: 'rgba(70, 175, 255, 0.18)',
+  },
+  7: {
+    tone: 'blue',
+    color: '#46AFFF',
+    cardBg: '#F2F8FF',
+    expandBg: '#F8FBFF',
+    border: '#CBE7FF',
+    divider: '#D9EEFF',
+    shadow: 'rgba(70, 175, 255, 0.14)',
+    shadowStrong: 'rgba(70, 175, 255, 0.18)',
+  },
+  8: {
+    tone: 'blue',
+    color: '#46AFFF',
+    cardBg: '#F2F8FF',
+    expandBg: '#F8FBFF',
+    border: '#CBE7FF',
+    divider: '#D9EEFF',
+    shadow: 'rgba(70, 175, 255, 0.14)',
+    shadowStrong: 'rgba(70, 175, 255, 0.18)',
+  },
 }
 
 const POINT_NAME_ALIASES = {
@@ -278,6 +362,49 @@ function getPointCurveDirection(pointId) {
   return pointIndex % 2 === 0 ? 1 : -1
 }
 
+function getPointTheme(pointId = 0) {
+  return POINT_THEME_BY_ID[pointId] || {
+    tone: 'blue',
+    color: '#8A95A6',
+    cardBg: '#F7F8FA',
+    expandBg: '#FBFCFE',
+    border: '#E6EBF2',
+    divider: '#EEF2F6',
+    shadow: 'rgba(29, 45, 74, 0.06)',
+    shadowStrong: 'rgba(29, 45, 74, 0.08)',
+  }
+}
+
+function getStageIconPath(stepKey = '', tone = 'blue') {
+  const safeStepKey = STAGE_KEYS.includes(stepKey) ? stepKey : 'diagnose'
+  const safeTone = ['red', 'yellow', 'blue'].includes(tone) ? tone : 'blue'
+  if (safeStepKey === 'diagnose') {
+    return `/assets/path/stage-${safeStepKey}-${safeTone}-white-top.png`
+  }
+  return `/assets/path/stage-${safeStepKey}-${safeTone}.png`
+}
+
+function buildPointThemeStyle(pointId = 0) {
+  const theme = getPointTheme(pointId)
+  return [
+    `background:linear-gradient(180deg, ${theme.cardBg} 0%, #ffffff 88%)`,
+    `border-color:${theme.border}`,
+    `box-shadow:0 10rpx 24rpx ${theme.shadow}`,
+    `--point-accent:${theme.color}`,
+    `--point-card-bg:${theme.cardBg}`,
+    `--point-expand-bg:${theme.expandBg}`,
+    `--point-border:${theme.border}`,
+    `--point-divider:${theme.divider}`,
+    `--point-shadow:${theme.shadow}`,
+    `--point-shadow-strong:${theme.shadowStrong}`,
+  ].join(';')
+}
+
+function buildPointExpandStyle(pointId = 0) {
+  const theme = getPointTheme(pointId)
+  return `background:linear-gradient(180deg, ${theme.expandBg} 0%, #fbfcfe 100%)`
+}
+
 function buildStepUrl(stepKey = '', pointId = 0) {
   return buildStageUrl(stepKey, pointId, POINT_NAME_BY_ID[pointId] || '')
 }
@@ -391,8 +518,10 @@ function buildPointPath(pointId, sectionStatus = 'locked', currentProgress = 0, 
 function applyLayoutPresetToPath(path = {}, layoutPreset = PATH_LAYOUT_PRESETS.standard, sectionStatus = 'locked', currentStepIndex = 0, curveDirection = 1) {
   const rawSteps = (path.steps || []).map((step, index) => ({
     id: step.id || `step-${index + 1}`,
+    key: step.key || '',
     title: step.title || '',
     note: step.note || '',
+    iconPath: step.iconPath || '',
     url: step.url || '',
   }))
 
@@ -411,11 +540,16 @@ function createPathNodes(currentTask = DEFAULT_CURRENT_TASK, expandedMap = {}, l
     ...POINT_ORDER.map((pointId) => {
       const status = getPointStatus(pointId, currentPointId)
       const curveDirection = getPointCurveDirection(pointId)
+      const theme = getPointTheme(pointId)
       const path = buildPointPath(pointId, status, pointId === currentPointId ? currentProgress : 0, curveDirection)
       const currentStepIndex = status === 'current'
         ? resolveCurrentStepIndex(pointId === currentPointId ? currentProgress : 0, (path.steps || []).length)
         : 0
       const section = applyLayoutPresetToPath(path, layoutPreset, status, currentStepIndex, curveDirection)
+      const themedSteps = (section.steps || []).map((step) => ({
+        ...step,
+        iconPath: getStageIconPath(step.key, theme.tone),
+      }))
       const chromeStyles = buildDirectionalChromeStyles(layoutPreset, curveDirection)
       const currentTaskText = status === 'current' && section.steps[currentStepIndex]
         ? section.steps[currentStepIndex].title
@@ -424,14 +558,19 @@ function createPathNodes(currentTask = DEFAULT_CURRENT_TASK, expandedMap = {}, l
       return {
         id: `point-${pointId}`,
         pointId,
+        tone: theme.tone,
         title: POINT_NAME_BY_ID[pointId] || `卡点 ${pointId}`,
         status,
         note: getSectionNoteByStatus(status),
         currentTaskText,
         expanded: !!expandedMap[`point-${pointId}`],
+        themeColor: theme.color,
+        themeStyle: buildPointThemeStyle(pointId),
+        themeExpandStyle: buildPointExpandStyle(pointId),
         bodyStyle: chromeStyles.bodyStyle,
         ipStyle: chromeStyles.ipStyle,
         ...section,
+        steps: themedSteps,
       }
     }),
   ]

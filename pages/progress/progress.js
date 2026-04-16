@@ -20,41 +20,41 @@ function resolveTaskAction(stepTitle) {
   if (/测试|模考/.test(stepTitle)) {
     return {
       text: '去测试',
-      url: '/pages/lesson-exam/lesson-exam',
+      url: '/pkg-lesson/pages/lesson-exam/lesson-exam',
     }
   }
 
   if (/训练|刷题/.test(stepTitle)) {
     return {
       text: '去练习',
-      url: '/pages/lesson-drill/lesson-drill?set=1',
+      url: '/pkg-lesson/pages/lesson-drill/lesson-drill?set=1',
     }
   }
 
   if (/讲义/.test(stepTitle)) {
     return {
       text: '去查看',
-      url: '/pages/lesson-recorded/lesson-recorded',
+      url: '/pkg-lesson/pages/lesson-recorded/lesson-recorded',
     }
   }
 
   if (/纠偏/.test(stepTitle)) {
     return {
       text: '去学习',
-      url: '/pages/lesson-correct/lesson-correct',
+      url: '/pkg-lesson/pages/lesson-correct/lesson-correct',
     }
   }
 
   if (/理论/.test(stepTitle)) {
     return {
       text: '去学习',
-      url: '/pages/lesson-recorded/lesson-recorded',
+      url: '/pkg-lesson/pages/lesson-recorded/lesson-recorded',
     }
   }
 
   return {
     text: '去学习',
-    url: '/pages/lesson-live/lesson-live',
+    url: '/pkg-lesson/pages/lesson-live/lesson-live',
   }
 }
 

@@ -1,4 +1,4 @@
-const { uiIcons } = require('../../utils/ui-icons')
+﻿const { uiIcons } = require('../../utils/ui-icons')
 
 Page({
   data: {
@@ -32,7 +32,7 @@ Page({
         desc: '直接开始做题，优先把今天的练习推进掉。',
         icon: uiIcons.drill,
         cta: '立即刷题',
-        url: '/pages/lesson-drill/lesson-drill',
+        url: '/pkg-lesson/pages/lesson-drill/lesson-drill',
         stats: [
           { label: '推荐模块', value: '言语 / 判断 / 资料' },
           { label: '当前进度', value: '已完成 18 题' },

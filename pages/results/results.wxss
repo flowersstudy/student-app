@@ -279,27 +279,6 @@
   height: 142rpx;
 }
 
-.progress-axis-scale {
-  position: absolute;
-  top: 68rpx;
-  z-index: 3;
-}
-
-.progress-axis-scale-left {
-  left: 0;
-}
-
-.progress-axis-scale-right {
-  right: 0;
-}
-
-.progress-axis-scale-text {
-  font-size: 18rpx;
-  color: #94a3b8;
-  line-height: 1;
-  font-weight: 600;
-}
-
 .progress-timeline-empty .progress-track,
 .progress-timeline-empty .progress-track-arrow {
   border-color: #d1d5db;
@@ -336,22 +315,11 @@
 .progress-node {
   position: absolute;
   top: 0;
-  width: 168rpx;
+  width: 220rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.progress-node-align-start {
-  transform: translateX(0);
-}
-
-.progress-node-align-center {
   transform: translateX(-50%);
-}
-
-.progress-node-align-end {
-  transform: translateX(-100%);
 }
 
 .progress-node-score {
@@ -405,34 +373,6 @@
   box-shadow: none;
 }
 
-.progress-caption-layer {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 44rpx;
-}
-
-.progress-caption {
-  position: absolute;
-  bottom: 0;
-  width: 220rpx;
-  display: flex;
-  justify-content: center;
-}
-
-.progress-caption-align-start {
-  transform: translateX(0);
-}
-
-.progress-caption-align-center {
-  transform: translateX(-50%);
-}
-
-.progress-caption-align-end {
-  transform: translateX(-100%);
-}
-
 .progress-node-label {
   width: 100%;
   font-size: 20rpx;
@@ -441,6 +381,7 @@
   text-align: center;
   white-space: nowrap;
   letter-spacing: 0;
+  margin-top: 10rpx;
 }
 
 .progress-node-label-active {
@@ -451,10 +392,14 @@
   color: #94a3b8;
 }
 
-.mix-chart-shell {
+.mix-chart-wrap {
   margin-top: 18rpx;
+}
+
+.mix-chart-shell {
   display: flex;
   gap: 16rpx;
+  align-items: flex-start;
 }
 
 .mix-chart-shell-empty {
@@ -464,7 +409,7 @@
 .mix-chart-axis {
   position: relative;
   width: 62rpx;
-  height: 360rpx;
+  height: 300rpx;
   flex-shrink: 0;
 }
 
@@ -477,10 +422,14 @@
   line-height: 1;
 }
 
+.mix-chart-main {
+  flex: 1;
+  min-width: 0;
+}
+
 .mix-chart-plot {
   position: relative;
-  flex: 1;
-  height: 360rpx;
+  height: 300rpx;
   padding: 0 4rpx;
 }
 
@@ -493,7 +442,72 @@
   transform: translateY(50%);
 }
 
-.mix-chart-line-image,
+.mix-chart-line-image {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 24rpx;
+  bottom: 0;
+  width: 100%;
+  height: calc(100% - 24rpx);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.mix-chart-line-points,
+.study-chart-line-points {
+  position: absolute;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.mix-chart-line-points {
+  top: 24rpx;
+  bottom: 0;
+}
+
+.study-chart-line-points {
+  top: 24rpx;
+  bottom: 58rpx;
+}
+
+.chart-line-point {
+  position: absolute;
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  transform: translate(-50%, 50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  box-shadow: none;
+}
+
+.chart-line-point-core {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+}
+
+.chart-line-point-dark {
+  border: 0;
+}
+
+.chart-line-point-dark .chart-line-point-core {
+  background: #475569;
+}
+
+.chart-line-point-green {
+  border: 0;
+}
+
+.chart-line-point-green .chart-line-point-core {
+  background: #22c55e;
+}
+
 .study-chart-line-image {
   position: absolute;
   left: 0;
@@ -515,7 +529,7 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 10rpx;
+  gap: 0;
   z-index: 1;
 }
 
@@ -525,6 +539,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-end;
 }
 
 .mix-chart-bar-value {
@@ -561,25 +576,137 @@
   background: linear-gradient(180deg, #e5e7eb 0%, #cbd5e1 100%);
 }
 
+.mix-chart-label-row {
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  gap: 10rpx;
+  padding: 0 4rpx;
+  box-sizing: border-box;
+}
+
+.mix-chart-label-shell {
+  margin-top: 18rpx;
+  display: flex;
+  gap: 16rpx;
+  align-items: flex-start;
+}
+
+.mix-chart-label-spacer {
+  width: 62rpx;
+  flex-shrink: 0;
+}
+
+.mix-chart-label-column {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .mix-chart-label-group {
   margin-top: 16rpx;
   min-height: 62rpx;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
 }
 
-.mix-chart-label-top,
-.mix-chart-label-bottom {
-  font-size: 20rpx;
-  line-height: 1.35;
-  color: #475569;
+.mix-chart-index-label {
+  color: #64748b;
+  font-size: 22rpx;
+  font-weight: 600;
+  line-height: 1.4;
   text-align: center;
+}
+
+.mix-chart-reference-box {
+  margin-top: 18rpx;
+  border-radius: 20rpx;
+  background: #f8fbff;
+  border: 1rpx solid rgba(37, 99, 235, 0.08);
+}
+
+.mix-chart-reference-head {
+  padding: 16rpx 18rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.mix-chart-reference-title {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #334155;
+  line-height: 1.4;
+}
+
+.mix-chart-reference-toggle {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #2563eb;
+  line-height: 1.4;
+}
+
+.mix-chart-reference {
+  padding: 0 18rpx 16rpx;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx 18rpx;
+}
+
+.mix-chart-reference-item {
+  flex-shrink: 0;
+}
+
+.mix-chart-reference-text {
+  color: #475569;
+  font-size: 22rpx;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
 }
 
 .study-chart-shell {
   margin-top: 18rpx;
+}
+
+.study-time-tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-top: 16rpx;
+  padding: 8rpx;
+  border-radius: 999rpx;
+  background: #f1f5f9;
+}
+
+.study-time-tab {
+  min-width: 96rpx;
+  padding: 12rpx 24rpx;
+  border-radius: 999rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.18s ease;
+}
+
+.study-time-tab-active {
+  background: #ffffff;
+  box-shadow: 0 8rpx 20rpx rgba(37, 99, 235, 0.12);
+}
+
+.study-time-tab-text {
+  font-size: 22rpx;
+  color: #64748b;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.study-time-tab-text-active {
+  color: #2563eb;
 }
 
 .study-chart-shell-empty {
@@ -609,7 +736,7 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 18rpx;
+  gap: 0;
   z-index: 1;
 }
 

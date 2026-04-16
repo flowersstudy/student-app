@@ -1,7 +1,19 @@
 {
   "libVersion": "2.27.3",
   "projectname": "student-app",
-  "condition": {},
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "pkg-diagnose/pages/diagnose/diagnose",
+          "pathName": "pkg-diagnose/pages/diagnose/diagnose",
+          "query": "",
+          "scene": null,
+          "launchMode": "default"
+        }
+      ]
+    }
+  },
   "setting": {
     "urlCheck": false,
     "coverView": true,

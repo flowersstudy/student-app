@@ -1,4 +1,4 @@
-const { uiIcons } = require('./ui-icons')
+﻿const { uiIcons } = require('./ui-icons')
 
 const pageConfigs = {
   activity: {

@@ -12,12 +12,12 @@ function appendQuery(baseUrl = '', query = {}) {
 
 function buildStageUrl(stepKey = '', pointId = 0, pointName = '') {
   const pageMap = {
-    diagnose: '/pages/path-diagnose/path-diagnose',
-    theory: '/pages/path-theory/path-theory',
-    training: '/pages/path-training/path-training',
-    exam: '/pages/path-exam/path-exam',
-    drill: '/pages/path-drill/path-drill',
-    report: '/pages/path-report/path-report',
+    diagnose: '/pkg-diagnose/pages/path-diagnose/path-diagnose',
+    theory: '/pkg-diagnose/pages/path-theory/path-theory',
+    training: '/pkg-diagnose/pages/path-training/path-training',
+    exam: '/pkg-diagnose/pages/path-exam/path-exam',
+    drill: '/pkg-diagnose/pages/path-drill/path-drill',
+    report: '/pkg-diagnose/pages/path-report/path-report',
   }
 
   const baseUrl = pageMap[stepKey] || ''

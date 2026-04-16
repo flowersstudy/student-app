@@ -1,7 +1,80 @@
 {
   "description": "项目配置文件",
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      {
+        "type": "folder",
+        "value": ".git"
+      },
+      {
+        "type": "folder",
+        "value": ".vscode"
+      },
+      {
+        "type": "folder",
+        "value": "pages/share-detail"
+      },
+      {
+        "type": "folder",
+        "value": "pages/square-activity"
+      },
+      {
+        "type": "folder",
+        "value": "pages/square-case"
+      },
+      {
+        "type": "folder",
+        "value": "pages/square-comment"
+      },
+      {
+        "type": "folder",
+        "value": "pages/square-drill"
+      },
+      {
+        "type": "folder",
+        "value": "pages/square-points"
+      },
+      {
+        "type": "folder",
+        "value": "pages/square-share"
+      },
+      {
+        "type": "folder",
+        "value": "pages/square-team"
+      },
+      {
+        "type": "folder",
+        "value": "pages/study-data"
+      },
+      {
+        "type": "folder",
+        "value": "pages/study-square"
+      },
+      {
+        "type": "folder",
+        "value": "assets/study-square"
+      },
+      {
+        "type": "file",
+        "value": "utils/share-posts.js"
+      },
+      {
+        "type": "file",
+        "value": "utils/square-page-factory.js"
+      },
+      {
+        "type": "file",
+        "value": "pages/square-common.wxss"
+      },
+      {
+        "type": "file",
+        "value": "pages/square-page-template.wxml"
+      },
+      {
+        "type": "file",
+        "value": "review-page-prototype.html"
+      }
+    ],
     "include": []
   },
   "setting": {
@@ -19,7 +92,7 @@
     "autoAudits": false,
     "newFeature": false,
     "uglifyFileName": false,
-    "uploadWithSourceMap": true,
+    "uploadWithSourceMap": false,
     "useIsolateContext": true,
     "nodeModules": false,
     "enhance": true,

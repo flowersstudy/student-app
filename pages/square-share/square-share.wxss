@@ -1,4 +1,4 @@
-@import "../square-common.wxss";
+﻿@import "../square-common.wxss";
 
 .share-page {
   padding-bottom: 60rpx;

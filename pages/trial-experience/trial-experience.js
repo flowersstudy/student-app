@@ -4,28 +4,28 @@ const PATH_STEPS = [
     title: '完成刷题任务',
     desc: '先完成当期卡点对应的刷题任务，明确自己卡在哪里。',
     scheduleType: 'drill',
-    routeUrl: '/pages/practice-task/practice-task',
+    routeUrl: '/pkg-practice/pages/practice-task/practice-task',
   },
   {
     id: 'submit',
     title: '提交刷题作业',
     desc: '按要求提交当天作业，系统先做 AI 批改，老师再重点看问题。',
     scheduleType: 'hw',
-    routeUrl: '/pages/practice-submit/practice-submit',
+    routeUrl: '/pkg-practice/pages/practice-submit/practice-submit',
   },
   {
     id: 'review',
     title: '完成并反馈复盘',
     desc: '根据指导完成复盘，把“为什么错”真正说清楚、写明白。',
     scheduleType: 'video',
-    routeUrl: '/pages/practice-review/practice-review',
+    routeUrl: '/pkg-practice/pages/practice-review/practice-review',
   },
   {
     id: 'live',
     title: '直播学习',
     desc: '进入直播课，针对共性卡点集中拆解方法和提分路径。',
     scheduleType: 'class',
-    routeUrl: '/pages/practice-live/practice-live',
+    routeUrl: '/pkg-practice/pages/practice-live/practice-live',
   },
 ]
 
@@ -160,7 +160,7 @@ Page({
 
   goToPurchase() {
     wx.navigateTo({
-      url: '/pages/practice-purchase/practice-purchase',
+      url: '/pkg-practice/pages/practice-purchase/practice-purchase',
     })
   },
 

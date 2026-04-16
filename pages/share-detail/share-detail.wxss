@@ -1,4 +1,4 @@
-.share-detail-page {
+﻿.share-detail-page {
   min-height: 100vh;
   padding: 24rpx 20rpx 48rpx;
   box-sizing: border-box;

@@ -1,7 +1,8 @@
 <view class="path-page">
   <view class="path-bar-list">
     <block wx:for="{{pathNodes}}" wx:key="id">
-      <view id="path-node-{{item.pointId}}" class="path-item {{item.expanded ? 'path-item-expanded' : ''}}">
+      <view id="path-node-{{item.pointId}}" class="path-item path-item-tone-{{item.tone}} {{item.expanded ? 'path-item-expanded' : ''}}" style="{{item.themeStyle}}">
+        <view class="path-item-accent" style="background: {{item.themeColor}};"></view>
         <view class="path-bar path-bar-{{item.status}}" bindtap="handleNodeTap" data-id="{{item.id}}">
           <view class="path-bar-main">
             <text class="path-bar-title">{{item.title}}</text>
@@ -15,7 +16,7 @@
           </view>
         </view>
 
-        <view wx:if="{{item.expanded}}" class="path-expand">
+        <view wx:if="{{item.expanded}}" class="path-expand" style="{{item.themeExpandStyle}}">
           <view class="path-expand-body" style="{{item.bodyStyle}}">
             <view class="path-ip-float" style="{{item.ipStyle}}">
               <image class="path-ip-image" src="/assets/buka/buka-koi-mascot-v2.svg" mode="widthFix"></image>
@@ -25,8 +26,9 @@
               <block wx:for="{{item.steps}}" wx:key="id" wx:for-item="step">
                 <view class="duo-step" style="{{step.positionStyle}}">
                   <view class="duo-node-wrap duo-node-wrap-{{step.status}}" style="{{pathLayout.nodeWrapStyle}}" catchtap="handleStepTap" data-url="{{step.url}}">
-                    <view class="duo-node duo-node-{{step.status}}" style="{{pathLayout.nodeStyle}}">
-                      <text class="duo-node-text" style="{{pathLayout.nodeTextStyle}}">{{step.shortLabel}}</text>
+                    <view class="duo-node duo-node-{{step.status}} {{step.iconPath ? 'duo-node-has-icon' : ''}}" style="{{pathLayout.nodeStyle}}">
+                      <image wx:if="{{step.iconPath}}" class="duo-node-icon" src="{{step.iconPath}}" mode="aspectFit"></image>
+                      <text wx:else class="duo-node-text" style="{{pathLayout.nodeTextStyle}}">{{step.shortLabel}}</text>
                     </view>
                   </view>
                 </view>

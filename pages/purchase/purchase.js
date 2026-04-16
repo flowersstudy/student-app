@@ -384,7 +384,7 @@ Page({
 
       setTimeout(() => {
         wx.redirectTo({
-          url: '/pages/diagnose-detail/diagnose-detail?source=purchase',
+          url: '/pkg-diagnose/pages/diagnose-detail/diagnose-detail?source=purchase',
         })
       }, 1000)
       return
@@ -442,7 +442,7 @@ Page({
 
   goDiagnosePreview() {
     wx.navigateTo({
-      url: '/pages/diagnose-detail/diagnose-detail?source=purchase_preview',
+      url: '/pkg-diagnose/pages/diagnose-detail/diagnose-detail?source=purchase_preview',
     })
   },
 })

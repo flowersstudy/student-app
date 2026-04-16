@@ -1,4 +1,4 @@
-const { uiIcons } = require('../../utils/ui-icons')
+﻿const { uiIcons } = require('../../utils/ui-icons')
 const { sharePosts } = require('../../utils/share-posts')
 
 function formatCount(value) {

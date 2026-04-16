@@ -30,6 +30,27 @@ async function fetchStudentProfile(appInstance) {
   }, appInstance)
 }
 
+async function fetchStudentReviewOverview(appInstance) {
+  return studentRequest({
+    url: '/api/student/review-overview',
+  }, appInstance)
+}
+
+async function fetchStudentPointLearningSummary(pointName, appInstance) {
+  return studentRequest({
+    url: '/api/student/point-learning-summary',
+    data: { pointName },
+  }, appInstance)
+}
+
+async function recordStudentStudySession(data, appInstance) {
+  return studentRequest({
+    url: '/api/student/study-sessions',
+    method: 'POST',
+    data,
+  }, appInstance)
+}
+
 async function fetchStudentLeaveRecords(appInstance) {
   const result = await studentRequest({
     url: '/api/student/leave',
@@ -114,7 +135,10 @@ async function submitStudentMailbox(data, appInstance) {
 module.exports = {
   fetchStudentLeaveRecords,
   fetchStudentNotifications,
+  fetchStudentPointLearningSummary,
   fetchStudentProfile,
+  fetchStudentReviewOverview,
+  recordStudentStudySession,
   markAllStudentNotificationsRead,
   markStudentNotificationRead,
   studentRequest,

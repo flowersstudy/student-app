@@ -2,49 +2,57 @@
   "pages": [
     "pages/splash/splash",
     "pages/account-bind/account-bind",
-    "pages/diagnose-detail/diagnose-detail",
-    "pages/diagnose-path/diagnose-path",
-    "pages/path-diagnose/path-diagnose",
-    "pages/path-theory/path-theory",
-    "pages/path-training/path-training",
-    "pages/path-exam/path-exam",
-    "pages/path-drill/path-drill",
-    "pages/path-report/path-report",
     "pages/home/home",
     "pages/progress/progress",
     "pages/chat/chat",
     "pages/results/results",
-    "pages/practice-report/practice-report",
-    "pages/practice-purchase/practice-purchase",
-    "pages/practice-task/practice-task",
-    "pages/practice-submit/practice-submit",
-    "pages/practice-review/practice-review",
-    "pages/practice-live/practice-live",
     "pages/avatar-picker/avatar-picker",
-    "pages/study-square/study-square",
-    "pages/square-activity/square-activity",
-    "pages/square-team/square-team",
-    "pages/square-drill/square-drill",
-    "pages/square-comment/square-comment",
-    "pages/square-case/square-case",
-    "pages/square-points/square-points",
-    "pages/square-share/square-share",
-    "pages/share-detail/share-detail",
-    "pages/card-detail/card-detail",
-    "pages/lesson-live/lesson-live",
-    "pages/lesson-recorded/lesson-recorded",
-    "pages/lesson-correct/lesson-correct",
-    "pages/lesson-drill/lesson-drill",
     "pages/trial-experience/trial-experience",
     "pages/purchase/purchase",
     "pages/course-intro/course-intro",
     "pages/leave/leave",
-    "pages/lesson-exam/lesson-exam",
-    "pages/diagnose/diagnose",
-    "pages/diagnose-report/diagnose-report",
     "pages/notifications/notifications",
     "pages/mailbox/mailbox",
     "pages/teacher/teacher"
+  ],
+  "subPackages": [
+    {
+      "root": "pkg-diagnose/pages",
+      "pages": [
+        "diagnose/diagnose",
+        "diagnose-detail/diagnose-detail",
+        "diagnose-path/diagnose-path",
+        "diagnose-report/diagnose-report",
+        "card-detail/card-detail",
+        "path-diagnose/path-diagnose",
+        "path-theory/path-theory",
+        "path-training/path-training",
+        "path-exam/path-exam",
+        "path-drill/path-drill",
+        "path-report/path-report"
+      ]
+    },
+    {
+      "root": "pkg-practice/pages",
+      "pages": [
+        "practice-report/practice-report",
+        "practice-purchase/practice-purchase",
+        "practice-task/practice-task",
+        "practice-submit/practice-submit",
+        "practice-review/practice-review",
+        "practice-live/practice-live"
+      ]
+    },
+    {
+      "root": "pkg-lesson/pages",
+      "pages": [
+        "lesson-live/lesson-live",
+        "lesson-recorded/lesson-recorded",
+        "lesson-correct/lesson-correct",
+        "lesson-drill/lesson-drill",
+        "lesson-exam/lesson-exam"
+      ]
+    }
   ],
   "tabBar": {
     "custom": true,

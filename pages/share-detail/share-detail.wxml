@@ -1,4 +1,4 @@
-<view wx:if="{{post}}" class="share-detail-page">
+﻿<view wx:if="{{post}}" class="share-detail-page">
   <view class="detail-hero">
     <view class="detail-topline">
       <text class="detail-tag">{{post.tagText}}</text>

@@ -1,4 +1,4 @@
-<template name="squarePage">
+﻿<template name="squarePage">
   <view class="square-scene theme-{{theme}}">
     <view class="bg-orb bg-orb-a"></view>
     <view class="bg-orb bg-orb-b"></view>
