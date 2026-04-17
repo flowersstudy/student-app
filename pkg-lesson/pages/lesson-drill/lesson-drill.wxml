@@ -1,16 +1,16 @@
-﻿<view class="drill-page">
+<view class="drill-page">
 
-  <!-- 椤堕儴杩涘害 + 璁℃椂鍣?-->
+  <!-- 顶部进度 + 计时器 -->
   <view class="card">
     <view class="row-between" style="margin-bottom:24rpx;">
-      <text class="section-title" style="margin-bottom:0;">鍒烽缁冧範</text>
-      <text class="task-progress-text">{{drillDoneCount}}/{{drillQuestions.length}} 宸插畬鎴?</text>
+      <text class="section-title" style="margin-bottom:0;">刷题练习</text>
+      <text class="task-progress-text">{{drillDoneCount}}/{{drillQuestions.length}} 已完成</text>
     </view>
 
-    <!-- 鍊掕鏃舵樉绀?-->
+    <!-- 倒计时显示 -->
     <picker mode="multiSelector" range="{{timerPickerRange}}" value="{{timerPickerValue}}" bindchange="onTimerPickerConfirm">
       <view class="timer-display {{timeLow ? 'timer-display-low' : ''}} {{timeUp ? 'timer-display-up' : ''}}">
-        <text class="timer-badge">鍊掕鏃?</text>
+        <text class="timer-badge">倒计时</text>
         <text class="timer-text">{{timerDisplay}}</text>
         <view class="timer-status-row">
           <view wx:if="{{timerRunning}}" class="timer-dot-wrap">
@@ -23,134 +23,70 @@
       </view>
     </picker>
 
-    <!-- 鎸夐挳琛?-->
+    <!-- 按钮行 -->
     <view class="btn-row">
       <view class="btn-flow {{timeUp ? 'btn-flow-disabled' : ''}}" bindtap="toggleTimer">
         <view class="btn-flow-text">{{timerRunning ? '暂停' : timeUp ? '已结束' : '开始计时'}}</view>
       </view>
       <view class="btn-flow btn-flow-outline" bindtap="resetTimer">
-        <view class="btn-flow-text">閲嶇疆</view>
+        <view class="btn-flow-text">重置</view>
       </view>
     </view>
   </view>
 
-  <!-- 绗竴棰?-->
-  <view class="card">
+  <view class="card" wx:for="{{drillQuestions}}" wx:key="id" wx:for-item="question">
     <view class="row-between" style="margin-bottom:24rpx;">
-      <text class="question-title">绗竴棰橈細杩藉闀挎湡浠峰€?</text>
-      <text class="tag {{drillQuestions[0].done ? 'tag-green' : 'tag-gray'}}">
-        {{drillQuestions[0].done ? '已完成' : '待完成'}}
+      <text class="question-title">{{question.title}}</text>
+      <text class="tag {{question.done ? 'tag-green' : 'tag-gray'}}">
+        {{question.done ? '已完成' : '待完成'}}
       </text>
     </view>
-    <view class="file-card {{drillQuestions[0].preFiles[0].url ? '' : 'file-card-disabled'}}" bindtap="openFile" data-qid="{{1}}" data-filetype="pre" data-fileid="{{1}}">
-      <view class="file-icon {{drillQuestions[0].preFiles[0].url ? '' : 'file-icon-gray'}}"><text class="file-icon-text">PDF</text></view>
-      <view class="file-info"><text class="file-name {{drillQuestions[0].preFiles[0].url ? '' : 'file-name-gray'}}">绗竴棰樿拷瀵婚暱鏈熶环鍊艰涔?pdf</text></view>
-      <text wx:if="{{drillQuestions[0].preFiles[0].opened}}" class="tag tag-green">宸叉墦寮€</text>
-      <text wx:elif="{{drillQuestions[0].preFiles[0].url}}" class="file-arrow">鈥?</text>
-      <text wx:else class="tag tag-gray">鏆傛湭涓婁紶</text>
+
+    <view class="file-card {{question.preFiles[0].url ? '' : 'file-card-disabled'}}" bindtap="openFile" data-qid="{{question.id}}" data-filetype="pre" data-fileid="{{question.preFiles[0].id}}">
+      <view class="file-icon {{question.preFiles[0].url ? '' : 'file-icon-gray'}}">
+        <text class="file-icon-text">PDF</text>
+      </view>
+      <view class="file-info">
+        <text class="file-name {{question.preFiles[0].url ? '' : 'file-name-gray'}}">{{question.preFiles[0].name}}</text>
+      </view>
+      <text wx:if="{{question.preFiles[0].opened}}" class="tag tag-green">已打开</text>
+      <text wx:elif="{{question.preFiles[0].url}}" class="file-arrow">›</text>
+      <text wx:else class="tag tag-gray">暂未上传</text>
     </view>
-    <view class="file-card {{drillQuestions[0].postFiles[0].url ? '' : 'file-card-disabled'}}" bindtap="openFile" data-qid="{{1}}" data-filetype="post" data-fileid="{{2}}">
-      <view class="file-icon file-icon-green {{drillQuestions[0].postFiles[0].url ? '' : 'file-icon-gray'}}"><text class="file-icon-text">PDF</text></view>
-      <view class="file-info"><text class="file-name {{drillQuestions[0].postFiles[0].url ? '' : 'file-name-gray'}}">绗竴棰樿拷瀵婚暱鏈熶环鍊艰В鏋?pdf</text></view>
-      <text wx:if="{{drillQuestions[0].postFiles[0].opened}}" class="tag tag-green">宸叉墦寮€</text>
-      <text wx:elif="{{drillQuestions[0].postFiles[0].url}}" class="file-arrow">鈥?</text>
-      <text wx:else class="tag tag-gray">鏆傛湭涓婁紶</text>
+
+    <view class="file-card {{question.postFiles[0].url ? '' : 'file-card-disabled'}}" bindtap="openFile" data-qid="{{question.id}}" data-filetype="post" data-fileid="{{question.postFiles[0].id}}">
+      <view class="file-icon file-icon-green {{question.postFiles[0].url ? '' : 'file-icon-gray'}}">
+        <text class="file-icon-text">PDF</text>
+      </view>
+      <view class="file-info">
+        <text class="file-name {{question.postFiles[0].url ? '' : 'file-name-gray'}}">{{question.postFiles[0].name}}</text>
+      </view>
+      <text wx:if="{{question.postFiles[0].opened}}" class="tag tag-green">已打开</text>
+      <text wx:elif="{{question.postFiles[0].url}}" class="file-arrow">›</text>
+      <text wx:else class="tag tag-gray">暂未上传</text>
     </view>
-    <view class="video-banner" style="margin-top:16rpx;" bindtap="watchAnalysis" data-videoid="{{drillQuestions[0].videoId}}">
+
+    <view class="video-banner" style="margin-top:16rpx;" bindtap="watchAnalysis" data-videoid="{{question.videoId}}">
       <view class="video-play-icon">
         <image class="video-play-icon-image" src="{{uiIcons.play}}" mode="aspectFit" />
       </view>
       <view class="video-info">
-        <text class="video-title">瑙嗛瑙ｆ瀽</text>
-        <text class="video-sub">绗竴棰橈細杩藉闀挎湡浠峰€?</text>
+        <text class="video-title">视频解析</text>
+        <text class="video-sub">{{question.title}}</text>
       </view>
-      <text class="video-arrow">鈥?</text>
+      <text class="video-arrow">›</text>
     </view>
-    <button class="btn-done {{drillQuestions[0].done ? 'btn-done-active' : ''}}" bindtap="toggleDrillTask" data-id="1">
-      {{drillQuestions[0].done ? '已完成 ✓' : '标记完成'}}
+    <button class="btn-done {{question.done ? 'btn-done-active' : ''}}" bindtap="toggleDrillTask" data-id="{{question.id}}">
+      {{question.done ? '已完成 ✓' : '标记完成'}}
     </button>
   </view>
 
-  <!-- 绗簩棰?-->
+  <!-- 笔记 -->
   <view class="card">
-    <view class="row-between" style="margin-bottom:24rpx;">
-      <text class="question-title">绗簩棰橈細娴佸姩涓庢柊鐢?</text>
-      <text class="tag {{drillQuestions[1].done ? 'tag-green' : 'tag-gray'}}">
-        {{drillQuestions[1].done ? '已完成' : '待完成'}}
-      </text>
-    </view>
-    <view class="file-card {{drillQuestions[1].preFiles[0].url ? '' : 'file-card-disabled'}}" bindtap="openFile" data-qid="{{2}}" data-filetype="pre" data-fileid="{{3}}">
-      <view class="file-icon {{drillQuestions[1].preFiles[0].url ? '' : 'file-icon-gray'}}"><text class="file-icon-text">PDF</text></view>
-      <view class="file-info"><text class="file-name {{drillQuestions[1].preFiles[0].url ? '' : 'file-name-gray'}}">绗簩棰樻祦鍔ㄤ笌鏂扮敓璁蹭箟.pdf</text></view>
-      <text wx:if="{{drillQuestions[1].preFiles[0].opened}}" class="tag tag-green">宸叉墦寮€</text>
-      <text wx:elif="{{drillQuestions[1].preFiles[0].url}}" class="file-arrow">鈥?</text>
-      <text wx:else class="tag tag-gray">鏆傛湭涓婁紶</text>
-    </view>
-    <view class="file-card {{drillQuestions[1].postFiles[0].url ? '' : 'file-card-disabled'}}" bindtap="openFile" data-qid="{{2}}" data-filetype="post" data-fileid="{{4}}">
-      <view class="file-icon file-icon-green {{drillQuestions[1].postFiles[0].url ? '' : 'file-icon-gray'}}"><text class="file-icon-text">PDF</text></view>
-      <view class="file-info"><text class="file-name {{drillQuestions[1].postFiles[0].url ? '' : 'file-name-gray'}}">绗簩棰樻祦鍔ㄤ笌鏂扮敓瑙ｆ瀽.pdf</text></view>
-      <text wx:if="{{drillQuestions[1].postFiles[0].opened}}" class="tag tag-green">宸叉墦寮€</text>
-      <text wx:elif="{{drillQuestions[1].postFiles[0].url}}" class="file-arrow">鈥?</text>
-      <text wx:else class="tag tag-gray">鏆傛湭涓婁紶</text>
-    </view>
-    <view class="video-banner" style="margin-top:16rpx;" bindtap="watchAnalysis" data-videoid="{{drillQuestions[1].videoId}}">
-      <view class="video-play-icon">
-        <image class="video-play-icon-image" src="{{uiIcons.play}}" mode="aspectFit" />
-      </view>
-      <view class="video-info">
-        <text class="video-title">瑙嗛瑙ｆ瀽</text>
-        <text class="video-sub">绗簩棰橈細娴佸姩涓庢柊鐢?</text>
-      </view>
-      <text class="video-arrow">鈥?</text>
-    </view>
-    <button class="btn-done {{drillQuestions[1].done ? 'btn-done-active' : ''}}" bindtap="toggleDrillTask" data-id="2">
-      {{drillQuestions[1].done ? '已完成 ✓' : '标记完成'}}
-    </button>
-  </view>
-
-  <!-- 绗笁棰?-->
-  <view class="card">
-    <view class="row-between" style="margin-bottom:24rpx;">
-      <text class="question-title">绗笁棰橈細鎬濈淮鎾</text>
-      <text class="tag {{drillQuestions[2].done ? 'tag-green' : 'tag-gray'}}">
-        {{drillQuestions[2].done ? '已完成' : '待完成'}}
-      </text>
-    </view>
-    <view class="file-card {{drillQuestions[2].preFiles[0].url ? '' : 'file-card-disabled'}}" bindtap="openFile" data-qid="{{3}}" data-filetype="pre" data-fileid="{{5}}">
-      <view class="file-icon {{drillQuestions[2].preFiles[0].url ? '' : 'file-icon-gray'}}"><text class="file-icon-text">PDF</text></view>
-      <view class="file-info"><text class="file-name {{drillQuestions[2].preFiles[0].url ? '' : 'file-name-gray'}}">绗笁棰樻€濈淮鎾璁蹭箟.pdf</text></view>
-      <text wx:if="{{drillQuestions[2].preFiles[0].opened}}" class="tag tag-green">宸叉墦寮€</text>
-      <text wx:elif="{{drillQuestions[2].preFiles[0].url}}" class="file-arrow">鈥?</text>
-      <text wx:else class="tag tag-gray">鏆傛湭涓婁紶</text>
-    </view>
-    <view class="file-card {{drillQuestions[2].postFiles[0].url ? '' : 'file-card-disabled'}}" bindtap="openFile" data-qid="{{3}}" data-filetype="post" data-fileid="{{6}}">
-      <view class="file-icon file-icon-green {{drillQuestions[2].postFiles[0].url ? '' : 'file-icon-gray'}}"><text class="file-icon-text">PDF</text></view>
-      <view class="file-info"><text class="file-name {{drillQuestions[2].postFiles[0].url ? '' : 'file-name-gray'}}">绗笁棰樻€濈淮鎾瑙ｆ瀽.pdf</text></view>
-      <text wx:if="{{drillQuestions[2].postFiles[0].opened}}" class="tag tag-green">宸叉墦寮€</text>
-      <text wx:elif="{{drillQuestions[2].postFiles[0].url}}" class="file-arrow">鈥?</text>
-      <text wx:else class="tag tag-gray">鏆傛湭涓婁紶</text>
-    </view>
-    <view class="video-banner" style="margin-top:16rpx;" bindtap="watchAnalysis" data-videoid="{{drillQuestions[2].videoId}}">
-      <view class="video-play-icon">
-        <image class="video-play-icon-image" src="{{uiIcons.play}}" mode="aspectFit" />
-      </view>
-      <view class="video-info">
-        <text class="video-title">瑙嗛瑙ｆ瀽</text>
-        <text class="video-sub">绗笁棰橈細鎬濈淮鎾</text>
-      </view>
-      <text class="video-arrow">鈥?</text>
-    </view>
-    <button class="btn-done {{drillQuestions[2].done ? 'btn-done-active' : ''}}" bindtap="toggleDrillTask" data-id="3">
-      {{drillQuestions[2].done ? '已完成 ✓' : '标记完成'}}
-    </button>
-  </view>
-
-  <!-- 绗旇 -->
-  <view class="card">
-    <text class="section-title">瀛︿範绗旇</text>
+    <text class="section-title">学习笔记</text>
     <textarea
       class="input-area"
-      placeholder="璁板綍鏈鍒烽鐨勫績寰椼€侀敊璇偣..."
+      placeholder="记录本次刷题的心得、错误点..."
       value="{{notes}}"
       bindinput="onNotesInput"
       auto-height
@@ -162,7 +98,3 @@
 </view>
 
 <diagnose-coupon-fab auto-popup="{{true}}"></diagnose-coupon-fab>
-
-
-
-

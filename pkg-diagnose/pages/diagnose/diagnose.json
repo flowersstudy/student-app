@@ -1,6 +1,0 @@
-{
-    "navigationBarTitleText":  "诊断流程",
-    "usingComponents":  {
-                            "diagnose-coupon-fab":  "/components/diagnose-coupon-fab/index"
-                        }
-}

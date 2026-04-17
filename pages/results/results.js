@@ -2,7 +2,24 @@ const app = getApp()
 const { uiIcons } = require('../../utils/ui-icons')
 const { syncCustomTabBar } = require('../../utils/custom-tab-bar')
 const { fetchStudentReviewOverview } = require('../../utils/student-api')
-const DAY_MS = 24 * 60 * 60 * 1000
+const {
+  buildPointRateChart: createPointRateChart,
+  buildProgressChart: createProgressChart,
+  buildStudyTimeChart: createStudyTimeChart,
+  buildStudyTimeTabs: createStudyTimeTabs,
+  getStudyTimePreset: pickStudyTimePreset,
+} = require('../../features/review/charts')
+const {
+  normalizePointRateItems: mapPointRateItems,
+  normalizeProgressPayload: mapProgressPayload,
+  normalizeStudyTimeMap: mapStudyTimeMap,
+  sortStudyTimeGroups: orderStudyTimeGroups,
+} = require('../../features/review/overview')
+const {
+  buildAvatarText: createAvatarText,
+  formatExamCountdown: getExamCountdown,
+  formatRaiseTarget: getRaiseTarget,
+} = require('../../features/review/profile')
 const REVIEW_PROGRESS_PRESET = {
   entryScore: 55,
   currentScore: 65,
@@ -23,6 +40,32 @@ const STUDY_TIME_RANGE_OPTIONS = [
   { key: 'week', label: '按周' },
   { key: 'month', label: '按月' },
 ]
+const REVIEW_CHART_COPY = {
+  progress: {
+    title: '\u7533\u8bba\u7a81\u7834\u8fdb\u5ea6',
+    emptyHint: '\u8fd8\u6ca1\u89e3\u9501\u5462\uff0c\u53bb\u8bca\u65ad\u5427~',
+    entryLabel: '\u5165\u5b66\u8bca\u65ad\u5206\u6570',
+    currentLabel: '\u5f53\u524d\u8bca\u65ad\u5206\u6570',
+    targetLabel: '\u8fdb\u9762\u76ee\u6807\u5206\u6570',
+  },
+  pointRate: {
+    title: '\u7533\u8bba\u5361\u70b9\u7a81\u7834\u60c5\u51b5',
+    legendBar: '\u5f97\u5206\u7387',
+    legendLine: '\u8fdb\u9762\u76ee\u6807',
+    emptyHint: '\u8fd8\u6ca1\u89e3\u9501\u5462\uff0c\u53bb\u8bca\u65ad\u5427~',
+    partialHint: '\u672c\u6708\u5237\u9898\u4efb\u52a1\u6ca1\u6709\u5b8c\u6210\uff0c\u7edf\u8ba1\u4e0d\u5168\u54e6~~',
+  },
+  studyTime: {
+    title: '\u7533\u8bba\u5b66\u4e60\u65f6\u95f4\u7edf\u8ba1',
+    fallbackRangeLabel: '\u6309\u5468',
+    legendBar: '\u65f6\u957f',
+    legendLine: '\u8d8b\u52bf',
+    emptyHint: '\u8fd8\u6ca1\u89e3\u9501\u5462\uff0c\u53bb\u8bca\u65ad\u5427~',
+    partialHint: '\u672c\u5468/\u672c\u6708\u6ca1\u6709\u5b66\u4e60\u6570\u636e\uff0c\u8981\u52a0\u6cb9\u54e6~~',
+  },
+}
+
+const FORCE_STUDY_TIME_PREVIEW = true
 
 const REVIEW_STUDY_TIME_PRESET = {
   day: [
@@ -49,6 +92,32 @@ const REVIEW_STUDY_TIME_PRESET = {
     { key: 'month6', label: '6月', hours: 72 },
   ],
 }
+const REVIEW_STUDY_TIME_PREVIEW_DATA = {
+  day: [
+    { key: 'preview-day-1', label: 'Mon', hours: 1.2 },
+    { key: 'preview-day-2', label: 'Tue', hours: 3.8 },
+    { key: 'preview-day-3', label: 'Wed', hours: 2.1 },
+    { key: 'preview-day-4', label: 'Thu', hours: 6.4 },
+    { key: 'preview-day-5', label: 'Fri', hours: 4.2 },
+    { key: 'preview-day-6', label: 'Sat', hours: 7.1 },
+    { key: 'preview-day-7', label: 'Sun', hours: 5.6 },
+  ],
+  week: [
+    { key: 'preview-week-1', label: 'W1', hours: 18 },
+    { key: 'preview-week-2', label: 'W2', hours: 26 },
+    { key: 'preview-week-3', label: 'W3', hours: 14 },
+    { key: 'preview-week-4', label: 'W4', hours: 35 },
+  ],
+  month: [
+    { key: 'preview-month-1', label: 'Jan', hours: 36 },
+    { key: 'preview-month-2', label: 'Feb', hours: 44 },
+    { key: 'preview-month-3', label: 'Mar', hours: 52 },
+    { key: 'preview-month-4', label: 'Apr', hours: 68 },
+    { key: 'preview-month-5', label: 'May', hours: 57 },
+    { key: 'preview-month-6', label: 'Jun', hours: 74 },
+  ],
+}
+
 const REVIEW_POINT_META = {
   要点不全不准: { id: 1, shortTop: '要点不全', shortBottom: '不准' },
   游走式找点: { id: 1, shortTop: '游走式', shortBottom: '找点' },
@@ -65,383 +134,54 @@ const REVIEW_POINT_META = {
 }
 
 function buildStudyTimeTabs(currentRange = 'week') {
-  return STUDY_TIME_RANGE_OPTIONS.map((item) => ({
-    ...item,
-    active: item.key === currentRange,
-  }))
+  return createStudyTimeTabs(currentRange, STUDY_TIME_RANGE_OPTIONS)
 }
 
 function getStudyTimePreset(range = 'week') {
-  return REVIEW_STUDY_TIME_PRESET[range] || REVIEW_STUDY_TIME_PRESET.week
-}
-
-function normalizeNumber(value) {
-  const numericValue = Number(value)
-  return Number.isFinite(numericValue) ? numericValue : null
-}
-
-function clampPercent(value) {
-  const numericValue = Number(value)
-  if (!Number.isFinite(numericValue)) {
-    return 0
-  }
-
-  return Math.max(0, Math.min(100, numericValue))
-}
-
-function roundUpBy(value, step = 10) {
-  if (!Number.isFinite(value) || value <= 0) {
-    return step
-  }
-
-  return Math.ceil(value / step) * step
-}
-
-function splitPointName(pointName = '') {
-  const safeName = String(pointName || '').trim()
-  if (!safeName) {
-    return {
-      shortTop: '',
-      shortBottom: '',
-    }
-  }
-
-  if (safeName.length <= 4) {
-    return {
-      shortTop: safeName,
-      shortBottom: '',
-    }
-  }
-
-  return {
-    shortTop: safeName.slice(0, safeName.length - 2),
-    shortBottom: safeName.slice(-2),
-  }
+  return pickStudyTimePreset(range, REVIEW_STUDY_TIME_PRESET)
 }
 
 function normalizeProgressPayload(payload = {}) {
-  return {
-    entryScore: normalizeNumber(payload.entryScore),
-    currentScore: normalizeNumber(payload.currentScore),
-    targetScore: normalizeNumber(payload.targetScore),
-  }
+  return mapProgressPayload(payload)
 }
 
 function normalizePointRateItems(items = []) {
-  if (!Array.isArray(items)) {
-    return []
-  }
-
-  return items.map((item, index) => {
-    const pointName = String(item.pointName || item.name || '').trim()
-    const meta = REVIEW_POINT_META[pointName] || splitPointName(pointName)
-
-    return {
-      id: Number(item.id || meta.id || index + 1),
-      name: pointName || `卡点${index + 1}`,
-      shortTop: meta.shortTop || '',
-      shortBottom: meta.shortBottom || '',
-      currentRate: normalizeNumber(item.currentRate),
-      targetRate: normalizeNumber(item.targetRate),
-    }
-  })
+  return mapPointRateItems(items, REVIEW_POINT_META)
 }
 
 function normalizeStudyTimeMap(items = []) {
-  if (!Array.isArray(items)) {
-    return {}
-  }
-
-  return items.reduce((result, item, index) => {
-    const cycleType = String(item.cycleType || 'week').trim() || 'week'
-    if (!result[cycleType]) {
-      result[cycleType] = []
-    }
-
-    result[cycleType].push({
-      key: String(item.key || `${cycleType}${index + 1}`),
-      label: String(item.label || `第${index + 1}项`),
-      hours: normalizeNumber(item.hours),
-      sortOrder: Number(item.sortOrder || index + 1),
-    })
-
-    return result
-  }, {})
+  return mapStudyTimeMap(items)
 }
 
 function sortStudyTimeGroups(groupMap = {}) {
-  return Object.keys(groupMap).reduce((result, key) => {
-    result[key] = (groupMap[key] || [])
-      .slice()
-      .sort((a, b) => Number(a.sortOrder || 0) - Number(b.sortOrder || 0))
-      .map((item) => ({
-        key: item.key,
-        label: item.label,
-        hours: item.hours,
-      }))
-    return result
-  }, {})
-}
-
-function getSeriesX(index, count) {
-  if (count <= 1) return 50
-
-  return ((index + 0.5) / count) * 100
-}
-
-function getProgressNodePosition(score, minScore, maxScore, fallbackPosition = 50) {
-  const numericScore = normalizeNumber(score)
-  if (numericScore === null) {
-    return fallbackPosition
-  }
-
-  const safeMin = Number.isFinite(minScore) ? minScore : numericScore
-  const safeMax = Number.isFinite(maxScore) ? maxScore : numericScore
-  const span = safeMax - safeMin
-  if (span <= 0) {
-    return fallbackPosition
-  }
-
-  const clampedScore = Math.max(safeMin, Math.min(safeMax, numericScore))
-  const ratio = (clampedScore - safeMin) / span
-  const edgePadding = 6
-
-  return edgePadding + ratio * (100 - edgePadding * 2)
-}
-
-function buildLineSvg(series = [], { strokeColor = '#4b5563' } = {}) {
-  const validSeries = series.filter((item) => item && item.value !== null)
-  if (validSeries.length < 2) {
-    return ''
-  }
-
-  const polylinePoints = validSeries
-    .map((item) => `${item.x.toFixed(2)},${(100 - item.percent).toFixed(2)}`)
-    .join(' ')
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><polyline points="${polylinePoints}" fill="none" stroke="${strokeColor}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.82"/></svg>`
-
-  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`
-}
-
-function buildLinePoints(series = []) {
-  return series
-    .filter((item) => item && item.value !== null)
-    .map((item, index) => ({
-      key: item.key || `line-point-${index}`,
-      style: `left:${item.x.toFixed(2)}%; bottom:${item.percent.toFixed(2)}%;`,
-    }))
+  return orderStudyTimeGroups(groupMap)
 }
 
 function buildProgressChart(progressData = {}) {
-  const entryScore = normalizeNumber(progressData.entryScore)
-  const currentScore = normalizeNumber(progressData.currentScore)
-  const targetScore = normalizeNumber(progressData.targetScore)
-  const isEmpty = entryScore === null && currentScore === null && targetScore === null
-  const fallbackScores = [entryScore, currentScore, targetScore].filter((item) => item !== null)
-  const axisMin = entryScore !== null
-    ? entryScore
-    : fallbackScores.length
-      ? Math.min(...fallbackScores)
-      : null
-  const axisMax = targetScore !== null
-    ? targetScore
-    : fallbackScores.length
-      ? Math.max(...fallbackScores)
-      : null
-  const rawNodes = [
-    { key: 'entry', label: '入学诊断分数', value: entryScore, hidden: false },
-    { key: 'current', label: '当前诊断分数', value: currentScore, hidden: !isEmpty && entryScore !== null && currentScore === null },
-    { key: 'target', label: '进面目标分数', value: targetScore, hidden: false },
-  ]
-  const visibleRawNodes = rawNodes.filter((item) => !item.hidden)
-  const fallbackPositions = visibleRawNodes.length <= 1
-    ? [50]
-    : visibleRawNodes.map((item, index) => (index / (visibleRawNodes.length - 1)) * 100)
-  const visibleNodes = visibleRawNodes.map((item, index) => {
-    const position = getProgressNodePosition(item.value, axisMin, axisMax, fallbackPositions[index])
-    const align = index === 0
-      ? 'start'
-      : index === visibleRawNodes.length - 1
-        ? 'end'
-        : 'center'
-
-    return {
-      ...item,
-      active: item.value !== null && !isEmpty,
-      valueText: item.value === null ? '--' : `${item.value}`,
-      position,
-      align,
-      style: `left:${position}%;`,
-    }
-  })
-  const activeNodes = visibleNodes.filter((item) => item.active)
-
-  return {
-    title: '我的申论突破进度',
-    hint: isEmpty ? '还没解锁呢~去诊断吧~' : '',
-    isEmpty,
-    axisMinText: axisMin === null ? '--' : `${axisMin}`,
-    axisMaxText: axisMax === null ? '--' : `${axisMax}`,
-    nodes: visibleNodes,
-    activeLineStyle: activeNodes.length >= 2
-      ? `left:${activeNodes[0].position}%; width:${activeNodes[activeNodes.length - 1].position - activeNodes[0].position}%;`
-      : '',
-  }
+  return createProgressChart(progressData, REVIEW_CHART_COPY.progress)
 }
 
 function buildPointRateChart(pointItems = []) {
-  const normalizedItems = pointItems.map((item) => {
-    const currentRate = normalizeNumber(item.currentRate)
-    const targetRate = normalizeNumber(item.targetRate)
-
-    return {
-      ...item,
-      currentRate,
-      targetRate,
-    }
-  })
-  const hasAnyData = normalizedItems.some((item) => item.currentRate !== null)
-  const hasMissingData = hasAnyData && normalizedItems.some((item) => item.currentRate === null)
-  const targetSeries = normalizedItems.map((item, index) => ({
-    key: `target-${item.id || index}`,
-    value: item.targetRate,
-    percent: clampPercent(item.targetRate),
-    x: getSeriesX(index, normalizedItems.length),
-  }))
-
-  return {
-    title: '我的申论卡点突破情况',
-    legendBar: '得分率',
-    legendLine: '进面目标',
-    hint: !hasAnyData
-      ? '还没解锁呢~去诊断吧~'
-      : hasMissingData
-        ? '本月刷题任务没有完成，统计不全呢~~'
-        : '',
-    isEmpty: !hasAnyData,
-    yAxis: [100, 80, 60, 40, 20, 0].map((value) => ({
-      value,
-      label: `${value}%`,
-      bottom: `${value}%`,
-    })),
-    lineSvg: hasAnyData
-      ? buildLineSvg(targetSeries, { strokeColor: '#4b5563' })
-      : '',
-    linePoints: hasAnyData ? buildLinePoints(targetSeries) : [],
-    items: normalizedItems.map((item, index) => ({
-      ...item,
-      indexLabel: `${index + 1}`,
-      valueText: item.currentRate === null ? '--' : `${item.currentRate}%`,
-      targetText: item.targetRate === null ? '--' : `${item.targetRate}%`,
-      barHeight: item.currentRate === null ? 12 : clampPercent(item.currentRate),
-      isMissing: item.currentRate === null,
-    })),
-  }
+  return createPointRateChart(pointItems, REVIEW_CHART_COPY.pointRate)
 }
 
 function buildStudyTimeChart(studyItems = [], range = 'week') {
-  const normalizedItems = studyItems.map((item) => ({
-    ...item,
-    hours: normalizeNumber(item.hours),
-  }))
-  const validHours = normalizedItems
-    .map((item) => item.hours)
-    .filter((item) => item !== null)
-  const hasAnyData = validHours.length > 0
-  const hasMissingData = hasAnyData && normalizedItems.some((item) => item.hours === null)
-  const maxHours = hasAnyData ? roundUpBy(Math.max(...validHours), 10) : 50
-  const hourSeries = normalizedItems.map((item, index) => ({
-    key: item.key || `hour-${index}`,
-    value: item.hours,
-    percent: item.hours === null ? 0 : clampPercent((item.hours / maxHours) * 100),
-    x: getSeriesX(index, normalizedItems.length),
-  }))
-
-  return {
-    title: '我的申论学习时间统计',
-    rangeLabel: (STUDY_TIME_RANGE_OPTIONS.find((item) => item.key === range) || {}).label || '按周',
-    legendBar: '时长',
-    legendLine: '趋势',
-    hint: !hasAnyData
-      ? '还没解锁呢~去诊断吧~'
-      : hasMissingData
-        ? '本周/月没有学习数据，要加油呢~~'
-        : '',
-    isEmpty: !hasAnyData,
-    lineSvg: hasAnyData
-      ? buildLineSvg(hourSeries, { strokeColor: '#22c55e' })
-      : '',
-    linePoints: hasAnyData ? buildLinePoints(hourSeries) : [],
-    items: normalizedItems.map((item) => ({
-      ...item,
-      valueText: item.hours === null ? '--' : `${item.hours}`,
-      barHeight: item.hours === null ? 12 : clampPercent((item.hours / maxHours) * 100),
-      isMissing: item.hours === null,
-    })),
-  }
+  return createStudyTimeChart(studyItems, range, {
+    rangeOptions: STUDY_TIME_RANGE_OPTIONS,
+    ...REVIEW_CHART_COPY.studyTime,
+  })
 }
 
 function buildAvatarText(name = '') {
-  const safeName = String(name || '').trim()
-  return safeName ? safeName.slice(0, 1) : '\u5b66'
-}
-
-function parseExamDate(rawValue = '') {
-  const text = String(rawValue || '').trim()
-  if (!text) return null
-
-  let year = 0
-  let month = 0
-  let day = 1
-
-  let matched = text.match(/^(\d{4})[-/](\d{1,2})(?:[-/](\d{1,2}))?$/)
-  if (matched) {
-    year = Number(matched[1])
-    month = Number(matched[2])
-    day = Number(matched[3] || 1)
-  } else {
-    matched = text.match(/(\d{4})\D+(\d{1,2})(?:\D+(\d{1,2}))?/)
-    if (!matched) {
-      return null
-    }
-    year = Number(matched[1])
-    month = Number(matched[2])
-    day = Number(matched[3] || 1)
-  }
-
-  if (!year || !month || month > 12 || day > 31) {
-    return null
-  }
-
-  const examDate = new Date(year, month - 1, day)
-  if (Number.isNaN(examDate.getTime())) {
-    return null
-  }
-
-  examDate.setHours(0, 0, 0, 0)
-  return examDate
+  return createAvatarText(name)
 }
 
 function formatExamCountdown(rawValue = '') {
-  const examDate = parseExamDate(rawValue)
-  if (!examDate) return '\u5f85\u8bbe\u7f6e'
-
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-
-  const diffDays = Math.ceil((examDate.getTime() - today.getTime()) / DAY_MS)
-  if (diffDays < 0) return '\u5df2\u7ed3\u675f'
-  if (diffDays === 0) return '\u4eca\u5929'
-  return `${diffDays}\u5929`
+  return getExamCountdown(rawValue)
 }
 
 function formatRaiseTarget(scoreGap) {
-  const numericGap = Number(scoreGap)
-  if (!Number.isFinite(numericGap) || numericGap <= 0) {
-    return '\u5f85\u8bc4\u4f30'
-  }
-
-  return `+${numericGap}\u5206`
+  return getRaiseTarget(scoreGap)
 }
 
 Page({
@@ -594,13 +334,16 @@ Page({
 
   applyReviewOverviewFallback() {
     const studyTimeRange = this.data.studyTimeRange || 'week'
+    const studyTimeData = FORCE_STUDY_TIME_PREVIEW
+      ? REVIEW_STUDY_TIME_PREVIEW_DATA
+      : REVIEW_STUDY_TIME_PRESET
 
     this.setData({
       progressChart: buildProgressChart(REVIEW_PROGRESS_PRESET),
       pointRateChart: buildPointRateChart(REVIEW_POINT_RATE_PRESET),
-      reviewStudyTimeData: REVIEW_STUDY_TIME_PRESET,
+      reviewStudyTimeData: studyTimeData,
       studyTimeTabs: buildStudyTimeTabs(studyTimeRange),
-      studyTimeChart: buildStudyTimeChart(getStudyTimePreset(studyTimeRange), studyTimeRange),
+      studyTimeChart: buildStudyTimeChart(studyTimeData[studyTimeRange] || getStudyTimePreset(studyTimeRange), studyTimeRange),
     })
   },
 
@@ -613,10 +356,12 @@ Page({
       const progressPayload = normalizeProgressPayload(result && result.progress ? result.progress : {})
       const pointRateItems = normalizePointRateItems(result && result.pointRates ? result.pointRates : [])
       const studyTimeMap = sortStudyTimeGroups(normalizeStudyTimeMap(result && result.studyTimes ? result.studyTimes : []))
-      const mergedStudyTimeData = {
-        ...REVIEW_STUDY_TIME_PRESET,
-        ...studyTimeMap,
-      }
+      const mergedStudyTimeData = FORCE_STUDY_TIME_PREVIEW
+        ? REVIEW_STUDY_TIME_PREVIEW_DATA
+        : {
+            ...REVIEW_STUDY_TIME_PRESET,
+            ...studyTimeMap,
+          }
       const studyTimeRange = mergedStudyTimeData[this.data.studyTimeRange]
         ? this.data.studyTimeRange
         : Object.keys(mergedStudyTimeData)[0] || 'week'

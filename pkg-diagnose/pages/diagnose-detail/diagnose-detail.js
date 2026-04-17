@@ -111,6 +111,6 @@ Page({
   },
 
   goStartDiagnose() {
-    wx.navigateTo({ url: '/pkg-diagnose/pages/diagnose/diagnose' })
+    wx.navigateTo({ url: '/pkg-diagnose/pages/diagnose-report/diagnose-report' })
   }
 })

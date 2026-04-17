@@ -1,5 +1,8 @@
 const { uiIcons } = require('../../../utils/ui-icons')
 const { finishStudySession, startStudySession } = require('../../../utils/study-session')
+const { appendStudyQuery, normalizeStudyOptions } = require('../../../utils/study-route')
+
+const DEFAULT_HOMEWORK_DURATION_MIN = 40
 
 Page({
   data: {
@@ -25,7 +28,16 @@ Page({
   },
 
   onLoad(options) {
-    this.studyOptions = options || {}
+    this.studyOptions = normalizeStudyOptions(options, {
+      pointName: this.data.taskInfo.pointName,
+      durationMin: DEFAULT_HOMEWORK_DURATION_MIN,
+    })
+    this.setData({
+      taskInfo: {
+        ...this.data.taskInfo,
+        pointName: this.studyOptions.pointName,
+      },
+    })
   },
 
   onShow() {
@@ -33,6 +45,7 @@ Page({
       sessionType: 'practice',
       courseId: (page) => page.studyOptions && page.studyOptions.courseId,
       studyTaskId: (page) => (page.studyOptions && (page.studyOptions.studyTaskId || page.studyOptions.taskId)) || null,
+      pointName: (page) => page.studyOptions && page.studyOptions.pointName,
     })
   },
 
@@ -58,7 +71,7 @@ Page({
 
   goSubmit() {
     wx.navigateTo({
-      url: '/pkg-practice/pages/practice-submit/practice-submit',
+      url: appendStudyQuery('/pkg-practice/pages/practice-submit/practice-submit', this.studyOptions),
     })
   },
 })

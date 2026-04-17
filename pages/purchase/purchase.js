@@ -426,7 +426,7 @@ Page({
 
     setTimeout(() => {
       wx.redirectTo({
-        url: `/pages/progress/progress?id=${pointId}&version=${currentVersionKey}`,
+        url: `/pkg-diagnose/pages/card-detail/card-detail?id=${pointId}`,
       })
     }, 1200)
   },

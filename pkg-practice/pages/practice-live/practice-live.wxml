@@ -5,7 +5,7 @@
         <text class="hero-title">{{liveInfo.title}}</text>
         <text class="hero-subtitle">{{liveInfo.subtitle}}</text>
       </view>
-      <text class="tag tag-orange">{{liveInfo.status}}</text>
+      <text class="tag {{isReplayMode ? 'tag-blue' : 'tag-orange'}}">{{liveInfo.status}}</text>
     </view>
 
     <view class="info-row">
@@ -18,7 +18,20 @@
     </view>
   </view>
 
-  <view class="card">
+  <view wx:if="{{isReplayMode}}" class="card">
+    <text class="section-title">回放入口</text>
+    <view class="link-card replay-card">
+      <text class="link-label">上次直播回放链接</text>
+      <text class="link-value">{{liveInfo.replayLink}}</text>
+      <view class="btn-row">
+        <button class="btn-flow" bindtap="copyReplayLink">复制回放链接</button>
+        <button class="btn-flow btn-flow-outline" bindtap="copyMeetingNo">复制会议号</button>
+      </view>
+      <text class="meeting-meta">会议号：{{liveInfo.meetingNo}} ｜ 密码：{{liveInfo.meetingPassword}}</text>
+    </view>
+  </view>
+
+  <view wx:else class="card">
     <text class="section-title">直播入口</text>
     <view class="link-card">
       <text class="link-label">老师上传的直播链接</text>
@@ -27,23 +40,23 @@
         <button class="btn-flow" bindtap="copyLink">复制链接</button>
         <button class="btn-flow btn-flow-outline" bindtap="copyMeetingNo">复制会议号</button>
       </view>
-      <text class="meeting-meta">会议号：{{liveInfo.meetingNo}}</text>
+      <text class="meeting-meta">会议号：{{liveInfo.meetingNo}} ｜ 密码：{{liveInfo.meetingPassword}}</text>
     </view>
   </view>
 
   <view class="card">
-    <text class="section-title">上课提醒</text>
-    <view wx:for="{{reminders}}" wx:key="*this" class="bullet-row">
+    <text class="section-title">{{isReplayMode ? '回放提醒' : '上课提醒'}}</text>
+    <view wx:for="{{isReplayMode ? replayReminders : reminders}}" wx:key="*this" class="bullet-row">
       <view class="bullet-dot"></view>
       <text class="bullet-text">{{item}}</text>
     </view>
   </view>
 
   <view class="card">
-    <text class="section-title">课前问题记录</text>
+    <text class="section-title">{{isReplayMode ? '回放笔记' : '课前问题记录'}}</text>
     <textarea
       class="input-area"
-      placeholder="先记下你最想问老师的问题，开播时可以直接提..."
+      placeholder="{{isReplayMode ? '记录这次回放里需要订正的点...' : '先记下你最想问老师的问题，开播时可以直接提...'}}"
       value="{{notes}}"
       bindinput="onNotesInput"
       auto-height

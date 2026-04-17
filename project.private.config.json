@@ -5,11 +5,18 @@
     "miniprogram": {
       "list": [
         {
-          "name": "pkg-diagnose/pages/diagnose/diagnose",
-          "pathName": "pkg-diagnose/pages/diagnose/diagnose",
+          "name": "pkg-diagnose/pages/diagnose-detail/diagnose-detail",
+          "pathName": "pkg-diagnose/pages/diagnose-detail/diagnose-detail",
           "query": "",
           "scene": null,
           "launchMode": "default"
+        },
+        {
+          "name": "pkg-diagnose/pages/diagnose-detail/diagnose-detail",
+          "pathName": "pkg-diagnose/pages/diagnose-detail/diagnose-detail",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         }
       ]
     }

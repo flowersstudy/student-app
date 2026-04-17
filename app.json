@@ -3,7 +3,6 @@
     "pages/splash/splash",
     "pages/account-bind/account-bind",
     "pages/home/home",
-    "pages/progress/progress",
     "pages/chat/chat",
     "pages/results/results",
     "pages/avatar-picker/avatar-picker",
@@ -19,22 +18,35 @@
     {
       "root": "pkg-diagnose/pages",
       "pages": [
-        "diagnose/diagnose",
         "diagnose-detail/diagnose-detail",
         "diagnose-path/diagnose-path",
         "diagnose-report/diagnose-report",
         "card-detail/card-detail",
-        "path-diagnose/path-diagnose",
-        "path-theory/path-theory",
-        "path-training/path-training",
-        "path-exam/path-exam",
-        "path-drill/path-drill",
+        "path-diagnose/path-diagnose"
+      ]
+    },
+    {
+      "root": "pkg-training/pages",
+      "pages": [
+        "path-training/path-training"
+      ]
+    },
+    {
+      "root": "pkg-exam/pages",
+      "pages": [
+        "path-exam/path-exam"
+      ]
+    },
+    {
+      "root": "pkg-report/pages",
+      "pages": [
         "path-report/path-report"
       ]
     },
     {
       "root": "pkg-practice/pages",
       "pages": [
+        "path-drill/path-drill",
         "practice-report/practice-report",
         "practice-purchase/practice-purchase",
         "practice-task/practice-task",
@@ -46,6 +58,7 @@
     {
       "root": "pkg-lesson/pages",
       "pages": [
+        "path-theory/path-theory",
         "lesson-live/lesson-live",
         "lesson-recorded/lesson-recorded",
         "lesson-correct/lesson-correct",
@@ -84,7 +97,7 @@
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#ffffff",
-    "navigationBarTitleText": "瀛︿範鍔╂墜",
+    "navigationBarTitleText": "步知1v1",
     "navigationBarTextStyle": "black"
   },
   "usingComponents": {

@@ -76,17 +76,17 @@ const rawDiagnoseSteps = [
   {
     title: '填写信息',
     note: '补充基础信息与学习背景',
-    url: '/pkg-diagnose/pages/diagnose/diagnose',
+    url: '/pkg-diagnose/pages/diagnose-detail/diagnose-detail',
   },
   {
     title: '下载试卷',
     note: '领取诊断题并开始作答',
-    url: '/pkg-diagnose/pages/diagnose/diagnose',
+    url: '/pkg-diagnose/pages/diagnose-detail/diagnose-detail',
   },
   {
     title: '上传答案',
     note: '提交答案进入人工批改',
-    url: '/pkg-diagnose/pages/diagnose/diagnose',
+    url: '/pkg-diagnose/pages/diagnose-detail/diagnose-detail',
   },
   {
     title: '1v1诊断课',

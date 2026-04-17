@@ -149,19 +149,6 @@ Page({
     this.setData({ submitting: true })
 
     try {
-      if (this.data.mode === 'launch') {
-        saveLocalStudentPhone(phone, getApp())
-        wx.showToast({
-          title: '登录成功',
-          icon: 'success',
-        })
-
-        setTimeout(() => {
-          navigateByUrl(this.data.redirect)
-        }, 400)
-        return
-      }
-
       await bindStudentPhone(phone, getApp())
       wx.showToast({
         title: this.data.mode === 'launch' ? '登录成功' : '绑定成功',

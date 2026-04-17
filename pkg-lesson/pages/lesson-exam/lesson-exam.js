@@ -27,11 +27,11 @@ Page({
     examInfo: {
       title: '科技是这个时代最大的公益',
       type: '大作文',
-      timeLimit: '60分钟'
+      timeLimit: '60分钟',
     },
     files: [
-      { id: 1, name: '鑰冭瘯棰樼洰绉戞妧鏄繖涓椂浠ｆ渶澶х殑鍏泭璁蹭箟.pdf', type: '棰樼洰璁蹭箟', url: '', opened: false },
-      { id: 2, name: '鑰冭瘯棰樼洰绉戞妧鏄繖涓椂浠ｆ渶澶х殑鍏泭瑙ｆ瀽.pdf', type: '瑙ｆ瀽', url: '', opened: false }
+      { id: 1, name: '考试题目-科技是这个时代最大的公益.pdf', type: '题目讲义', url: '', opened: false },
+      { id: 2, name: '考试题目-科技是这个时代最大的公益解析.pdf', type: '解析', url: '', opened: false },
     ],
     videoId: '1e6eaa05af8d3a8b562c73baf58c0ec3_1',
     timerDisplay: '60:00',
@@ -44,7 +44,7 @@ Page({
     timerPickerHours: TIMER_PICKER_HOURS,
     timerPickerMinutes: TIMER_PICKER_MINUTES,
     timerPickerRange: [TIMER_PICKER_HOURS, TIMER_PICKER_MINUTES],
-    timerPickerValue: minutesToPickerValue(60)
+    timerPickerValue: minutesToPickerValue(60),
   },
 
   remainSeconds: 0,
@@ -126,13 +126,13 @@ Page({
             timerDisplay: '00:00',
             timerRunning: false,
             timeLow: false,
-            timeUp: true
+            timeUp: true,
           })
           wx.showModal({
             title: '时间到！',
             content: '考试时间已结束，请立即提交答案。',
             showCancel: false,
-            confirmText: '去提交'
+            confirmText: '去提交',
           })
           return
         }
@@ -140,7 +140,7 @@ Page({
         const timeLow = this.remainSeconds <= 300
         this.setData({
           timerDisplay: this.fmt(this.remainSeconds),
-          timeLow
+          timeLow,
         })
       }, 1000)
 
@@ -163,9 +163,9 @@ Page({
           timerDisplay: this.fmt(this.totalSeconds),
           timerRunning: false,
           timeLow: false,
-          timeUp: false
+          timeUp: false,
         })
-      }
+      },
     })
   },
 
@@ -195,13 +195,13 @@ Page({
 
   openFile(e) {
     const id = e.currentTarget.dataset.id
-    const file = this.data.files.find(f => f.id === id)
+    const file = this.data.files.find((item) => item.id === id)
     if (!file || !file.url) return
-    const files = this.data.files.map(f => f.id === id ? { ...f, opened: true } : f)
+    const files = this.data.files.map((item) => item.id === id ? { ...item, opened: true } : item)
     this.setData({ files })
     wx.downloadFile({
       url: file.url,
-      success: (res) => wx.openDocument({ filePath: res.tempFilePath, showMenu: true })
+      success: (res) => wx.openDocument({ filePath: res.tempFilePath, showMenu: true }),
     })
   },
 
@@ -230,7 +230,7 @@ Page({
           })
           wx.hideLoading()
           this.setData({ submitted: true })
-          wx.showToast({ title: '宸蹭繚瀛樺埌鏈湴婕旂ず', icon: 'success' })
+          wx.showToast({ title: '答案已提交，等待老师批改', icon: 'success' })
           return
         }
 
@@ -238,7 +238,7 @@ Page({
           await ensureSilentLogin(app)
         } catch (error) {
           wx.hideLoading()
-          wx.showToast({ title: '鐧诲綍鐘舵€佸凡澶辨晥锛岃绋嶅悗閲嶈瘯', icon: 'none' })
+          wx.showToast({ title: '登录状态已失效，请稍后重试', icon: 'none' })
           return
         }
 
@@ -250,9 +250,9 @@ Page({
           formData: {
             studentName: profile.name,
             studentId: profile.name,
-            reviewType: '鍗＄偣鑰冭瘯',
+            reviewType: '阶段测试',
             checkpoint: examInfo.title,
-            deadline: '浠婃棩 23:59',
+            deadline: '今日 23:59',
             priority: submittedNormal ? 'normal' : 'urgent',
             submittedNormal: String(submittedNormal),
           },
@@ -263,12 +263,12 @@ Page({
               this.setData({ submitted: true })
               wx.showToast({ title: '答案已提交', icon: 'success' })
             } else {
-              wx.showToast({ title: result.error || '涓婁紶澶辫触', icon: 'none' })
+              wx.showToast({ title: result.error || '上传失败', icon: 'none' })
             }
           },
           fail: () => {
             wx.hideLoading()
-            wx.showToast({ title: '缃戠粶閿欒锛岃閲嶈瘯', icon: 'none' })
+            wx.showToast({ title: '网络错误，请重试', icon: 'none' })
           },
         })
       },
@@ -285,5 +285,5 @@ Page({
 
   onNotesInput(e) {
     this.setData({ notes: e.detail.value })
-  }
+  },
 })

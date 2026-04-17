@@ -3,8 +3,12 @@ const { syncCustomTabBar } = require('../../utils/custom-tab-bar')
 const { buildStageUrl } = require('../../utils/path-stage-routes')
 
 const CURRENT_LEARNING_TASK_KEY = 'current_learning_task'
-const STAGE_KEYS = ['diagnose', 'theory', 'training', 'exam', 'drill', 'report']
+const STAGE_KEYS = ['diagnose', 'theory', 'training', 'exam', 'report', 'drill']
 const PATH_MAP_HEIGHT_RPX = 900
+const PATH_MAP_TOP_PADDING_RPX = 20
+const PATH_MAP_BOTTOM_PADDING_RPX = 16
+const PATH_MAP_VISUAL_NODE_SIZE_RPX = 176
+const PATH_STEP_VERTICAL_EXTRA_GAP_RPX = 24
 const PATH_VERTICAL_GAP_RPX = 92
 const PATH_NODE_SIZE_RPX = 108
 const PATH_LAYOUT_PRESETS = {
@@ -124,83 +128,91 @@ const POINT_NAME_BY_ID = {
 const POINT_THEME_BY_ID = {
   1: {
     tone: 'red',
-    color: '#EA5A52',
-    cardBg: '#FFF4F3',
-    expandBg: '#FFF9F8',
-    border: '#FFD5D4',
-    divider: '#FFD9D8',
-    shadow: 'rgba(255, 94, 91, 0.12)',
-    shadowStrong: 'rgba(255, 94, 91, 0.16)',
+    color: '#FE4A4C',
+    deepColor: '#CD3B3F',
+    cardBg: '#FFF4F4',
+    expandBg: '#FFF9F9',
+    border: '#FFD5D6',
+    divider: '#FFDCDD',
+    shadow: 'rgba(254, 74, 76, 0.12)',
+    shadowStrong: 'rgba(254, 74, 76, 0.16)',
   },
   2: {
     tone: 'red',
-    color: '#EA5A52',
-    cardBg: '#FFF4F3',
-    expandBg: '#FFF9F8',
-    border: '#FFD5D4',
-    divider: '#FFD9D8',
-    shadow: 'rgba(255, 94, 91, 0.12)',
-    shadowStrong: 'rgba(255, 94, 91, 0.16)',
+    color: '#FE4A4C',
+    deepColor: '#CD3B3F',
+    cardBg: '#FFF4F4',
+    expandBg: '#FFF9F9',
+    border: '#FFD5D6',
+    divider: '#FFDCDD',
+    shadow: 'rgba(254, 74, 76, 0.12)',
+    shadowStrong: 'rgba(254, 74, 76, 0.16)',
   },
   3: {
-    tone: 'yellow',
-    color: '#FFC94A',
-    cardBg: '#FFF9EC',
-    expandBg: '#FFFDF6',
-    border: '#FFE4A0',
-    divider: '#FFE9B8',
-    shadow: 'rgba(255, 201, 74, 0.14)',
-    shadowStrong: 'rgba(255, 201, 74, 0.18)',
+    tone: 'blue',
+    color: '#1FB0F5',
+    deepColor: '#0D8EC9',
+    cardBg: '#F1FAFF',
+    expandBg: '#F7FCFF',
+    border: '#CFEFFF',
+    divider: '#DCF3FF',
+    shadow: 'rgba(31, 176, 245, 0.14)',
+    shadowStrong: 'rgba(31, 176, 245, 0.18)',
   },
   4: {
-    tone: 'yellow',
-    color: '#FFC94A',
-    cardBg: '#FFF9EC',
-    expandBg: '#FFFDF6',
-    border: '#FFE4A0',
-    divider: '#FFE9B8',
-    shadow: 'rgba(255, 201, 74, 0.14)',
-    shadowStrong: 'rgba(255, 201, 74, 0.18)',
+    tone: 'blue',
+    color: '#1FB0F5',
+    deepColor: '#0D8EC9',
+    cardBg: '#F1FAFF',
+    expandBg: '#F7FCFF',
+    border: '#CFEFFF',
+    divider: '#DCF3FF',
+    shadow: 'rgba(31, 176, 245, 0.14)',
+    shadowStrong: 'rgba(31, 176, 245, 0.18)',
   },
   5: {
-    tone: 'yellow',
-    color: '#FFC94A',
-    cardBg: '#FFF9EC',
-    expandBg: '#FFFDF6',
-    border: '#FFE4A0',
-    divider: '#FFE9B8',
-    shadow: 'rgba(255, 201, 74, 0.14)',
-    shadowStrong: 'rgba(255, 201, 74, 0.18)',
+    tone: 'blue',
+    color: '#1FB0F5',
+    deepColor: '#0D8EC9',
+    cardBg: '#F1FAFF',
+    expandBg: '#F7FCFF',
+    border: '#CFEFFF',
+    divider: '#DCF3FF',
+    shadow: 'rgba(31, 176, 245, 0.14)',
+    shadowStrong: 'rgba(31, 176, 245, 0.18)',
   },
   6: {
-    tone: 'blue',
-    color: '#46AFFF',
-    cardBg: '#F2F8FF',
-    expandBg: '#F8FBFF',
-    border: '#CBE7FF',
-    divider: '#D9EEFF',
-    shadow: 'rgba(70, 175, 255, 0.14)',
-    shadowStrong: 'rgba(70, 175, 255, 0.18)',
+    tone: 'yellow',
+    color: '#FF9601',
+    deepColor: '#CA790B',
+    cardBg: '#FFF7EB',
+    expandBg: '#FFFCF5',
+    border: '#FFE0B3',
+    divider: '#FFE8C8',
+    shadow: 'rgba(255, 150, 1, 0.14)',
+    shadowStrong: 'rgba(255, 150, 1, 0.18)',
   },
   7: {
-    tone: 'blue',
-    color: '#46AFFF',
-    cardBg: '#F2F8FF',
-    expandBg: '#F8FBFF',
-    border: '#CBE7FF',
-    divider: '#D9EEFF',
-    shadow: 'rgba(70, 175, 255, 0.14)',
-    shadowStrong: 'rgba(70, 175, 255, 0.18)',
+    tone: 'yellow',
+    color: '#FF9601',
+    deepColor: '#CA790B',
+    cardBg: '#FFF7EB',
+    expandBg: '#FFFCF5',
+    border: '#FFE0B3',
+    divider: '#FFE8C8',
+    shadow: 'rgba(255, 150, 1, 0.14)',
+    shadowStrong: 'rgba(255, 150, 1, 0.18)',
   },
   8: {
-    tone: 'blue',
-    color: '#46AFFF',
-    cardBg: '#F2F8FF',
-    expandBg: '#F8FBFF',
-    border: '#CBE7FF',
-    divider: '#D9EEFF',
-    shadow: 'rgba(70, 175, 255, 0.14)',
-    shadowStrong: 'rgba(70, 175, 255, 0.18)',
+    tone: 'yellow',
+    color: '#FF9601',
+    deepColor: '#CA790B',
+    cardBg: '#FFF7EB',
+    expandBg: '#FFFCF5',
+    border: '#FFE0B3',
+    divider: '#FFE8C8',
+    shadow: 'rgba(255, 150, 1, 0.14)',
+    shadowStrong: 'rgba(255, 150, 1, 0.18)',
   },
 }
 
@@ -249,18 +261,18 @@ const MAIN_PATH_STEPS = [
   },
   {
     key: 'exam',
-    title: '考试',
+    title: '测试',
     note: '倒计时 / 题目 / 卡点报告 / 课堂反馈',
-  },
-  {
-    key: 'drill',
-    title: '刷题',
-    note: '倒计时 / 题目 / 课堂反馈',
   },
   {
     key: 'report',
     title: '报告',
-    note: '查看刷题报告',
+    note: '阶段提醒 / 鼓励总结',
+  },
+  {
+    key: 'drill',
+    title: '刷题',
+    note: '倒计时 / 刷题题目 / 作业提交 / 课堂反馈',
   },
 ]
 
@@ -366,6 +378,7 @@ function getPointTheme(pointId = 0) {
   return POINT_THEME_BY_ID[pointId] || {
     tone: 'blue',
     color: '#8A95A6',
+    deepColor: '#677386',
     cardBg: '#F7F8FA',
     expandBg: '#FBFCFE',
     border: '#E6EBF2',
@@ -381,7 +394,23 @@ function getStageIconPath(stepKey = '', tone = 'blue') {
   if (safeStepKey === 'diagnose') {
     return `/assets/path/stage-${safeStepKey}-${safeTone}-white-top.png`
   }
+
   return `/assets/path/stage-${safeStepKey}-${safeTone}.png`
+}
+
+function getStageIconPathByStatus(stepKey = '', tone = 'blue', status = 'locked') {
+  const safeStepKey = STAGE_KEYS.includes(stepKey) ? stepKey : 'diagnose'
+  const safeTone = ['red', 'yellow', 'blue'].includes(tone) ? tone : 'blue'
+
+  if (status === 'locked') {
+    return `/assets/path/v2/stage-${safeStepKey}-locked.png`
+  }
+
+  if (status === 'done') {
+    return `/assets/path/v2/stage-${safeStepKey}-${safeTone}-done.png`
+  }
+
+  return `/assets/path/v2/stage-${safeStepKey}-${safeTone}-current.png`
 }
 
 function buildPointThemeStyle(pointId = 0) {
@@ -391,6 +420,7 @@ function buildPointThemeStyle(pointId = 0) {
     `border-color:${theme.border}`,
     `box-shadow:0 10rpx 24rpx ${theme.shadow}`,
     `--point-accent:${theme.color}`,
+    `--point-deep:${theme.deepColor || theme.color}`,
     `--point-card-bg:${theme.cardBg}`,
     `--point-expand-bg:${theme.expandBg}`,
     `--point-border:${theme.border}`,
@@ -455,13 +485,19 @@ function buildDirectionalChromeStyles(layoutPreset = PATH_LAYOUT_PRESETS.standar
   }
 }
 
+function resolveMapHeight(stepCount = 0, layoutPreset = PATH_LAYOUT_PRESETS.standard) {
+  const pointLayouts = layoutPreset.pointLayoutsByCount[stepCount] || layoutPreset.pointLayoutsByCount[7] || []
+  const lastPoint = pointLayouts.length ? pointLayouts[pointLayouts.length - 1] : { y: 0 }
+  const visualNodeSize = Math.max(layoutPreset.nodeSize, PATH_MAP_VISUAL_NODE_SIZE_RPX)
+  const extraGap = Math.max(0, pointLayouts.length - 1) * PATH_STEP_VERTICAL_EXTRA_GAP_RPX
+
+  return lastPoint.y + extraGap + visualNodeSize + PATH_MAP_TOP_PADDING_RPX + PATH_MAP_BOTTOM_PADDING_RPX
+}
+
 function decoratePathSteps(rawSteps = [], sectionStatus = 'locked', currentStepIndex = 0, layoutPreset = PATH_LAYOUT_PRESETS.standard, curveDirection = 1) {
   const total = rawSteps.length
   const pointLayouts = layoutPreset.pointLayoutsByCount[total] || layoutPreset.pointLayoutsByCount[7] || []
-  const contentHeight = pointLayouts.length
-    ? pointLayouts[pointLayouts.length - 1].y + layoutPreset.nodeSize
-    : layoutPreset.nodeSize
-  const topOffset = Math.max(0, Math.floor((layoutPreset.mapHeight - contentHeight) / 2))
+  const topOffset = PATH_MAP_TOP_PADDING_RPX
 
   return rawSteps.map((step, index) => {
     let status = 'locked'
@@ -478,7 +514,7 @@ function decoratePathSteps(rawSteps = [], sectionStatus = 'locked', currentStepI
 
     const point = pointLayouts[index] || { x: 0, y: index * PATH_VERTICAL_GAP_RPX }
     const offsetRpx = point.x * curveDirection
-    const topRpx = topOffset + point.y
+    const topRpx = topOffset + point.y + index * PATH_STEP_VERTICAL_EXTRA_GAP_RPX
     let layout = 'center'
 
     if (offsetRpx > 8) {
@@ -500,18 +536,32 @@ function decoratePathSteps(rawSteps = [], sectionStatus = 'locked', currentStepI
   })
 }
 
-function buildPointPath(pointId, sectionStatus = 'locked', currentProgress = 0, curveDirection = 1) {
-  const rawSteps = buildMainPathSteps(pointId)
+function getPreviewCurrentStepIndex(pointId = 0, steps = []) {
+  const list = Array.isArray(steps) ? steps : []
+  if (!list.length) return 0
 
-  const currentStepIndex = sectionStatus === 'current'
-    ? resolveCurrentStepIndex(currentProgress, rawSteps.length)
-    : 0
+  const candidateIndexes = list.reduce((acc, step, index) => {
+    if (step && step.key !== 'diagnose' && step.key !== 'report') {
+      acc.push(index)
+    }
+    return acc
+  }, [])
+
+  if (!candidateIndexes.length) {
+    return 0
+  }
+
+  return candidateIndexes[(pointId * 7 + 3) % candidateIndexes.length]
+}
+
+function buildPointPath(pointId, currentStepIndex = 0, curveDirection = 1) {
+  const rawSteps = buildMainPathSteps(pointId)
 
   return {
     pathTitle: `${POINT_NAME_BY_ID[pointId]}学习路径`,
-    pathSummary: '诊断 → 理论 → 实训 → 考试 → 刷题 → 报告',
-    mapHeight: `${PATH_MAP_HEIGHT_RPX}rpx`,
-    steps: decoratePathSteps(rawSteps, sectionStatus, currentStepIndex, PATH_LAYOUT_PRESETS.standard, curveDirection),
+    pathSummary: '诊断 → 理论 → 实训 → 测试 → 报告 → 刷题',
+    mapHeight: `${resolveMapHeight(rawSteps.length, PATH_LAYOUT_PRESETS.standard) || PATH_MAP_HEIGHT_RPX}rpx`,
+    steps: decoratePathSteps(rawSteps, 'current', currentStepIndex, PATH_LAYOUT_PRESETS.standard, curveDirection),
   }
 }
 
@@ -527,33 +577,63 @@ function applyLayoutPresetToPath(path = {}, layoutPreset = PATH_LAYOUT_PRESETS.s
 
   return {
     ...path,
-    mapHeight: `${layoutPreset.mapHeight}rpx`,
+    mapHeight: `${resolveMapHeight(rawSteps.length, layoutPreset)}rpx`,
     steps: decoratePathSteps(rawSteps, sectionStatus, currentStepIndex, layoutPreset, curveDirection),
   }
 }
 
+function buildStatusStageText(steps = [], currentStepIndex = 0) {
+  const list = Array.isArray(steps) ? steps : []
+  const currentStep = list[currentStepIndex]
+
+  if (currentStep && currentStep.title) {
+    return `当前在学：${currentStep.title}`
+  }
+
+  return ''
+}
+
+function buildPreviewTaskText(pointId = 0, steps = [], currentStepIndex = 0) {
+  const list = Array.isArray(steps) ? steps : []
+  const currentStep = list[currentStepIndex]
+
+  if (!currentStep) {
+    return ''
+  }
+
+  const tasks = String(currentStep.note || '')
+    .split('/')
+    .map((item) => item.trim())
+    .filter(Boolean)
+
+  if (!tasks.length) {
+    return buildStatusStageText(steps, currentStepIndex)
+  }
+
+  const taskIndex = (pointId * 5 + currentStepIndex) % tasks.length
+  return `当前在学：${tasks[taskIndex]}`
+}
+
 function createPathNodes(currentTask = DEFAULT_CURRENT_TASK, expandedMap = {}, layoutPreset = PATH_LAYOUT_PRESETS.standard) {
   const currentPointId = Number(currentTask.pointId) || DEFAULT_CURRENT_TASK.pointId
-  const currentProgress = Number(currentTask.progress || 0)
 
   return [
     ...POINT_ORDER.map((pointId) => {
       const status = getPointStatus(pointId, currentPointId)
       const curveDirection = getPointCurveDirection(pointId)
       const theme = getPointTheme(pointId)
-      const path = buildPointPath(pointId, status, pointId === currentPointId ? currentProgress : 0, curveDirection)
-      const currentStepIndex = status === 'current'
-        ? resolveCurrentStepIndex(pointId === currentPointId ? currentProgress : 0, (path.steps || []).length)
-        : 0
-      const section = applyLayoutPresetToPath(path, layoutPreset, status, currentStepIndex, curveDirection)
+      const currentStepIndex = getPreviewCurrentStepIndex(pointId, MAIN_PATH_STEPS)
+      const path = buildPointPath(pointId, currentStepIndex, curveDirection)
+      const section = applyLayoutPresetToPath(path, layoutPreset, 'current', currentStepIndex, curveDirection)
       const themedSteps = (section.steps || []).map((step) => ({
         ...step,
-        iconPath: getStageIconPath(step.key, theme.tone),
+        iconPath: getStageIconPathByStatus(step.key, theme.tone, step.status),
+        currentRingPath: step.status === 'current'
+          ? '/assets/path/v2/stage-current-gray-ring.png'
+          : '',
       }))
       const chromeStyles = buildDirectionalChromeStyles(layoutPreset, curveDirection)
-      const currentTaskText = status === 'current' && section.steps[currentStepIndex]
-        ? section.steps[currentStepIndex].title
-        : ''
+      const currentTaskText = buildPreviewTaskText(pointId, section.steps, currentStepIndex)
 
       return {
         id: `point-${pointId}`,

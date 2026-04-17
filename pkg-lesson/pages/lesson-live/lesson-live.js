@@ -1,5 +1,6 @@
 const { uiIcons } = require('../../../utils/ui-icons')
 const { finishStudySession, startStudySession } = require('../../../utils/study-session')
+const { normalizeStudyOptions } = require('../../../utils/study-route')
 
 Page({
   data: {
@@ -16,13 +17,16 @@ Page({
     hasReport: true
   },
   onLoad(options) {
-    this.studyOptions = options || {}
+    this.studyOptions = normalizeStudyOptions(options, {
+      pointName: this.data.lessonInfo.subject,
+    })
   },
   onShow() {
     startStudySession(this, {
       sessionType: 'lesson',
       courseId: (page) => page.studyOptions && page.studyOptions.courseId,
       studyTaskId: (page) => (page.studyOptions && (page.studyOptions.studyTaskId || page.studyOptions.taskId)) || null,
+      pointName: (page) => page.studyOptions && page.studyOptions.pointName,
     })
   },
   onHide() {

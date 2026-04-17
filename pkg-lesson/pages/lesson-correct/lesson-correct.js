@@ -2,6 +2,7 @@ const { uiIcons } = require('../../../utils/ui-icons')
 const { completeLocalUpload, isOfflineMode } = require('../../../utils/offline')
 const { ensureSilentLogin, getStudentAuthHeader } = require('../../../utils/auth')
 const { finishStudySession, startStudySession } = require('../../../utils/study-session')
+const { normalizeStudyOptions } = require('../../../utils/study-route')
 
 Page({
   data: {
@@ -23,13 +24,16 @@ Page({
     feedback: ''
   },
   onLoad(options) {
-    this.studyOptions = options || {}
+    this.studyOptions = normalizeStudyOptions(options, {
+      pointName: this.data.lessonInfo.subject,
+    })
   },
   onShow() {
     startStudySession(this, {
       sessionType: 'review',
       courseId: (page) => page.studyOptions && page.studyOptions.courseId,
       studyTaskId: (page) => (page.studyOptions && (page.studyOptions.studyTaskId || page.studyOptions.taskId)) || null,
+      pointName: (page) => page.studyOptions && page.studyOptions.pointName,
     })
   },
   onHide() {

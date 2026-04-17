@@ -1,5 +1,5 @@
-const { buildStageUrl } = require('../../../utils/path-stage-routes')
 const { fetchStudentPointLearningSummary } = require('../../../utils/student-api')
+const { buildStageUrl } = require('../../../utils/path-stage-routes')
 
 const pointMap = {
   1: { name: '要点不全不准' },
@@ -16,47 +16,37 @@ const PATH_STAGE_TEMPLATE = [
   {
     key: 'diagnose',
     title: '诊断',
-    desc: '先确认这个卡点的核心问题、目标分差和后续突破方向。',
-    hint: '这里后续可展开诊断内容',
+    reviewItems: ['诊断试卷', '解析课回放', '1v1诊断回放', '诊断报告'],
   },
   {
     key: 'theory',
     title: '理论',
-    desc: '补齐方法理解，先知道这个卡点到底应该怎么做。',
-    hint: '这里后续可展开理论内容',
+    reviewItems: ['1v1共识回放', '1v1共识课后反馈', '课前讲义', '理论课回放', '视频讲解', '1v1纠偏回放', '1v1纠偏课后反馈'],
   },
   {
     key: 'training',
     title: '实训',
-    desc: '围绕该卡点进入针对性训练，把方法真正练熟。',
-    hint: '这里后续可展开实训内容',
+    reviewItems: ['训练题目', '已交作业', '课堂反馈'],
   },
   {
     key: 'exam',
     title: '测试',
-    desc: '通过阶段测试检查是否掌握，验证当前训练效果。',
-    hint: '这里后续可展开测试内容',
-  },
-  {
-    key: 'drill',
-    title: '刷题',
-    desc: '回到做题场景里稳定输出，把卡点真正打通。',
-    hint: '这里后续可展开刷题内容',
+    reviewItems: ['测试题目', '卡点报告', '课堂反馈'],
   },
   {
     key: 'report',
     title: '报告',
-    desc: '最后沉淀本卡点的阶段结论、问题复盘和成长记录。',
-    hint: '这里后续可展开报告内容',
+    reviewItems: ['先停一停，把前面几步整理好，再去刷题里继续巩固。'],
+  },
+  {
+    key: 'drill',
+    title: '刷题',
+    reviewItems: ['刷题题目', '已交作业', '课堂反馈'],
   },
 ]
 
 const DEMO_LEARNING_SUMMARY = {
   totalDurationSec: 18 * 3600 + 35 * 60,
-  longestDay: {
-    date: '2026-03-25T00:00:00',
-    durationSec: 5 * 3600 + 40 * 60,
-  },
   earliestSession: {
     date: '2026-03-18T00:00:00',
     startedAt: '2026-03-18T06:30:00',
@@ -65,9 +55,11 @@ const DEMO_LEARNING_SUMMARY = {
     date: '2026-03-25T00:00:00',
     endedAt: '2026-03-26T02:00:00',
   },
+  lastPlaybackAt: '2026-03-24T22:08:00',
+  lastHomeworkSubmitAt: '2026-03-25T21:14:00',
 }
 
-function buildPathStages(courseStatus = 'pending', pointId = 0, pointName = '') {
+function buildPathStages(courseStatus = 'pending') {
   const currentIndex = courseStatus === 'solved' ? 5 : 2
 
   return PATH_STAGE_TEMPLATE.map((item, index) => {
@@ -83,8 +75,8 @@ function buildPathStages(courseStatus = 'pending', pointId = 0, pointName = '') 
       ...item,
       index: index + 1,
       status,
+      expanded: true,
       isLast: index === PATH_STAGE_TEMPLATE.length - 1,
-      routeUrl: buildStageUrl(item.key, pointId, pointName),
     }
   })
 }
@@ -148,81 +140,123 @@ function getTimeHour(dateText = '') {
   return safeDate.getHours()
 }
 
-function buildRecordItems(summary = {}) {
-  const items = []
+function formatRelativeDateTime(dateText = '') {
+  if (!dateText) return ''
 
-  if (summary.longestDay && summary.longestDay.date) {
-    items.push({
-      key: 'longest',
-      label: `最长 ${formatMonthDay(summary.longestDay.date) || '--'} · ${formatDurationText(summary.longestDay.durationSec || 0)}`,
-    })
+  const safeDate = new Date(String(dateText).replace(' ', 'T'))
+  if (Number.isNaN(safeDate.getTime())) return ''
+
+  const target = new Date(safeDate)
+  target.setHours(0, 0, 0, 0)
+
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  const diffDays = Math.round((target.getTime() - today.getTime()) / (24 * 60 * 60 * 1000))
+  const timeText = formatTimeText(dateText)
+
+  if (diffDays === 0) {
+    return `今天 ${timeText}`
   }
 
-  if (summary.earliestSession && summary.earliestSession.startedAt) {
-    const earliestDate = formatMonthDay(summary.earliestSession.date) || '--'
-    const earliestTime = formatTimeText(summary.earliestSession.startedAt) || '--'
-    items.push({
-      key: 'earliest',
-      label: `最早 ${earliestDate} · ${earliestTime}`,
-    })
+  if (diffDays === -1) {
+    return `昨天 ${timeText}`
   }
 
-  if (summary.latestSession && summary.latestSession.endedAt) {
-    const latestDate = formatMonthDay(summary.latestSession.date) || '--'
-    const latestTime = formatTimeText(summary.latestSession.endedAt) || '--'
-    items.push({
-      key: 'latest',
-      label: `最晚 ${latestDate} · ${latestTime}`,
-    })
-  }
-
-  return items
+  return `${formatMonthDay(dateText)} ${timeText}`.trim()
 }
 
-function buildEncouragement(summary = {}) {
+function getMessageRotationStorageKey(pointId = 0) {
+  return `student_point_path_message_rotation_${Number(pointId) || 0}`
+}
+
+function getStoredRotationIndex(pointId = 0) {
+  try {
+    return Number(wx.getStorageSync(getMessageRotationStorageKey(pointId)) || 0)
+  } catch (error) {
+    return 0
+  }
+}
+
+function saveRotationIndex(pointId = 0, nextIndex = 0) {
+  try {
+    wx.setStorageSync(getMessageRotationStorageKey(pointId), Number(nextIndex) || 0)
+  } catch (error) {}
+}
+
+function pickCandidateByRotation(candidates = [], pointId = 0) {
+  if (!Array.isArray(candidates) || !candidates.length) {
+    return ''
+  }
+
+  const storedIndex = getStoredRotationIndex(pointId)
+  const currentIndex = storedIndex % candidates.length
+  const nextIndex = (currentIndex + 1) % candidates.length
+
+  saveRotationIndex(pointId, nextIndex)
+  return candidates[currentIndex]
+}
+
+function buildEncouragementCandidates(summary = {}) {
+  const candidates = []
   const totalDurationSec = Number(summary.totalDurationSec || 0)
 
   if (summary.latestSession && summary.latestSession.endedAt) {
-    const latestDate = formatMonthDay(summary.latestSession.date)
-    const latestTimeText = formatTimeText(summary.latestSession.endedAt)
     const latestHour = getTimeHour(summary.latestSession.endedAt)
-    if (latestDate && latestTimeText && (latestHour !== null && (latestHour >= 22 || latestHour < 5))) {
-      return `${latestDate}这天你学到了${latestTimeText}，辛苦啦`
-    }
-  }
+    const latestTimeText = formatTimeText(summary.latestSession.endedAt)
 
-  if (summary.longestDay && Number(summary.longestDay.durationSec || 0) > 0) {
-    const longestDate = formatMonthDay(summary.longestDay.date)
-    const longestText = formatDurationText(summary.longestDay.durationSec)
-    if (longestDate) {
-      return `${longestDate}这天你一口气学了${longestText}，真的很能扛`
+    if (latestTimeText && latestHour !== null && latestHour < 5) {
+      candidates.push(`有一次，你在这个卡点上学到了${latestTimeText}。`)
+      candidates.push(`这个卡点里，有一天你学到了${latestTimeText}。`)
     }
   }
 
   if (summary.earliestSession && summary.earliestSession.startedAt) {
-    const earliestDate = formatMonthDay(summary.earliestSession.date)
-    const earliestTimeText = formatTimeText(summary.earliestSession.startedAt)
     const earliestHour = getTimeHour(summary.earliestSession.startedAt)
-    if (earliestDate && earliestTimeText && (earliestHour !== null && earliestHour < 8)) {
-      return `${earliestDate}这天你${earliestTimeText}就开始学了，真自律`
+    const earliestTimeText = formatTimeText(summary.earliestSession.startedAt)
+
+    if (earliestTimeText && earliestHour !== null && earliestHour < 10) {
+      candidates.push(`有一次，你从${earliestTimeText}就开始碰这个卡点了。`)
+      candidates.push(`你曾经在${earliestTimeText}就开始学这个卡点。`)
     }
   }
 
-  if (totalDurationSec > 0) {
-    return `你已经为这个卡点投入了${formatDurationText(totalDurationSec)}，继续保持`
+  if (summary.lastPlaybackAt) {
+    const playbackText = formatRelativeDateTime(summary.lastPlaybackAt)
+    if (playbackText) {
+      candidates.push(`你上一次打开这节回放，是在${playbackText}。`)
+    }
   }
 
-  return '开始记录这张卡点的学习后，这里会留下你最拼的一天'
+  if (summary.lastHomeworkSubmitAt) {
+    const submitText = formatRelativeDateTime(summary.lastHomeworkSubmitAt)
+    if (submitText) {
+      candidates.push(`你最近一次提交相关练习，是在${submitText}。`)
+    }
+  }
+
+  if (!candidates.length && totalDurationSec > 0) {
+    candidates.push(`这个卡点，你已经走过${formatDurationText(totalDurationSec)}。`)
+    candidates.push(`你已经在这里学了${formatDurationText(totalDurationSec)}。`)
+  }
+
+  if (!candidates.length) {
+    candidates.push('从这里开始，慢慢把这个卡点走顺。')
+  }
+
+  return candidates
 }
 
-function buildLearningSummary(summary = {}) {
+function buildEncouragement(summary = {}, pointId = 0) {
+  return pickCandidateByRotation(buildEncouragementCandidates(summary), pointId)
+}
+
+function buildLearningSummary(summary = {}, pointId = 0) {
   const totalDurationSec = Number(summary.totalDurationSec || 0)
 
   return {
     totalText: totalDurationSec > 0 ? formatDurationText(totalDurationSec) : '0分钟',
-    totalHint: totalDurationSec > 0 ? '这是你在这个卡点上已经投入的时间' : '你的学习时长会累计在这里',
-    encouragement: buildEncouragement(summary),
-    recordItems: buildRecordItems(summary),
+    encouragement: buildEncouragement(summary, pointId),
   }
 }
 
@@ -231,21 +265,20 @@ Page({
     pointId: 2,
     pointName: '提炼转述困难',
     courseStatus: 'pending',
-    pathStages: buildPathStages('pending', 2, '提炼转述困难'),
-    learningSummary: buildLearningSummary(),
+    pathStages: buildPathStages('pending'),
+    learningSummary: buildLearningSummary({}, 2),
   },
 
   onLoad(options) {
     const id = parseInt(options.id, 10) || 2
     const courseStatus = options.status === 'solved' ? 'solved' : 'pending'
     const point = pointMap[id] || pointMap[2]
-    const pathStages = buildPathStages(courseStatus, id, point.name)
 
     this.setData({
       pointId: id,
       pointName: point.name,
       courseStatus,
-      pathStages,
+      pathStages: buildPathStages(courseStatus),
     })
 
     wx.setNavigationBarTitle({
@@ -253,6 +286,12 @@ Page({
     })
 
     void this.loadLearningSummary(point.name)
+  },
+
+  onShow() {
+    if (this._learningSummarySource) {
+      this.applyLearningSummary(this._learningSummarySource)
+    }
   },
 
   onViewReport() {
@@ -263,24 +302,39 @@ Page({
     wx.navigateTo({ url })
   },
 
-  onStageTap(e) {
-    const { url } = e.currentTarget.dataset
-    if (!url) return
+  applyLearningSummary(summary = {}) {
+    this._learningSummarySource = summary
+    this.setData({
+      learningSummary: buildLearningSummary(summary, this.data.pointId),
+    })
+  },
 
-    wx.navigateTo({ url })
+  toggleStageExpand(e) {
+    const { key } = e.currentTarget.dataset
+    if (!key) return
+
+    this.setData({
+      pathStages: this.data.pathStages.map((item) => (
+        item.key === key
+          ? { ...item, expanded: !item.expanded }
+          : item
+      )),
+    })
   },
 
   async loadLearningSummary(pointName) {
     try {
       const result = await fetchStudentPointLearningSummary(pointName, this)
-      const hasStudyData = result && Number(result.totalDurationSec || 0) > 0
-      this.setData({
-        learningSummary: buildLearningSummary(hasStudyData ? result : DEMO_LEARNING_SUMMARY),
-      })
+      const hasStudyData = result && (
+        Number(result.totalDurationSec || 0) > 0
+        || !!(result.latestSession && result.latestSession.endedAt)
+        || !!(result.earliestSession && result.earliestSession.startedAt)
+        || !!result.lastPlaybackAt
+        || !!result.lastHomeworkSubmitAt
+      )
+      this.applyLearningSummary(hasStudyData ? result : DEMO_LEARNING_SUMMARY)
     } catch (error) {
-      this.setData({
-        learningSummary: buildLearningSummary(DEMO_LEARNING_SUMMARY),
-      })
+      this.applyLearningSummary(DEMO_LEARNING_SUMMARY)
     }
   },
 })

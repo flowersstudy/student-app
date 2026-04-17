@@ -1,0 +1,33 @@
+﻿<view class="path-page">
+  <view class="theory-group-card" wx:for="{{theoryGroups}}" wx:key="title" wx:for-item="group">
+    <view class="theory-group-head">
+      <text class="theory-group-title">{{group.title}}</text>
+    </view>
+
+    <view class="path-list">
+      <view wx:for="{{group.items}}" wx:key="title" wx:for-item="item" class="path-item">
+        <view class="path-left">
+          <view class="path-dot path-dot-{{item.status}}"></view>
+          <view wx:if="{{index < group.items.length - 1}}" class="path-line"></view>
+        </view>
+        <view class="path-main">
+          <view class="path-row">
+            <text class="path-title">{{item.title}}</text>
+            <view
+              wx:if="{{item.actionText}}"
+              class="path-action"
+              bindtap="onActionTap"
+              data-label="{{item.actionLabel}}"
+              data-target="{{item.routeTarget}}"
+            >
+              <text class="path-action-text">{{item.actionText}}</text>
+              <view class="path-action-arrow"></view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="safe-bottom"></view>
+</view>

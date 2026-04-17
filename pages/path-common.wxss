@@ -50,6 +50,11 @@
   margin-top: 20rpx;
 }
 
+.path-page > .path-card:first-child,
+.path-page > .theory-group-card:first-child {
+  margin-top: 0;
+}
+
 .path-card-title {
   display: block;
   font-size: 30rpx;

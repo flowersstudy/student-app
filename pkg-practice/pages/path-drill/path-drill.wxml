@@ -1,0 +1,162 @@
+﻿<view class="path-page">
+  <view class="path-card">
+    <text class="path-card-title">{{sectionTitle}}</text>
+    <view class="path-list">
+      <view wx:for="{{pathItems}}" wx:key="title" class="path-item">
+        <view class="path-left">
+          <view class="path-dot path-dot-{{item.status}}"></view>
+          <view wx:if="{{index < pathItems.length - 1}}" class="path-line"></view>
+        </view>
+        <view class="path-main">
+          <view class="path-row">
+            <text class="path-title">{{item.title}}</text>
+            <view
+              wx:if="{{item.actionText}}"
+              class="path-action path-action-static"
+            >
+              <text class="path-action-text">{{item.actionText}}</text>
+            </view>
+          </view>
+          <text wx:if="{{item.desc}}" class="path-desc">{{item.desc}}</text>
+          <picker wx:if="{{item.countdownParts}}" mode="multiSelector" range="{{timerPickerRange}}" value="{{timerPickerValue}}" bindchange="onCountdownPickerConfirm">
+            <view class="countdown-display">
+              <view wx:for="{{item.countdownParts}}" wx:key="label" wx:for-item="time" class="countdown-unit">
+                <text class="countdown-num">{{time.value}}</text>
+                <text class="countdown-unit-label">{{time.label}}</text>
+              </view>
+            </view>
+          </picker>
+          <view wx:if="{{item.countdownEditable}}" class="countdown-actions">
+              <view class="countdown-action countdown-action-primary" bindtap="togglePathCountdown">
+                <view class="countdown-action-text countdown-action-text-primary">
+                {{pathCountdownRunning ? '暂停计时' : pathCountdownFinished ? '已结束' : '开始计时'}}
+                </view>
+              </view>
+              <view class="countdown-action" bindtap="resetCurrentCountdown">
+              <view class="countdown-action-text">重置</view>
+              </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="path-card calendar-section">
+    <view class="calendar-head">
+      <text class="path-card-title">{{calendarTitle}}</text>
+      <text class="calendar-subtitle">{{calendarSubtitle}}</text>
+    </view>
+
+    <view class="calendar-card">
+      <view class="cal-nav">
+        <view class="cal-nav-btn" bindtap="onCalPrev">
+          <text class="cal-nav-arrow">‹</text>
+        </view>
+        <text class="cal-nav-title">{{calendarView === 'week' ? calendarWeekTitle : calendarYear + '年' + calendarMonth + '月'}}</text>
+        <view class="cal-view-toggle" bindtap="onCalToggleView">
+          <text class="cal-view-toggle-text">{{calendarView === 'month' ? '周' : '月'}}</text>
+        </view>
+        <view class="cal-nav-btn" bindtap="onCalNext">
+          <text class="cal-nav-arrow">›</text>
+        </view>
+      </view>
+
+      <view class="cal-weekday-row">
+        <text class="cal-weekday-label" wx:for="{{calendarWeekdayLabels}}" wx:key="*this">{{item}}</text>
+      </view>
+
+      <view wx:if="{{calendarView === 'month'}}" class="cal-month-body">
+        <view wx:for="{{calendarWeeks}}" wx:for-item="week" wx:key="index" class="cal-week-container">
+          <view class="cal-week-row">
+            <view
+              wx:for="{{week.days}}"
+              wx:for-item="day"
+              wx:key="dateStr"
+              class="cal-day-col"
+              data-date="{{day.dateStr}}"
+              bindtap="onCalDayTap"
+            >
+              <view class="cal-day-num-wrap">
+                <view class="cal-day-circle {{day.isToday ? 'cal-today-circle' : ''}} {{day.dateStr === calendarSelectedDate && !day.isToday ? 'cal-selected-circle' : ''}}">
+                  <text class="cal-day-num {{day.isCurrentMonth ? '' : 'cal-day-other'}} {{day.isToday ? 'cal-day-num-today' : ''}}">{{day.dayNum}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+          <view class="cal-week-row cal-events-row">
+            <view
+              wx:for="{{week.days}}"
+              wx:for-item="day"
+              wx:key="dateStr"
+              class="cal-day-col"
+              data-date="{{day.dateStr}}"
+              bindtap="onCalDayTap"
+            >
+              <view wx:for="{{day.tasks}}" wx:for-item="task" wx:key="index" class="cal-event-block cal-event-{{task.type}}">
+                <text class="cal-event-name">{{task.label}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view wx:else class="cal-month-body">
+        <view class="cal-week-container">
+          <view class="cal-week-row">
+            <view
+              wx:for="{{calendarWeekDays.days}}"
+              wx:key="dateStr"
+              class="cal-day-col"
+              data-date="{{item.dateStr}}"
+              bindtap="onCalDayTap"
+            >
+              <view class="cal-day-num-wrap">
+                <view class="cal-day-circle {{item.isToday ? 'cal-today-circle' : ''}} {{item.dateStr === calendarSelectedDate && !item.isToday ? 'cal-selected-circle' : ''}}">
+                  <text class="cal-day-num {{item.isToday ? 'cal-day-num-today' : ''}}">{{item.dayNum}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+          <view class="cal-week-row cal-events-row">
+            <view
+              wx:for="{{calendarWeekDays.days}}"
+              wx:key="dateStr"
+              class="cal-day-col"
+              data-date="{{item.dateStr}}"
+              bindtap="onCalDayTap"
+            >
+              <view wx:for="{{item.tasks}}" wx:for-item="task" wx:key="index" class="cal-event-block cal-event-{{task.type}}">
+                <text class="cal-event-name">{{task.label}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="selected-day-panel">
+        <view class="selected-day-header">
+          <text class="selected-day-title">所选日期安排</text>
+          <text class="selected-day-date">{{calendarSelectedLabel}}</text>
+        </view>
+
+        <view wx:if="{{calendarSelectedTasks.length === 0}}" class="selected-day-empty">
+          <text class="selected-day-empty-text">褰撳ぉ鏆傛棤瀹夋帓</text>
+        </view>
+
+        <view
+          wx:for="{{calendarSelectedTasks}}"
+          wx:key="index"
+          class="selected-day-item"
+        >
+          <view class="selected-day-bar cal-event-{{item.type}}"></view>
+          <view class="selected-day-info">
+            <text class="selected-day-label">{{item.label}}</text>
+            <text wx:if="{{item.note}}" class="selected-day-meta">{{item.note}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="safe-bottom"></view>
+</view>

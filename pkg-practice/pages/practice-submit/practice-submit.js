@@ -1,6 +1,9 @@
 const { uiIcons } = require('../../../utils/ui-icons')
 const { completeLocalUpload } = require('../../../utils/offline')
-const { finishStudySession, startStudySession } = require('../../../utils/study-session')
+const { recordPrescribedStudyDuration } = require('../../../utils/study-session')
+const { appendStudyQuery, normalizeStudyOptions } = require('../../../utils/study-route')
+
+const DEFAULT_HOMEWORK_DURATION_MIN = 40
 
 function buildAiReview(uploadedFiles = []) {
   const hasImage = uploadedFiles.some((item) => item.kind === 'image')
@@ -50,24 +53,16 @@ Page({
   },
 
   onLoad(options) {
-    this.studyOptions = options || {}
-  },
-
-  onShow() {
-    startStudySession(this, {
-      sessionType: 'practice',
-      courseId: (page) => page.studyOptions && page.studyOptions.courseId,
-      studyTaskId: (page) => (page.studyOptions && (page.studyOptions.studyTaskId || page.studyOptions.taskId)) || null,
-      minDurationSec: 5,
+    this.studyOptions = normalizeStudyOptions(options, {
+      pointName: this.data.assignment.pointName,
+      durationMin: DEFAULT_HOMEWORK_DURATION_MIN,
     })
-  },
-
-  onHide() {
-    finishStudySession(this)
-  },
-
-  onUnload() {
-    finishStudySession(this)
+    this.setData({
+      assignment: {
+        ...this.data.assignment,
+        pointName: this.studyOptions.pointName,
+      },
+    })
   },
 
   chooseImage() {
@@ -118,7 +113,7 @@ Page({
     this.setData({ remark: e.detail.value })
   },
 
-  submitHomework() {
+  async submitHomework() {
     if (this.data.uploadedFiles.length === 0) {
       wx.showToast({
         title: '请先上传作业',
@@ -144,6 +139,18 @@ Page({
       },
     })
 
+    await recordPrescribedStudyDuration(this, {
+      sessionType: 'practice',
+      courseId: (page) => page.studyOptions && page.studyOptions.courseId,
+      studyTaskId: (page) => (page.studyOptions && (page.studyOptions.studyTaskId || page.studyOptions.taskId)) || null,
+      pointName: (page) => page.studyOptions && page.studyOptions.pointName,
+      durationMin: (page) => page.studyOptions && page.studyOptions.durationMin,
+      dedupeKey: (page) => {
+        const options = page.studyOptions || {}
+        return `practice-homework:${options.studyTaskId || options.taskId || options.pointName || 'unknown'}`
+      },
+    })
+
     wx.showToast({
       title: '已提交并生成 AI 初评',
       icon: 'success',
@@ -152,7 +159,7 @@ Page({
 
   goReview() {
     wx.navigateTo({
-      url: '/pkg-practice/pages/practice-review/practice-review',
+      url: appendStudyQuery('/pkg-practice/pages/practice-review/practice-review', this.studyOptions),
     })
   },
 })

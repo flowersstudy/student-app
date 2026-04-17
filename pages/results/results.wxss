@@ -229,6 +229,10 @@
   background: linear-gradient(180deg, #6fa1ff 0%, #2563eb 100%);
 }
 
+.legend-bar-study {
+  background: #f9f6e5;
+}
+
 .legend-line {
   width: 34rpx;
   height: 0;
@@ -256,6 +260,11 @@
 .legend-line-green {
   border-top-color: #22c55e;
   color: #22c55e;
+}
+
+.legend-line-study {
+  border-top-color: #ffeaee;
+  color: #ffeaee;
 }
 
 .legend-text {
@@ -508,6 +517,14 @@
   background: #22c55e;
 }
 
+.chart-line-point-study {
+  border: 0;
+}
+
+.chart-line-point-study .chart-line-point-core {
+  background: #ffeaee;
+}
+
 .study-chart-line-image {
   position: absolute;
   left: 0;
@@ -550,6 +567,22 @@
   margin-bottom: 10rpx;
 }
 
+.mix-chart-bar-value-red {
+  color: #fe4a4c;
+}
+
+.mix-chart-bar-value-orange {
+  color: #ff7a18;
+}
+
+.mix-chart-bar-value-blue {
+  color: #1fb0f5;
+}
+
+.mix-chart-bar-value-yellow {
+  color: #ff9601;
+}
+
 .mix-chart-bar-value-missing {
   color: #cbd5e1;
 }
@@ -570,6 +603,18 @@
 
 .mix-chart-bar-orange {
   background: linear-gradient(180deg, #ff9838 0%, #ff7a18 100%);
+}
+
+.mix-chart-bar-red {
+  background: linear-gradient(180deg, #ff8b8c 0%, #fe4a4c 100%);
+}
+
+.mix-chart-bar-blue {
+  background: linear-gradient(180deg, #6fd6ff 0%, #1fb0f5 100%);
+}
+
+.mix-chart-bar-yellow {
+  background: linear-gradient(180deg, #ffbf63 0%, #ff9601 100%);
 }
 
 .mix-chart-bar-missing {
@@ -659,6 +704,17 @@
 
 .mix-chart-reference-item {
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.mix-chart-reference-marker {
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: #cbd5e1;
 }
 
 .mix-chart-reference-text {
@@ -772,7 +828,7 @@
   width: 56rpx;
   min-height: 18rpx;
   border-radius: 16rpx 16rpx 0 0;
-  background: linear-gradient(180deg, #7ba7ff 0%, #2563eb 100%);
+  background: #f9f6e5;
   box-shadow: inset 0 0 0 2rpx rgba(255, 255, 255, 0.24);
 }
 

@@ -1,6 +1,0 @@
-{
-    "navigationBarTitleText":  "学习进度",
-    "usingComponents":  {
-                            "diagnose-coupon-fab":  "/components/diagnose-coupon-fab/index"
-                        }
-}

@@ -32,38 +32,38 @@ Page({
         id: 1,
         title: '第一题：追寻长期价值',
         preFiles: [
-          { id: 1, name: '第一题追寻长期价值讲义.pdf', url: '', opened: false }
+          { id: 1, name: '第一题追寻长期价值讲义.pdf', url: '', opened: false },
         ],
         postFiles: [
-          { id: 2, name: '第一题追寻长期价值解析.pdf', url: '', opened: false }
+          { id: 2, name: '第一题追寻长期价值解析.pdf', url: '', opened: false },
         ],
         videoId: '1e6eaa05af1b0990cb0f567c5998f78b_1',
-        done: false
+        done: false,
       },
       {
         id: 2,
         title: '第二题：流动与新生',
         preFiles: [
-          { id: 3, name: '绗簩棰樻祦鍔ㄤ笌鏂扮敓璁蹭箟.pdf', url: '', opened: false }
+          { id: 3, name: '第二题流动与新生讲义.pdf', url: '', opened: false },
         ],
         postFiles: [
-          { id: 4, name: '绗簩棰樻祦鍔ㄤ笌鏂扮敓瑙ｆ瀽.pdf', url: '', opened: false }
+          { id: 4, name: '第二题流动与新生解析.pdf', url: '', opened: false },
         ],
         videoId: '1e6eaa05af15b87585e99ad013114054_1',
-        done: false
+        done: false,
       },
       {
         id: 3,
-        title: '绗笁棰橈細鎬濈淮鎾',
+        title: '第三题：思维播种',
         preFiles: [
-          { id: 5, name: '绗笁棰樻€濈淮鎾璁蹭箟.pdf', url: '', opened: false }
+          { id: 5, name: '第三题思维播种讲义.pdf', url: '', opened: false },
         ],
         postFiles: [
-          { id: 6, name: '绗笁棰樻€濈淮鎾瑙ｆ瀽.pdf', url: '', opened: false }
+          { id: 6, name: '第三题思维播种解析.pdf', url: '', opened: false },
         ],
         videoId: '1e6eaa05afab76694ff7011e202b8d26_1',
-        done: false
-      }
+        done: false,
+      },
     ],
     timerDisplay: '90:00',
     timerRunning: false,
@@ -75,7 +75,7 @@ Page({
     timerPickerRange: [TIMER_PICKER_HOURS, TIMER_PICKER_MINUTES],
     timerPickerValue: minutesToPickerValue(90),
     notes: '',
-    drillDoneCount: 0
+    drillDoneCount: 0,
   },
 
   remainSeconds: 0,
@@ -87,7 +87,7 @@ Page({
     const set = parseInt(options.set)
     let drillQuestions = this.data.drillQuestions
     if (set) {
-      const matchedQuestions = this.data.drillQuestions.filter(q => q.id === set)
+      const matchedQuestions = this.data.drillQuestions.filter((question) => question.id === set)
       if (matchedQuestions.length) {
         drillQuestions = matchedQuestions
       }
@@ -125,7 +125,7 @@ Page({
     const h = Math.floor(sec / 3600)
     const m = Math.floor((sec % 3600) / 60)
     const s = sec % 60
-    const p = n => String(n).padStart(2, '0')
+    const p = (num) => String(num).padStart(2, '0')
     if (h > 0) return `${p(h)}:${p(m)}:${p(s)}`
     return `${p(m)}:${p(s)}`
   },
@@ -140,17 +140,18 @@ Page({
   openFile(e) {
     const { qid, filetype, fileid } = e.currentTarget.dataset
     const key = filetype === 'pre' ? 'preFiles' : 'postFiles'
-    const q = this.data.drillQuestions.find(q => q.id === qid)
-    const file = q && q[key].find(f => f.id === fileid)
+    const question = this.data.drillQuestions.find((item) => item.id === qid)
+    const file = question && question[key].find((item) => item.id === fileid)
     if (!file || !file.url) return
-    const questions = this.data.drillQuestions.map(q => {
-      if (q.id !== qid) return q
-      return { ...q, [key]: q[key].map(f => f.id === fileid ? { ...f, opened: true } : f) }
+
+    const questions = this.data.drillQuestions.map((item) => {
+      if (item.id !== qid) return item
+      return { ...item, [key]: item[key].map((fileItem) => fileItem.id === fileid ? { ...fileItem, opened: true } : fileItem) }
     })
     this.setData({ drillQuestions: questions })
     wx.downloadFile({
       url: file.url,
-      success: (res) => wx.openDocument({ filePath: res.tempFilePath, showMenu: true })
+      success: (res) => wx.openDocument({ filePath: res.tempFilePath, showMenu: true }),
     })
   },
 
@@ -204,7 +205,7 @@ Page({
         })
         this.remainSeconds = this.totalSeconds
         this.setData({ timerDisplay: this._fmt(this.totalSeconds), timerRunning: false, timeLow: false, timeUp: false })
-      }
+      },
     })
   },
 
@@ -225,13 +226,15 @@ Page({
     this.remainSeconds = this.totalSeconds
     this.setData({
       timerDisplay: this._fmt(this.totalSeconds),
-      timerRunning: false, timeLow: false, timeUp: false,
+      timerRunning: false,
+      timeLow: false,
+      timeUp: false,
       timerPickerValue: minutesToPickerValue(minutes),
     })
   },
 
   uploadHomework() {
-    wx.showToast({ title: '涓婁紶浣滀笟鍔熻兘寮€鍙戜腑', icon: 'none' })
+    wx.showToast({ title: '上传作业功能开发中', icon: 'none' })
   },
 
   watchAnalysis() {
@@ -239,7 +242,7 @@ Page({
   },
 
   uploadAnswer() {
-    wx.showToast({ title: '涓婁紶绛旀鍔熻兘寮€鍙戜腑', icon: 'none' })
+    wx.showToast({ title: '上传答案功能开发中', icon: 'none' })
   },
 
   askQuestion() {
@@ -247,19 +250,19 @@ Page({
   },
 
   correctError() {
-    wx.showToast({ title: '绾犻敊鍔熻兘寮€鍙戜腑', icon: 'none' })
+    wx.showToast({ title: '纠错功能开发中', icon: 'none' })
   },
 
   toggleDrillTask(e) {
     const id = e.currentTarget.dataset.id
-    const questions = this.data.drillQuestions.map(q =>
-      q.id === id ? { ...q, done: !q.done } : q
+    const questions = this.data.drillQuestions.map((question) =>
+      question.id === id ? { ...question, done: !question.done } : question
     )
-    const doneCount = questions.filter(q => q.done).length
+    const doneCount = questions.filter((question) => question.done).length
     this.setData({ drillQuestions: questions, drillDoneCount: doneCount })
   },
 
   onNotesInput(e) {
     this.setData({ notes: e.detail.value })
-  }
+  },
 })

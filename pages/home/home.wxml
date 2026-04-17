@@ -9,9 +9,6 @@
             <text wx:if="{{item.currentTaskText}}" class="path-bar-progress">{{item.currentTaskText}}</text>
           </view>
           <view class="path-bar-side">
-            <view class="path-bar-tag path-bar-tag-{{item.status}}">
-              <text class="path-bar-tag-text path-bar-tag-text-{{item.status}}">{{item.note}}</text>
-            </view>
             <text class="path-bar-arrow {{item.expanded ? 'path-bar-arrow-open' : ''}}">v</text>
           </view>
         </view>
@@ -27,7 +24,8 @@
                 <view class="duo-step" style="{{step.positionStyle}}">
                   <view class="duo-node-wrap duo-node-wrap-{{step.status}}" style="{{pathLayout.nodeWrapStyle}}" catchtap="handleStepTap" data-url="{{step.url}}">
                     <view class="duo-node duo-node-{{step.status}} {{step.iconPath ? 'duo-node-has-icon' : ''}}" style="{{pathLayout.nodeStyle}}">
-                      <image wx:if="{{step.iconPath}}" class="duo-node-icon" src="{{step.iconPath}}" mode="aspectFit"></image>
+                      <image wx:if="{{step.currentRingPath}}" class="duo-current-ring-image" src="{{step.currentRingPath}}" mode="aspectFit"></image>
+                      <image wx:if="{{step.iconPath}}" class="duo-node-icon duo-node-icon-{{step.status}}" src="{{step.iconPath}}" mode="aspectFit"></image>
                       <text wx:else class="duo-node-text" style="{{pathLayout.nodeTextStyle}}">{{step.shortLabel}}</text>
                     </view>
                   </view>

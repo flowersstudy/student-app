@@ -1,0 +1,48 @@
+﻿<view class="path-page">
+  <view class="path-card">
+    <text class="path-card-title">{{sectionTitle}}</text>
+    <view class="path-list">
+      <view wx:for="{{pathItems}}" wx:key="title" class="path-item">
+        <view class="path-left">
+          <view class="path-dot path-dot-{{item.status}}"></view>
+          <view wx:if="{{index < pathItems.length - 1}}" class="path-line"></view>
+        </view>
+        <view class="path-main">
+          <view class="path-row">
+            <text class="path-title">{{item.title}}</text>
+            <view
+              wx:if="{{item.actionText}}"
+              class="path-action"
+              bindtap="onActionTap"
+              data-label="{{item.actionLabel}}"
+            >
+              <text class="path-action-text">{{item.actionText}}</text>
+              <view class="path-action-arrow"></view>
+            </view>
+          </view>
+          <text wx:if="{{item.desc}}" class="path-desc">{{item.desc}}</text>
+          <picker wx:if="{{item.countdownParts}}" mode="multiSelector" range="{{timerPickerRange}}" value="{{timerPickerValue}}" bindchange="onCountdownPickerConfirm">
+            <view class="countdown-display">
+              <view wx:for="{{item.countdownParts}}" wx:key="label" wx:for-item="time" class="countdown-unit">
+                <text class="countdown-num">{{time.value}}</text>
+                <text class="countdown-unit-label">{{time.label}}</text>
+              </view>
+            </view>
+          </picker>
+          <view wx:if="{{item.countdownEditable}}" class="countdown-actions">
+            <view class="countdown-action countdown-action-primary" bindtap="togglePathCountdown">
+              <view class="countdown-action-text countdown-action-text-primary">
+                {{pathCountdownRunning ? '暂停计时' : pathCountdownFinished ? '已结束' : '开始计时'}}
+              </view>
+            </view>
+            <view class="countdown-action" bindtap="resetCurrentCountdown">
+              <view class="countdown-action-text">重置</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="safe-bottom"></view>
+</view>

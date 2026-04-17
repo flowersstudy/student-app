@@ -51,6 +51,16 @@ async function recordStudentStudySession(data, appInstance) {
   }, appInstance)
 }
 
+async function fetchStudentStudyCourse(courseId, appInstance) {
+  if (!courseId) {
+    return null
+  }
+
+  return studentRequest({
+    url: `/api/student/study/${courseId}`,
+  }, appInstance)
+}
+
 async function fetchStudentLeaveRecords(appInstance) {
   const result = await studentRequest({
     url: '/api/student/leave',
@@ -138,6 +148,7 @@ module.exports = {
   fetchStudentPointLearningSummary,
   fetchStudentProfile,
   fetchStudentReviewOverview,
+  fetchStudentStudyCourse,
   recordStudentStudySession,
   markAllStudentNotificationsRead,
   markStudentNotificationRead,
