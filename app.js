@@ -1,4 +1,4 @@
-const { readStudentSession, silentLogin, saveStudentSession } = require('./utils/auth')
+const { readStudentSession, saveStudentSession } = require('./utils/auth')
 const { getStoredStudentAvatar } = require('./utils/avatar-options')
 const { syncChatUnreadBadge } = require('./utils/chat-badge')
 const { getRuntimeConfig } = require('./utils/runtime-config')
@@ -68,7 +68,7 @@ App({
       ...(this.globalData.userProfile || {}),
       name: sessionInfo.name || (this.globalData.userProfile || {}).name || '张三',
       phone: sessionInfo.phone || (this.globalData.userProfile || {}).phone || '',
-      avatar: avatarUrl || (this.globalData.userProfile || {}).avatar || '',
+      avatar: avatarUrl || sessionInfo.avatar || (this.globalData.userProfile || {}).avatar || '',
     }
     syncChatUnreadBadge(this)
 
@@ -84,18 +84,12 @@ App({
       return
     }
 
-    silentLogin(this)
-      .catch((error) => {
-        this.globalData.authReady = true
-        this.globalData.isLoggedIn = false
-        this.globalData.isNewUser = true
-        this.globalData.isEnrolled = false
-        this.globalData.token = ''
-        console.warn('静默登录失败:', error && error.message ? error.message : error)
-      })
-      .finally(() => {
-        syncChatUnreadBadge(this)
-      })
+    this.globalData.authReady = true
+    this.globalData.isLoggedIn = false
+    this.globalData.isNewUser = true
+    this.globalData.isEnrolled = false
+    this.globalData.token = ''
+    syncChatUnreadBadge(this)
 
     console.log('App launched')
   },

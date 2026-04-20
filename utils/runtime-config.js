@@ -43,10 +43,11 @@ function getRuntimeConfig() {
   const preset = getPresetRuntimeConfig()
   const stored = getStoredRuntimeConfig() || {}
   const storedServerBase = typeof stored.serverBase === 'string' ? normalizeServerBase(stored.serverBase) : ''
+  const canUseStoredServerBase = preset.envVersion === 'develop'
 
   return {
     envVersion: preset.envVersion,
-    serverBase: storedServerBase || preset.serverBase,
+    serverBase: canUseStoredServerBase && storedServerBase ? storedServerBase : preset.serverBase,
     offlineMode: typeof stored.offlineMode === 'boolean' ? stored.offlineMode : preset.offlineMode,
     chatMockMode: typeof stored.chatMockMode === 'boolean' ? stored.chatMockMode : preset.chatMockMode,
   }

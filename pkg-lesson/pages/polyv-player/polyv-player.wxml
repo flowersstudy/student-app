@@ -1,0 +1,9 @@
+<view wx:if="{{loading}}" style="padding: 48rpx 32rpx; color: #6b7280; font-size: 28rpx;">
+  正在加载录播课...
+</view>
+
+<view wx:elif="{{errorText}}" style="padding: 48rpx 32rpx; color: #ef4444; font-size: 28rpx; line-height: 1.7;">
+  {{errorText}}
+</view>
+
+<web-view wx:else src="{{playerUrl}}" bindmessage="onWebMessage"></web-view>

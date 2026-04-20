@@ -1,6 +1,7 @@
 const STORAGE_KEYS = {
   submissions: 'offline_submissions',
 }
+const { resolveAvatarOptions } = require('./avatar-options')
 
 const DEMO_PROFILE = {
   inProgress: [
@@ -39,8 +40,27 @@ function createDemoSession(studentId) {
 
 function mockRequest(options = {}) {
   if (options.url === '/api/student/profile') {
-    return Promise.resolve(DEMO_PROFILE)
+    return Promise.resolve({
+      ...DEMO_PROFILE,
+      profileInfo: {
+        name: '张三',
+        phone: '13800000000',
+        avatarUrl: '/assets/avatars/avatar-01.png',
+      },
+    })
   }
+
+  if (options.url === '/api/student/avatar-presets') {
+    return Promise.resolve(resolveAvatarOptions())
+  }
+
+  if (options.url === '/api/student/profile/avatar' && options.method === 'PATCH') {
+    return Promise.resolve({
+      ok: true,
+      avatarUrl: String((options.data || {}).avatarUrl || '').trim(),
+    })
+  }
+
   return Promise.resolve(options.mockData || {})
 }
 

@@ -3,6 +3,7 @@ const { isOfflineMode, mockRequest } = require('./offline')
 
 const STUDENT_TOKEN_KEY = 'student_token'
 const DEFAULT_UNAUTHORIZED_REDIRECT = '/pages/home/home'
+const DEFAULT_POLYV_PLAYER_BASE = 'https://apix.1v1.buzhi.com'
 
 function getAppSafe() {
   try {
@@ -15,6 +16,12 @@ function getAppSafe() {
 function getServerBase(appInstance) {
   const app = appInstance || getAppSafe()
   return (app && app.globalData && app.globalData.serverBase) || getRuntimeConfig().serverBase
+}
+
+function getPolyvPlayerBase(appInstance) {
+  const app = appInstance || getAppSafe()
+  const configuredBase = app && app.globalData ? app.globalData.polyvPlayerBase : ''
+  return String(configuredBase || DEFAULT_POLYV_PLAYER_BASE).trim().replace(/\/+$/, '')
 }
 
 function buildRequestUrl(url = '', appInstance, serverBase = '') {
@@ -206,7 +213,9 @@ const http = {
 
 module.exports = {
   DEFAULT_UNAUTHORIZED_REDIRECT,
+  DEFAULT_POLYV_PLAYER_BASE,
   getAppSafe,
+  getPolyvPlayerBase,
   getServerBase,
   handleUnauthorizedRedirect,
   http,

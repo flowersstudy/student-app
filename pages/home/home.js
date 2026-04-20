@@ -548,6 +548,33 @@ function buildFallbackCurrentStageKey(course = {}) {
   return 'theory'
 }
 
+function getReviewOverviewPointIds(reviewOverview = {}) {
+  const pointRates = Array.isArray(reviewOverview && reviewOverview.pointRates) ? reviewOverview.pointRates : []
+  const pointStatuses = Array.isArray(reviewOverview && reviewOverview.pointStatuses) ? reviewOverview.pointStatuses : []
+  const pointIds = []
+
+  pointRates.forEach((item) => {
+    const pointId = getPointIdByName(item && (item.pointName || item.point_name) || '')
+    if (POINT_ORDER.includes(pointId) && !pointIds.includes(pointId)) {
+      pointIds.push(pointId)
+    }
+  })
+
+  pointStatuses.forEach((item) => {
+    const status = String(item && item.status || '').trim()
+    if (!status || status === 'locked') {
+      return
+    }
+
+    const pointId = getPointIdByName(item && (item.pointName || item.point_name) || '')
+    if (POINT_ORDER.includes(pointId) && !pointIds.includes(pointId)) {
+      pointIds.push(pointId)
+    }
+  })
+
+  return pointIds
+}
+
 function buildStageProgressFromCourse(course = {}, study = null, hasDiagnoseCourse = false) {
   const stageStatusMap = {
     diagnose: hasDiagnoseCourse || !!course.id ? 'done' : 'locked',
@@ -632,19 +659,36 @@ function buildHomeProgress({ profile = {}, reviewOverview = {}, study = null } =
   const allCourses = [...inProgress, ...completed]
   const activeCourse = inProgress[0] || null
   const latestCompletedCourse = completed[completed.length - 1] || null
-  const purchasedPointIds = allCourses
+  const profilePurchasedPointIds = allCourses
     .map((course) => getPointIdByName(course.name))
     .filter((pointId, index, list) => POINT_ORDER.includes(pointId) && list.indexOf(pointId) === index)
+  const reviewOverviewPointIds = getReviewOverviewPointIds(reviewOverview)
+  const purchasedPointIds = [...profilePurchasedPointIds]
+  reviewOverviewPointIds.forEach((pointId) => {
+    if (POINT_ORDER.includes(pointId) && !purchasedPointIds.includes(pointId)) {
+      purchasedPointIds.push(pointId)
+    }
+  })
   const completedPointIds = completed
     .map((course) => getPointIdByName(course.name))
     .filter((pointId) => POINT_ORDER.includes(pointId))
-  const activePointId = activeCourse ? getPointIdByName(activeCourse.name) : 0
-  const focusPointId = activePointId || (latestCompletedCourse ? getPointIdByName(latestCompletedCourse.name) : 0)
+  const activePointId = activeCourse
+    ? getPointIdByName(activeCourse.name)
+    : (reviewOverviewPointIds[0] || 0)
+  const focusPointId = activePointId
+    || (latestCompletedCourse ? getPointIdByName(latestCompletedCourse.name) : 0)
+    || (reviewOverviewPointIds[0] || 0)
   const pointStageProgressMap = {}
   const hasDiagnoseCourse = inferHasDiagnoseCourse(reviewOverview)
 
   if (activeCourse && activePointId) {
     pointStageProgressMap[activePointId] = buildStageProgressFromCourse(activeCourse, study, hasDiagnoseCourse)
+  } else if (activePointId) {
+    pointStageProgressMap[activePointId] = buildStageProgressFromCourse({
+      id: activePointId,
+      progress: 0,
+      status: 'in_progress',
+    }, null, hasDiagnoseCourse)
   }
 
   return {

@@ -60,13 +60,13 @@
       "root": "pkg-lesson/pages",
       "pages": [
         "path-theory/path-theory",
-        "lesson-recorded/lesson-recorded",
+        "polyv-player/polyv-player",
         "lesson-drill/lesson-drill"
       ]
     }
   ],
   "tabBar": {
-    "custom": false,
+    "custom": true,
     "color": "#999999",
     "selectedColor": "#1A6EFF",
     "backgroundColor": "#ffffff",

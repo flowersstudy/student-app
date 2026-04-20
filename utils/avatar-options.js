@@ -1,6 +1,6 @@
 const STUDENT_AVATAR_STORAGE_KEY = 'student_selected_avatar'
 
-const avatarOptions = Array.from({ length: 10 }, (_, index) => {
+const DEFAULT_AVATAR_OPTIONS = Array.from({ length: 10 }, (_, index) => {
   const id = `avatar-${String(index + 1).padStart(2, '0')}`
   return {
     id,
@@ -8,6 +8,34 @@ const avatarOptions = Array.from({ length: 10 }, (_, index) => {
     url: `/assets/avatars/${id}.png`,
   }
 })
+
+function normalizeAvatarOption(option = {}, index = 0) {
+  const defaultOption = DEFAULT_AVATAR_OPTIONS[index] || {}
+  const id = String(option.id || defaultOption.id || `avatar-${String(index + 1).padStart(2, '0')}`)
+  const url = String(option.url || option.avatarUrl || defaultOption.url || '').trim()
+
+  if (!url) {
+    return null
+  }
+
+  return {
+    id,
+    label: String(option.label || defaultOption.label || `头像 ${index + 1}`),
+    url,
+  }
+}
+
+function resolveAvatarOptions(options = []) {
+  if (!Array.isArray(options) || !options.length) {
+    return DEFAULT_AVATAR_OPTIONS
+  }
+
+  const normalized = options
+    .map((option, index) => normalizeAvatarOption(option, index))
+    .filter(Boolean)
+
+  return normalized.length ? normalized : DEFAULT_AVATAR_OPTIONS
+}
 
 function getAppSafe() {
   try {
@@ -45,9 +73,11 @@ function setStoredStudentAvatar(avatarUrl = '', appInstance) {
 }
 
 module.exports = {
+  DEFAULT_AVATAR_OPTIONS,
   STUDENT_AVATAR_STORAGE_KEY,
   applyStudentAvatarToApp,
-  avatarOptions,
   getStoredStudentAvatar,
+  normalizeAvatarOption,
+  resolveAvatarOptions,
   setStoredStudentAvatar,
 }

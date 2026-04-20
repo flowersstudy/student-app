@@ -1,4 +1,5 @@
 const { ensureSilentLogin, getStudentAuthHeader } = require('./auth')
+const { setStoredStudentAvatar } = require('./avatar-options')
 const { getServerBase, requestWithStudentAuth } = require('./request')
 
 function unwrapListPayload(payload) {
@@ -26,9 +27,63 @@ async function studentRequest({ url, method = 'GET', data = {} } = {}, appInstan
 }
 
 async function fetchStudentProfile(appInstance) {
-  return studentRequest({
+  const result = await studentRequest({
     url: '/api/student/profile',
   }, appInstance)
+
+  const profileInfo = result && result.profileInfo ? result.profileInfo : null
+  if (profileInfo && appInstance && appInstance.globalData) {
+    appInstance.globalData.userProfile = {
+      ...(appInstance.globalData.userProfile || {}),
+      name: profileInfo.name || (appInstance.globalData.userProfile || {}).name || '',
+      phone: profileInfo.phone || (appInstance.globalData.userProfile || {}).phone || '',
+      gender: profileInfo.gender || (appInstance.globalData.userProfile || {}).gender || '',
+      grade: profileInfo.grade || (appInstance.globalData.userProfile || {}).grade || '',
+      hometown: profileInfo.hometown || (appInstance.globalData.userProfile || {}).hometown || '',
+      examStatus: profileInfo.examStatus || (appInstance.globalData.userProfile || {}).examStatus || '',
+      examTime: profileInfo.examTime || (appInstance.globalData.userProfile || {}).examTime || '',
+      education: profileInfo.education || (appInstance.globalData.userProfile || {}).education || '',
+      major: profileInfo.major || (appInstance.globalData.userProfile || {}).major || '',
+      avatar: profileInfo.avatarUrl || '',
+    }
+    setStoredStudentAvatar(profileInfo.avatarUrl || '', appInstance)
+  }
+
+  return result
+}
+
+async function fetchStudentAvatarPresets(appInstance) {
+  const result = await studentRequest({
+    url: '/api/student/avatar-presets',
+  }, appInstance)
+
+  if (Array.isArray(result)) {
+    return result
+  }
+
+  if (result && Array.isArray(result.items)) {
+    return result.items
+  }
+
+  return []
+}
+
+async function updateStudentAvatar(avatarUrl = '', appInstance) {
+  const safeAvatarUrl = String(avatarUrl || '').trim()
+  if (!safeAvatarUrl) {
+    throw new Error('缺少头像地址')
+  }
+
+  const result = await studentRequest({
+    url: '/api/student/profile/avatar',
+    method: 'PATCH',
+    data: {
+      avatarUrl: safeAvatarUrl,
+    },
+  }, appInstance)
+
+  setStoredStudentAvatar(result && result.avatarUrl ? result.avatarUrl : safeAvatarUrl, appInstance)
+  return result
 }
 
 async function fetchStudentAccessSummary(appInstance) {
@@ -70,6 +125,18 @@ async function fetchStudentStudyCourse(courseId, appInstance) {
 
   return studentRequest({
     url: `/api/student/study/${courseId}`,
+  }, appInstance)
+}
+
+async function fetchStudentPolyvPlayAuth(videoId, appInstance) {
+  const safeVideoId = String(videoId || '').trim()
+  if (!safeVideoId) {
+    return null
+  }
+
+  return studentRequest({
+    url: '/api/student/polyv/play-auth',
+    data: { videoId: safeVideoId },
   }, appInstance)
 }
 
@@ -275,15 +342,18 @@ async function submitStudentFeedback(data, appInstance) {
 
 module.exports = {
   fetchStudentAccessSummary,
+  fetchStudentAvatarPresets,
   fetchStudentLeaveRecords,
   fetchStudentLearningPath,
   fetchStudentNotifications,
   fetchStudentPointLearningSummary,
+  fetchStudentPolyvPlayAuth,
   fetchStudentProfile,
   fetchStudentReviewOverview,
   fetchStudentSubmission,
   fetchStudentSubmissions,
   fetchStudentStudyCourse,
+  updateStudentAvatar,
   openStudentReviewedSubmission,
   recordStudentStudySession,
   markAllStudentNotificationsRead,

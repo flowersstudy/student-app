@@ -156,28 +156,71 @@ function getReviewItemPolyvSlot(stageKey = '', reviewIndex = -1, childIndex = -1
 }
 
 function buildPolyvLessonRoute(studyOptions = {}, { pointName = '', slotKey = '', title = '', videoId = '' } = {}) {
-  const safePointName = normalizeText(pointName || studyOptions.pointName)
-  const resolved = resolvePolyvVideo(safePointName, slotKey)
-
-  return appendStudyQuery('/pkg-lesson/pages/lesson-recorded/lesson-recorded', studyOptions, {
-    pointName: safePointName,
-    polyvSlotKey: slotKey,
-    videoTitle: normalizeText(title) || resolved.title || '录播课',
-    videoId: normalizeText(videoId) || resolved.vid || '',
+  return buildPolyvPlayerRoute(studyOptions, {
+    pointName,
+    slotKey,
+    title,
+    videoId,
   })
 }
 
-function buildLearningTaskVideoRoute({ pointName = '', taskId = '', title = '', videoId = '', studyOptions = {} } = {}) {
+function buildPolyvPlayerRoute(studyOptions = {}, {
+  pointName = '',
+  taskId = '',
+  slotKey = '',
+  title = '',
+  videoId = '',
+  autoBackOnEnded = false,
+} = {}) {
+  const safePointName = normalizeText(pointName || studyOptions.pointName)
+  const resolved = resolvePolyvVideo(safePointName, slotKey)
+  const resolvedVideoId = normalizeText(videoId) || resolved.vid || ''
+
+  if (!resolvedVideoId) {
+    return ''
+  }
+
+  return appendStudyQuery('/pkg-lesson/pages/polyv-player/polyv-player', studyOptions, {
+    pointName: safePointName,
+    taskId: normalizeText(taskId),
+    title: normalizeText(title) || resolved.title || '录播课',
+    videoId: resolvedVideoId,
+    autoBackOnEnded: autoBackOnEnded ? '1' : '0',
+  })
+}
+
+function buildLearningTaskVideoRoute({
+  pointName = '',
+  taskId = '',
+  title = '',
+  videoId = '',
+  studyOptions = {},
+  routeMode = 'player',
+  autoBackOnEnded = false,
+} = {}) {
   const slotKey = getLearningTaskPolyvSlot(taskId)
   if (!slotKey && !normalizeText(videoId)) {
     return ''
   }
 
-  return buildPolyvLessonRoute(studyOptions, {
+  if (routeMode === 'player') {
+    return buildPolyvPlayerRoute(studyOptions, {
+      pointName,
+      taskId,
+      slotKey,
+      title,
+      videoId,
+      autoBackOnEnded,
+    })
+  }
+
+  return buildPolyvPlayerRoute(studyOptions, {
     pointName,
+    taskId,
     slotKey,
     title,
     videoId,
+    autoBackOnEnded,
   })
 }
 
@@ -194,7 +237,7 @@ function buildReviewItemVideoRoute({
     return ''
   }
 
-  return buildPolyvLessonRoute(studyOptions, {
+  return buildPolyvPlayerRoute(studyOptions, {
     pointName,
     slotKey,
     title,
@@ -207,6 +250,7 @@ module.exports = {
   POLYV_SLOT_META,
   buildLearningTaskVideoRoute,
   buildPolyvLessonRoute,
+  buildPolyvPlayerRoute,
   buildReviewItemVideoRoute,
   getLearningTaskPolyvSlot,
   getReviewItemPolyvSlot,

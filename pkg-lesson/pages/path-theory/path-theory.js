@@ -1,5 +1,6 @@
 ﻿const {
   buildLearningPathStage,
+  completeLearningPathTask,
   openLearningPathFeedback,
   openTeacherTab,
   persistLearningPathTask,
@@ -12,6 +13,12 @@ const { normalizeStudyOptions } = require('../../../utils/study-route')
 
 function shouldPromptTheoryRating(taskId = '') {
   return /^theory_round_\d+_(recorded|explain_video)$/.test(String(taskId || '').trim())
+}
+
+function shouldAutoCompleteTheoryDocument(taskId = '') {
+  const safeTaskId = String(taskId || '').trim()
+  return safeTaskId === 'theory_handout'
+    || /^theory_round_\d+_(handout|homework_pdf)$/.test(safeTaskId)
 }
 
 function openRemoteDocument(url = '', title = '资料') {
@@ -131,18 +138,104 @@ Page({
     return null
   },
 
+  getOrderedTasks() {
+    return (this.data.theoryGroups || []).reduce((result, group) => (
+      result.concat(group.items || [])
+    ), [])
+  },
+
+  findCurrentTask() {
+    const groups = this.data.theoryGroups || []
+
+    for (let groupIndex = 0; groupIndex < groups.length; groupIndex += 1) {
+      const items = groups[groupIndex].items || []
+      for (let itemIndex = 0; itemIndex < items.length; itemIndex += 1) {
+        if (items[itemIndex].status === 'current') {
+          return items[itemIndex]
+        }
+      }
+    }
+
+    return null
+  },
+
+  isNextTaskAfterCurrent(currentTaskId = '', targetTaskId = '') {
+    const orderedTasks = this.getOrderedTasks()
+    const currentIndex = orderedTasks.findIndex((item) => item.id === currentTaskId)
+    const targetIndex = orderedTasks.findIndex((item) => item.id === targetTaskId)
+
+    if (currentIndex < 0 || targetIndex < 0) {
+      return false
+    }
+
+    return targetIndex === currentIndex + 1
+  },
+
+  async markTheoryDocumentDone(taskId = '') {
+    if (!shouldAutoCompleteTheoryDocument(taskId)) {
+      return false
+    }
+
+    const openedAt = new Date().toISOString()
+    completeLearningPathTask(this.data.pointName, 'theory', taskId, {
+      result: {
+        openedAt,
+      },
+    })
+
+    try {
+      await persistLearningPathTask(this.data.pointName, 'theory', taskId, {
+        status: 'done',
+        result: {
+          openedAt,
+        },
+      }, this.app)
+      return true
+    } catch (_error) {
+      return false
+    }
+  },
+
   async onActionTap(e) {
     const { taskId, status, actionType, title } = e.currentTarget.dataset
     if (!taskId) return
-    const currentTask = this.findTaskById(taskId) || {}
-    const resource = currentTask.resource || {}
+    let currentTask = this.findTaskById(taskId) || {}
+    let resource = currentTask.resource || {}
 
     if (status === 'pending') {
-      wx.showToast({
-        title: '请先完成上一步任务',
-        icon: 'none',
-      })
-      return
+      const activeTask = this.findCurrentTask() || {}
+      const shouldAutoUnlockVideo = actionType === 'video'
+        && activeTask.actionType === 'document'
+        && shouldAutoCompleteTheoryDocument(activeTask.id)
+        && this.isNextTaskAfterCurrent(activeTask.id, taskId)
+
+      if (shouldAutoUnlockVideo) {
+        const completed = await this.markTheoryDocumentDone(activeTask.id)
+        this.refreshStage()
+
+        if (completed) {
+          currentTask = this.findTaskById(taskId) || currentTask
+          resource = currentTask.resource || resource
+        } else {
+          wx.showToast({
+            title: '上一份资料状态更新失败，请重试',
+            icon: 'none',
+          })
+          return
+        }
+      } else {
+        const shouldGuideDocumentFirst = actionType === 'video'
+          && activeTask.actionType === 'document'
+          && shouldAutoCompleteTheoryDocument(activeTask.id)
+
+        wx.showToast({
+          title: shouldGuideDocumentFirst
+            ? `先打开${activeTask.title || '上一步资料'}`
+            : '请先完成上一步任务',
+          icon: 'none',
+        })
+        return
+      }
     }
 
     if (actionType === 'upload') {
@@ -191,13 +284,23 @@ Page({
         title,
         videoId: resource.videoId || '',
         studyOptions: this.studyOptions,
+        routeMode: 'player',
+        autoBackOnEnded: shouldPromptTheoryRating(taskId),
       })
 
       if (url) {
         if (shouldPromptTheoryRating(taskId)) {
           this._pendingRatingTask = { taskId, title }
         }
-        wx.navigateTo({ url })
+        wx.navigateTo({
+          url,
+          fail: () => {
+            wx.showToast({
+              title: '页面打开失败，请重试',
+              icon: 'none',
+            })
+          },
+        })
         return
       }
 
@@ -212,8 +315,18 @@ Page({
       try {
         const opened = await openRemoteDocument(resource.url, title)
         if (opened) {
+          if (status !== 'done' && shouldAutoCompleteTheoryDocument(taskId)) {
+            const completed = await this.markTheoryDocumentDone(taskId)
+            this.refreshStage()
+            wx.showToast({
+              title: completed ? '已打开资料，可继续下一步' : '已打开资料，请稍后刷新',
+              icon: 'none',
+            })
+            return
+          }
+
           wx.showToast({
-            title: '已打开资料，完成状态待系统确认',
+            title: '已打开资料',
             icon: 'none',
           })
           return

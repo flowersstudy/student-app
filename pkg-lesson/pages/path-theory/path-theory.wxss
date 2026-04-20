@@ -1,4 +1,4 @@
-﻿@import "/pages/path-common.wxss";
+@import "/pages/path-common.wxss";
 
 .theory-group-card {
   margin-top: 20rpx;

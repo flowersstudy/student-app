@@ -74,6 +74,36 @@ page {
   margin-top: 36rpx;
 }
 
+.mode-switch {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20rpx;
+}
+
+.mode-switch-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 8rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 8rpx 24rpx rgba(148, 163, 184, 0.08);
+}
+
+.mode-switch-item {
+  min-width: 148rpx;
+  padding: 14rpx 24rpx;
+  border-radius: 999rpx;
+  text-align: center;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #7b8798;
+}
+
+.mode-switch-item-active {
+  background: linear-gradient(90deg, #4b83f7 0%, #36a0ff 100%);
+  color: #ffffff;
+}
+
 .fields-wrap {
   margin-top: 12rpx;
 }
@@ -90,6 +120,10 @@ page {
 }
 
 .form-field + .form-field {
+  margin-top: 22rpx;
+}
+
+.form-field-confirm {
   margin-top: 22rpx;
 }
 

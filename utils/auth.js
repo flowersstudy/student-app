@@ -42,6 +42,7 @@ function updateAppAuthState(session = {}, appInstance) {
     ...(app.globalData.userProfile || {}),
     name: info.name || (app.globalData.userProfile || {}).name || '张三',
     phone: info.phone || (app.globalData.userProfile || {}).phone || '',
+    avatar: info.avatar || (app.globalData.userProfile || {}).avatar || '',
   }
 }
 
@@ -56,6 +57,7 @@ function saveStudentSession(payload = {}, appInstance) {
       name: payload.name || '',
       status: payload.status || 'new',
       phone: resolvedPhone,
+      avatar: payload.avatarUrl || payload.avatar || currentInfo.avatar || '',
     },
   }
 
@@ -125,6 +127,7 @@ function saveLocalStudentPhone(phone, appInstance) {
       ...(app.globalData.userProfile || {}),
       name: nextInfo.name || (app.globalData.userProfile || {}).name || LOCAL_STUDENT_NAME,
       phone: nextInfo.phone,
+      avatar: (app.globalData.userProfile || {}).avatar || '',
     }
   }
 
@@ -145,29 +148,16 @@ function requestApi({ url, method = 'GET', data = {}, header = {} }, appInstance
 }
 
 function silentLogin(appInstance) {
-  return new Promise((resolve, reject) => {
-    wx.login({
-      success: async (loginRes) => {
-        if (!loginRes.code) {
-          reject(new Error('未获取到微信登录 code'))
-          return
-        }
+  const app = appInstance || getAppSafe()
+  if (app && app.globalData) {
+    app.globalData.authReady = true
+    app.globalData.isLoggedIn = false
+    app.globalData.isEnrolled = false
+    app.globalData.isNewUser = true
+    app.globalData.token = ''
+  }
 
-        try {
-          const result = await requestApi({
-            url: '/api/auth/student/wx-login',
-            method: 'POST',
-            data: { code: loginRes.code },
-          }, appInstance)
-
-          resolve(saveStudentSession(result, appInstance))
-        } catch (error) {
-          reject(error)
-        }
-      },
-      fail: reject,
-    })
-  })
+  return Promise.reject(new Error('当前已关闭静默登录，请手动登录'))
 }
 
 async function ensureSilentLogin(appInstance) {
@@ -177,7 +167,16 @@ async function ensureSilentLogin(appInstance) {
     return session
   }
 
-  return silentLogin(appInstance)
+  const app = appInstance || getAppSafe()
+  if (app && app.globalData) {
+    app.globalData.authReady = true
+    app.globalData.isLoggedIn = false
+    app.globalData.isEnrolled = false
+    app.globalData.isNewUser = true
+    app.globalData.token = ''
+  }
+
+  throw new Error('请先登录')
 }
 
 async function bindStudentPhone(payload, appInstance) {
@@ -185,7 +184,7 @@ async function bindStudentPhone(payload, appInstance) {
   const token = session && session.token
 
   if (!token) {
-    throw new Error('尚未完成静默登录')
+    throw new Error('尚未登录，请先登录')
   }
 
   const data = typeof payload === 'string'
@@ -233,6 +232,28 @@ async function loginStudentByAccount(payload = {}, appInstance) {
   return saveStudentSession(result, appInstance)
 }
 
+async function registerStudentByAccount(payload = {}, appInstance) {
+  const name = String(payload.name || '').trim()
+  const account = String(payload.account || '').trim()
+  const password = String(payload.password || '')
+
+  if (!name || !account || !password) {
+    throw new Error('请填写姓名、账号和密码')
+  }
+
+  const result = await requestApi({
+    url: '/api/auth/student/register',
+    method: 'POST',
+    data: {
+      name,
+      account,
+      password,
+    },
+  }, appInstance)
+
+  return saveStudentSession(result, appInstance)
+}
+
 module.exports = {
   bindStudentPhone,
   clearStudentSession,
@@ -241,6 +262,7 @@ module.exports = {
   getStudentToken,
   hasBoundStudentPhone,
   loginStudentByAccount,
+  registerStudentByAccount,
   readStudentSession,
   requestApi,
   saveStudentSession,
