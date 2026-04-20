@@ -1,6 +1,0 @@
-﻿{
-    "navigationBarTitleText":  "用户评论",
-    "usingComponents":  {
-                            "diagnose-coupon-fab":  "/components/diagnose-coupon-fab/index"
-                        }
-}

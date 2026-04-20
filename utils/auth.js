@@ -213,6 +213,26 @@ async function bindStudentPhone(payload, appInstance) {
   }, appInstance)
 }
 
+async function loginStudentByAccount(payload = {}, appInstance) {
+  const account = String(payload.account || '').trim()
+  const password = String(payload.password || '')
+
+  if (!account || !password) {
+    throw new Error('请填写账号和密码')
+  }
+
+  const result = await requestApi({
+    url: '/api/auth/student/login',
+    method: 'POST',
+    data: {
+      account,
+      password,
+    },
+  }, appInstance)
+
+  return saveStudentSession(result, appInstance)
+}
+
 module.exports = {
   bindStudentPhone,
   clearStudentSession,
@@ -220,6 +240,7 @@ module.exports = {
   getStudentAuthHeader,
   getStudentToken,
   hasBoundStudentPhone,
+  loginStudentByAccount,
   readStudentSession,
   requestApi,
   saveStudentSession,

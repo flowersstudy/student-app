@@ -1,4 +1,4 @@
-@import "/pages/path-common.wxss";
+﻿@import "/pages/path-common.wxss";
 
 .theory-group-card {
   margin-top: 20rpx;
@@ -18,8 +18,9 @@
 
 .theory-group-title {
   font-size: 30rpx;
-  font-weight: 900;
+  font-weight: 800;
   color: #0f172a;
+  line-height: 1.4;
 }
 
 .theory-group-card .path-list {
@@ -28,4 +29,81 @@
 
 .theory-group-card .path-main {
   padding-bottom: 20rpx;
+}
+
+.rating-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32rpx;
+  box-sizing: border-box;
+  background: rgba(15, 23, 42, 0.42);
+}
+
+.rating-popup {
+  width: 100%;
+  padding: 36rpx 30rpx 30rpx;
+  border-radius: 28rpx;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.rating-popup-title {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.4;
+}
+
+.rating-popup-subtitle {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.rating-stars {
+  display: flex;
+  justify-content: center;
+  gap: 16rpx;
+  margin-top: 28rpx;
+}
+
+.rating-star {
+  font-size: 56rpx;
+  line-height: 1;
+  color: #cbd5e1;
+}
+
+.rating-star-active {
+  color: #f59e0b;
+}
+
+.rating-actions {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 30rpx;
+}
+
+.rating-action {
+  flex: 1;
+  height: 72rpx;
+  border-radius: 999rpx;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #475569;
+}
+
+.rating-action-primary {
+  background: #2563eb;
+  color: #ffffff;
 }

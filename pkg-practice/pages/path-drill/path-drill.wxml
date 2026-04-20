@@ -1,8 +1,32 @@
-﻿<view class="path-page">
-  <view class="path-card">
+<view class="path-page">
+  <view class="path-card timer-card">
+    <view class="timer-card-header">
+      <text class="path-card-title">{{timerTitle}}</text>
+    </view>
+
+    <view class="countdown-display timer-display-board">
+      <view wx:for="{{timerParts}}" wx:key="label" wx:for-item="time" class="countdown-unit">
+        <text class="countdown-num">{{time.value}}</text>
+        <text class="countdown-unit-label">{{time.label}}</text>
+      </view>
+    </view>
+
+    <view class="countdown-actions">
+      <view class="countdown-action countdown-action-primary" bindtap="toggleDrillTimer">
+        <view class="countdown-action-text countdown-action-text-primary">
+          {{drillTimerRunning ? '暂停计时' : '开始计时'}}
+        </view>
+      </view>
+      <view class="countdown-action" bindtap="resetDrillTimer">
+        <view class="countdown-action-text">重置</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="path-card task-card">
     <text class="path-card-title">{{sectionTitle}}</text>
     <view class="path-list">
-      <view wx:for="{{pathItems}}" wx:key="title" class="path-item">
+      <view wx:for="{{pathItems}}" wx:key="id" class="path-item">
         <view class="path-left">
           <view class="path-dot path-dot-{{item.status}}"></view>
           <view wx:if="{{index < pathItems.length - 1}}" class="path-line"></view>
@@ -10,31 +34,31 @@
         <view class="path-main">
           <view class="path-row">
             <text class="path-title">{{item.title}}</text>
-            <view
-              wx:if="{{item.actionText}}"
-              class="path-action path-action-static"
-            >
-              <text class="path-action-text">{{item.actionText}}</text>
-            </view>
-          </view>
-          <text wx:if="{{item.desc}}" class="path-desc">{{item.desc}}</text>
-          <picker wx:if="{{item.countdownParts}}" mode="multiSelector" range="{{timerPickerRange}}" value="{{timerPickerValue}}" bindchange="onCountdownPickerConfirm">
-            <view class="countdown-display">
-              <view wx:for="{{item.countdownParts}}" wx:key="label" wx:for-item="time" class="countdown-unit">
-                <text class="countdown-num">{{time.value}}</text>
-                <text class="countdown-unit-label">{{time.label}}</text>
+            <view class="path-actions" wx:if="{{item.actionText || item.secondaryActionText}}">
+              <view
+                wx:if="{{item.actionText}}"
+                class="path-action {{item.status === 'pending' ? 'path-action-disabled' : ''}}"
+                bindtap="onActionTap"
+                data-task-id="{{item.id}}"
+                data-status="{{item.status}}"
+                data-action-type="{{item.actionType}}"
+                data-title="{{item.title}}"
+              >
+                <text class="path-action-text">{{item.actionText}}</text>
+                <view class="path-action-arrow"></view>
+              </view>
+              <view
+                wx:if="{{item.secondaryActionText}}"
+                class="path-action path-action-secondary {{item.status === 'pending' ? 'path-action-disabled' : ''}}"
+                bindtap="onSecondaryActionTap"
+                data-task-id="{{item.id}}"
+                data-status="{{item.status}}"
+                data-action-type="{{item.secondaryActionType}}"
+              >
+                <text class="path-action-text">{{item.secondaryActionText}}</text>
+                <view class="path-action-arrow"></view>
               </view>
             </view>
-          </picker>
-          <view wx:if="{{item.countdownEditable}}" class="countdown-actions">
-              <view class="countdown-action countdown-action-primary" bindtap="togglePathCountdown">
-                <view class="countdown-action-text countdown-action-text-primary">
-                {{pathCountdownRunning ? '暂停计时' : pathCountdownFinished ? '已结束' : '开始计时'}}
-                </view>
-              </view>
-              <view class="countdown-action" bindtap="resetCurrentCountdown">
-              <view class="countdown-action-text">重置</view>
-              </view>
           </view>
         </view>
       </view>
@@ -44,7 +68,6 @@
   <view class="path-card calendar-section">
     <view class="calendar-head">
       <text class="path-card-title">{{calendarTitle}}</text>
-      <text class="calendar-subtitle">{{calendarSubtitle}}</text>
     </view>
 
     <view class="calendar-card">
@@ -52,7 +75,7 @@
         <view class="cal-nav-btn" bindtap="onCalPrev">
           <text class="cal-nav-arrow">‹</text>
         </view>
-        <text class="cal-nav-title">{{calendarView === 'week' ? calendarWeekTitle : calendarYear + '年' + calendarMonth + '月'}}</text>
+        <text class="cal-nav-title">{{calendarView === 'week' ? calendarWeekTitle : calendarYear + '年 ' + calendarMonth + '月'}}</text>
         <view class="cal-view-toggle" bindtap="onCalToggleView">
           <text class="cal-view-toggle-text">{{calendarView === 'month' ? '周' : '月'}}</text>
         </view>
@@ -140,14 +163,10 @@
         </view>
 
         <view wx:if="{{calendarSelectedTasks.length === 0}}" class="selected-day-empty">
-          <text class="selected-day-empty-text">褰撳ぉ鏆傛棤瀹夋帓</text>
+          <text class="selected-day-empty-text">当天暂无安排</text>
         </view>
 
-        <view
-          wx:for="{{calendarSelectedTasks}}"
-          wx:key="index"
-          class="selected-day-item"
-        >
+        <view wx:for="{{calendarSelectedTasks}}" wx:key="index" class="selected-day-item">
           <view class="selected-day-bar cal-event-{{item.type}}"></view>
           <view class="selected-day-info">
             <text class="selected-day-label">{{item.label}}</text>

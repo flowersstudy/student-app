@@ -1,8 +1,0 @@
-﻿<import src="../square-page-template.wxml" />
-
-<template
-  is="squarePage"
-  data="{{theme: theme, badge: badge, title: title, desc: desc, heroIcon: heroIcon, stats: stats, actions: actions, highlight: highlight, sections: sections}}"
-/>
-
-<diagnose-coupon-fab auto-popup="{{true}}"></diagnose-coupon-fab>

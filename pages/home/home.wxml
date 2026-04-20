@@ -1,4 +1,4 @@
-<view class="path-page">
+<view class="path-page" bindtap="closePromptDialog" bindtouchmove="handlePageTouchMove">
   <view class="path-bar-list">
     <block wx:for="{{pathNodes}}" wx:key="id">
       <view id="path-node-{{item.pointId}}" class="path-item path-item-tone-{{item.tone}} {{item.expanded ? 'path-item-expanded' : ''}}" style="{{item.themeStyle}}">
@@ -8,21 +8,39 @@
             <text class="path-bar-title">{{item.title}}</text>
             <text wx:if="{{item.currentTaskText}}" class="path-bar-progress">{{item.currentTaskText}}</text>
           </view>
-          <view class="path-bar-side">
-            <text class="path-bar-arrow {{item.expanded ? 'path-bar-arrow-open' : ''}}">v</text>
+          <view class="path-bar-side" catchtap="handleKnowledgeTap" data-point-id="{{item.pointId}}">
+            <view class="path-bar-divider"></view>
+            <image class="path-bar-action-glyph" src="/assets/path/point-card-action-glyph.svg" mode="aspectFit"></image>
           </view>
         </view>
 
         <view wx:if="{{item.expanded}}" class="path-expand" style="{{item.themeExpandStyle}}">
           <view class="path-expand-body" style="{{item.bodyStyle}}">
-            <view class="path-ip-float" style="{{item.ipStyle}}">
-              <image class="path-ip-image" src="/assets/buka/buka-koi-mascot-v2.svg" mode="widthFix"></image>
+            <view class="path-ip-float" style="{{item.ipStyle}}" catchtap="handleBukaTap" data-point-id="{{item.pointId}}">
+              <view wx:if="{{bukaSpeech.visible && bukaSpeech.pointId === item.pointId}}" class="path-ip-speech">
+                <text class="path-ip-speech-text">{{bukaSpeech.text}}</text>
+              </view>
+              <view class="path-ip-image-stack {{bukaMotion.pointId === item.pointId ? 'path-ip-image-stack-bounce' : ''}}">
+                <image class="path-ip-image" src="/assets/buka/buka-main.svg" mode="widthFix"></image>
+                <image class="path-ip-image path-ip-image-blink" src="/assets/buka/buka-main-blink.svg" mode="widthFix"></image>
+              </view>
             </view>
 
             <view class="duo-map" style="height: {{item.mapHeight}};">
               <block wx:for="{{item.steps}}" wx:key="id" wx:for-item="step">
-                <view class="duo-step" style="{{step.positionStyle}}">
-                  <view class="duo-node-wrap duo-node-wrap-{{step.status}}" style="{{pathLayout.nodeWrapStyle}}" catchtap="handleStepTap" data-url="{{step.url}}">
+                <view class="duo-step {{promptDialog.visible && promptDialog.stepId === step.id ? 'duo-step-tip-active' : ''}}" style="{{step.positionStyle}}">
+                  <view
+                    class="duo-node-wrap duo-node-wrap-{{step.status}}"
+                    style="{{pathLayout.nodeWrapStyle}}"
+                    catchtap="handleStepTap"
+                    data-url="{{step.url}}"
+                    data-point-id="{{item.pointId}}"
+                    data-status="{{step.status}}"
+                    data-step-key="{{step.key}}"
+                    data-step-id="{{step.id}}"
+                    data-step-title="{{step.title}}"
+                    id="path-step-{{step.id}}"
+                  >
                     <view class="duo-node duo-node-{{step.status}} {{step.iconPath ? 'duo-node-has-icon' : ''}}" style="{{pathLayout.nodeStyle}}">
                       <image wx:if="{{step.currentRingPath}}" class="duo-current-ring-image" src="{{step.currentRingPath}}" mode="aspectFit"></image>
                       <image wx:if="{{step.iconPath}}" class="duo-node-icon duo-node-icon-{{step.status}}" src="{{step.iconPath}}" mode="aspectFit"></image>
@@ -32,9 +50,21 @@
                 </view>
               </block>
             </view>
+
           </view>
         </view>
       </view>
     </block>
+  </view>
+
+  <view wx:if="{{promptDialog.visible}}" class="home-step-tip" style="{{promptDialog.cardStyle}}" catchtap="noop">
+    <view class="home-step-tip-arrow"></view>
+    <view class="home-step-tip-head">
+      <text wx:if="{{promptDialog.kicker}}" class="home-step-tip-title">{{promptDialog.kicker}}</text>
+    </view>
+    <text class="home-step-tip-message">{{promptDialog.message}}</text>
+    <view class="home-step-tip-action {{promptDialog.actionUrl ? 'home-step-tip-action-primary' : 'home-step-tip-action-disabled'}}" bindtap="handlePromptAction">
+      <text class="home-step-tip-action-text">{{promptDialog.actionText}}</text>
+    </view>
   </view>
 </view>

@@ -1,0 +1,20 @@
+<view class="knowledge-page" wx:if="{{detail}}" style="{{themeStyle}}">
+  <view class="knowledge-decor knowledge-decor-left"></view>
+  <view class="knowledge-decor knowledge-decor-right"></view>
+
+  <view class="knowledge-card">
+    <view class="knowledge-card-accent"></view>
+    <view class="knowledge-card-head">
+      <view class="knowledge-card-marker"></view>
+      <view class="knowledge-section-title">{{detail.sectionTitle}}</view>
+    </view>
+    <block wx:for="{{detail.items}}" wx:key="index" wx:for-item="item">
+      <view class="knowledge-item">
+        <view class="knowledge-index">{{index + 1}}</view>
+        <view class="knowledge-item-body">
+          <text class="knowledge-text">{{item}}</text>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>

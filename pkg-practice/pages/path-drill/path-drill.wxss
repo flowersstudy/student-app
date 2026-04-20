@@ -1,5 +1,23 @@
 @import "/pages/path-common.wxss";
 
+.timer-card {
+  margin-top: 0;
+}
+
+.timer-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.timer-display-board {
+  margin-top: 24rpx;
+}
+
+.task-card {
+  margin-top: 20rpx;
+}
+
 .calendar-section {
   margin-top: 20rpx;
 }
@@ -8,25 +26,11 @@
   margin-bottom: 20rpx;
 }
 
-.calendar-subtitle {
-  display: block;
-  margin-top: 8rpx;
-  color: #64748b;
-  font-size: 22rpx;
-  line-height: 1.6;
-}
-
 .calendar-card {
   background: #ffffff;
   border-radius: 24rpx;
   overflow: hidden;
   border: 1rpx solid rgba(148, 163, 184, 0.16);
-}
-
-.path-action-static {
-  padding: 8rpx 18rpx;
-  border-radius: 999rpx;
-  background: #eef5ff;
 }
 
 .cal-nav {

@@ -35,8 +35,8 @@
 }
 
 .bottom-nav__text {
-  font-size: 10px;
-  line-height: 12px;
+  font-size: 20rpx;
+  line-height: 24rpx;
   color: #999999;
   font-weight: 500;
 }

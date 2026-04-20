@@ -3,7 +3,7 @@
   background:
     radial-gradient(circle at top left, rgba(37, 99, 235, 0.09), transparent 26%),
     linear-gradient(180deg, #f7f9fc 0%, #f3f5f8 100%);
-  padding-bottom: calc(120rpx + 56px + env(safe-area-inset-bottom));
+  padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
 }
 
 .profile-summary-section {
@@ -81,10 +81,10 @@
 }
 
 .profile-summary-name {
-  font-size: 32rpx;
+  font-size: 30rpx;
   font-weight: 700;
   color: #0f172a;
-  line-height: 1.2;
+  line-height: 1.3;
 }
 
 .profile-summary-tag {
@@ -125,18 +125,18 @@
 
 .profile-summary-label {
   display: block;
-  font-size: 20rpx;
+  font-size: 22rpx;
   color: #64748b;
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
 .profile-summary-value {
   display: block;
   margin-top: 8rpx;
   font-size: 24rpx;
-  font-weight: 700;
+  font-weight: 600;
   color: #0f172a;
-  line-height: 1.45;
+  line-height: 1.5;
   word-break: break-all;
 }
 
@@ -162,9 +162,9 @@
   min-width: 0;
   flex: 1;
   font-size: 24rpx;
-  font-weight: 600;
+  font-weight: 500;
   color: #475569;
-  line-height: 1.4;
+  line-height: 1.5;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -190,15 +190,15 @@
 
 .review-chart-title {
   font-size: 30rpx;
-  font-weight: 800;
+  font-weight: 700;
   color: #0f172a;
-  line-height: 1.35;
+  line-height: 1.4;
 }
 
 .review-chart-hint {
-  font-size: 22rpx;
+  font-size: 24rpx;
   color: #94a3b8;
-  line-height: 1.5;
+  line-height: 1.6;
   text-align: right;
 }
 
@@ -271,7 +271,7 @@
   font-size: 22rpx;
   color: #64748b;
   line-height: 1.4;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .review-chart-footnote {
@@ -298,14 +298,14 @@
   position: absolute;
   left: 0;
   right: 0;
-  top: 54rpx;
+  top: 52rpx;
   height: 2rpx;
   background: #ff8a1f;
 }
 
 .progress-track-active {
   position: absolute;
-  top: 54rpx;
+  top: 52rpx;
   height: 2rpx;
   background: #ff7a18;
 }
@@ -313,7 +313,7 @@
 .progress-track-arrow {
   position: absolute;
   right: 0;
-  top: 47rpx;
+  top: 45rpx;
   width: 12rpx;
   height: 12rpx;
   border-top: 2rpx solid #ff8a1f;
@@ -332,6 +332,10 @@
 }
 
 .progress-node-score {
+  min-height: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 22rpx;
   font-weight: 500;
   line-height: 1.1;
@@ -576,11 +580,11 @@
 }
 
 .mix-chart-bar-value-blue {
-  color: #1fb0f5;
+  color: #ff9601;
 }
 
 .mix-chart-bar-value-yellow {
-  color: #ff9601;
+  color: #1fb0f5;
 }
 
 .mix-chart-bar-value-missing {
@@ -610,11 +614,11 @@
 }
 
 .mix-chart-bar-blue {
-  background: linear-gradient(180deg, #6fd6ff 0%, #1fb0f5 100%);
+  background: linear-gradient(180deg, #ffbf63 0%, #ff9601 100%);
 }
 
 .mix-chart-bar-yellow {
-  background: linear-gradient(180deg, #ffbf63 0%, #ff9601 100%);
+  background: linear-gradient(180deg, #6fd6ff 0%, #1fb0f5 100%);
 }
 
 .mix-chart-bar-missing {
@@ -919,18 +923,18 @@
 }
 
 .summary-label {
-  font-size: 18rpx;
+  font-size: 20rpx;
   color: #475569;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .summary-value {
   display: block;
   margin-top: 18rpx;
-  font-size: 36rpx;
+  font-size: 34rpx;
   font-weight: 700;
   color: #1d4ed8;
-  line-height: 1.05;
+  line-height: 1.1;
   letter-spacing: -1rpx;
 }
 
@@ -951,15 +955,15 @@
 .summary-points-value {
   display: block;
   margin-top: 18rpx;
-  font-size: 36rpx;
+  font-size: 34rpx;
   font-weight: 700;
   color: #0f172a;
-  line-height: 1;
+  line-height: 1.1;
 }
 
 .summary-points-label {
-  font-size: 18rpx;
-  font-weight: 600;
+  font-size: 20rpx;
+  font-weight: 500;
   color: #78716c;
 }
 
@@ -1006,7 +1010,7 @@
   display: block;
   font-size: 24rpx;
   color: #475569;
-  font-weight: 700;
+  font-weight: 600;
   text-align: center;
 }
 
@@ -1019,7 +1023,7 @@
 }
 
 .stat-chip-value {
-  font-size: 46rpx;
+  font-size: 42rpx;
   font-weight: 700;
   line-height: 1;
 }
@@ -1100,7 +1104,7 @@
 }
 
 .section-count {
-  font-size: 23rpx;
+  font-size: 22rpx;
   color: #94a3b8;
 }
 
@@ -1141,6 +1145,11 @@
   border-color: rgba(249, 115, 22, 0.16);
 }
 
+.review-point-card {
+  background: #ffffff;
+  border-color: rgba(37, 99, 235, 0.1);
+}
+
 .fold-card-practice {
   background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
   border-color: rgba(37, 99, 235, 0.12);
@@ -1175,10 +1184,10 @@
 }
 
 .fold-card-title {
-  font-size: 29rpx;
-  font-weight: 800;
+  font-size: 28rpx;
+  font-weight: 700;
   color: #1f2329;
-  line-height: 1.25;
+  line-height: 1.35;
 }
 
 .fold-card-tag {
@@ -1213,13 +1222,13 @@
 .fold-card-sub {
   display: block;
   margin-top: 10rpx;
-  font-size: 23rpx;
+  font-size: 24rpx;
   color: #64748b;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 .fold-card-meta {
-  font-size: 21rpx;
+  font-size: 22rpx;
   color: #94a3b8;
 }
 
@@ -1255,6 +1264,22 @@
 
 .fold-card-list-item-pending {
   border-color: rgba(249, 115, 22, 0.14);
+}
+
+.review-point-item-learning {
+  border-color: rgba(37, 99, 235, 0.12);
+}
+
+.review-point-item-completed {
+  border-color: rgba(34, 197, 94, 0.12);
+}
+
+.review-point-item-pending {
+  border-color: rgba(249, 115, 22, 0.12);
+}
+
+.review-point-item-locked {
+  border-color: rgba(148, 163, 184, 0.14);
 }
 
 .fold-card-action-row {
@@ -1357,10 +1382,10 @@
 .fold-entry-title {
   flex: 1;
   min-width: 0;
-  font-size: 27rpx;
+  font-size: 26rpx;
   font-weight: 600;
   color: #1f2329;
-  line-height: 38rpx;
+  line-height: 1.5;
 }
 
 .fold-entry-btn {
@@ -1406,15 +1431,97 @@
   color: #0f172a;
 }
 
+.review-point-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+.review-point-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+.review-point-status-slot {
+  min-width: 150rpx;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12rpx;
+  flex-shrink: 0;
+}
+
+.review-point-status {
+  min-width: 104rpx;
+  height: 50rpx;
+  padding: 0 20rpx;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999rpx;
+  box-sizing: border-box;
+  font-size: 22rpx;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.review-point-status-learning {
+  background: #eef4ff;
+  color: #2563eb;
+}
+
+.review-point-status-completed {
+  background: #eefbf3;
+  color: #15803d;
+}
+
+.review-point-status-pending {
+  background: #fff1e8;
+  color: #c2410c;
+}
+
+.review-point-status-locked {
+  background: #f1f5f9;
+  color: #94a3b8;
+}
+
+.review-point-status-arrow {
+  width: 10rpx;
+  height: 10rpx;
+  border-top: 2rpx solid currentColor;
+  border-right: 2rpx solid currentColor;
+  transform: rotate(45deg);
+  flex-shrink: 0;
+}
+
+.review-point-status-arrow-learning {
+  color: #2563eb;
+}
+
+.review-point-status-arrow-completed {
+  color: #15803d;
+}
+
+.review-point-status-arrow-pending {
+  color: #c2410c;
+}
+
+.review-point-status-arrow-locked {
+  color: #cbd5e1;
+}
+
 .btn-detail {
   background: #eaf2ff;
   color: #2563eb;
-  font-size: 23rpx;
+  font-size: 22rpx;
   padding: 10rpx 24rpx;
   border-radius: 999rpx;
   border: none;
   line-height: 1.5;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .btn-detail::after {
@@ -1433,11 +1540,20 @@
   border: 1rpx solid rgba(37, 99, 235, 0.14);
 }
 
+.point-path-entry-disabled {
+  background: #f1f5f9;
+  border-color: rgba(148, 163, 184, 0.16);
+}
+
 .point-path-entry-text {
   font-size: 22rpx;
-  font-weight: 700;
+  font-weight: 600;
   color: #2563eb;
   line-height: 1.4;
+}
+
+.point-path-entry-text-disabled {
+  color: #94a3b8;
 }
 
 .point-path-entry-arrow {
@@ -1782,5 +1898,5 @@
 }
 
 .safe-bottom {
-  height: 24rpx;
+  height: 8rpx;
 }

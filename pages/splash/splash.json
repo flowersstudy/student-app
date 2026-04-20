@@ -1,6 +1,3 @@
 {
-  "navigationStyle": "custom",
-  "usingComponents": {
-    "diagnose-coupon-fab": "/components/diagnose-coupon-fab/index"
-  }
+  "navigationStyle": "custom"
 }

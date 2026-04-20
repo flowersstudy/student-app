@@ -1,29 +1,36 @@
 <view class="card-path-page">
-  <view class="learning-summary-card">
+  <view class="learning-summary-card {{isLocked ? 'learning-summary-card-locked' : ''}}">
     <view class="learning-summary-main">
       <view class="learning-summary-total">
         <view class="learning-summary-total-main">
-          <text class="learning-summary-label">总学习时长</text>
-          <text class="learning-summary-value">{{learningSummary.totalText}}</text>
+          <text class="learning-summary-label">{{isLocked ? '当前状态' : '总学习时长'}}</text>
+          <text class="learning-summary-value {{isLocked ? 'learning-summary-value-locked' : ''}}">{{isLocked ? '还未解锁' : learningSummary.totalText}}</text>
         </view>
-        <view class="path-report-action" bindtap="onViewReport">
+        <view wx:if="{{!isLocked}}" class="path-report-action" bindtap="onViewReport">
           <text class="path-report-action-text">查看卡点报告</text>
+        </view>
+        <view wx:else class="learning-summary-lock-tag">
+          <text class="learning-summary-lock-tag-text">还未解锁</text>
         </view>
       </view>
       <view class="learning-summary-content">
-        <text class="learning-summary-message">{{learningSummary.encouragement}}</text>
+        <text class="learning-summary-message {{isLocked ? 'learning-summary-message-locked' : ''}}">{{isLocked ? '当前学习路径暂未解锁，解锁后可查看完整内容。' : learningSummary.encouragement}}</text>
       </view>
     </view>
   </view>
 
-  <view class="path-stage-card">
+  <view class="path-stage-card {{isLocked ? 'path-stage-card-locked' : ''}}">
     <view class="path-stage-list">
-      <view wx:for="{{pathStages}}" wx:key="key" class="path-stage-item path-stage-item-{{item.status}}">
+      <view
+        wx:for="{{pathStages}}"
+        wx:key="key"
+        class="path-stage-item path-stage-item-{{item.status}}"
+      >
         <view class="path-stage-line-wrap">
           <view class="path-stage-index path-stage-index-{{item.status}}">
             <text class="path-stage-index-text">{{item.index}}</text>
           </view>
-          <view wx:if="{{!item.isLast}}" class="path-stage-line"></view>
+          <view wx:if="{{!item.isLast}}" class="path-stage-line path-stage-line-{{item.status}}"></view>
         </view>
 
         <view class="path-stage-main">
@@ -31,18 +38,71 @@
             <view class="path-stage-title-main">
               <text class="path-stage-item-title">{{item.title}}</text>
             </view>
-            <view class="path-stage-toggle {{item.expanded ? 'path-stage-toggle-open' : ''}}"></view>
+            <view class="path-stage-toggle path-stage-toggle-{{item.status}} {{item.expanded ? 'path-stage-toggle-open' : ''}}"></view>
           </view>
 
           <view wx:if="{{item.expanded}}" class="path-stage-children">
             <view
               wx:for="{{item.reviewItems}}"
-              wx:key="*this"
+              wx:key="id"
               wx:for-item="child"
-              class="path-stage-child"
+              wx:for-index="childIndex"
+              class="path-stage-child path-stage-child-{{item.status}} {{childIndex === item.reviewItems.length - 1 ? 'path-stage-child-last' : ''}}"
             >
-              <view class="path-stage-child-marker"></view>
-              <text class="path-stage-child-text">{{child}}</text>
+              <view wx:if="{{child.children && child.children.length}}" class="path-stage-child-group">
+                <view
+                  class="path-stage-child-group-head"
+                  catchtap="toggleReviewGroup"
+                  data-stage-key="{{item.key}}"
+                  data-child-id="{{child.id}}"
+                >
+                  <view class="path-stage-child-main">
+                    <view class="path-stage-child-marker path-stage-child-marker-{{item.status}}"></view>
+                    <text class="path-stage-child-text">{{child.title}}</text>
+                  </view>
+                  <view class="path-stage-child-toggle {{child.expanded ? 'path-stage-child-toggle-open' : ''}}"></view>
+                </view>
+                <view wx:if="{{child.expanded}}" class="path-stage-grandchildren">
+                  <view
+                    wx:for="{{child.children}}"
+                    wx:key="id"
+                    wx:for-item="grandchild"
+                    class="path-stage-grandchild"
+                  >
+                    <view class="path-stage-grandchild-main">
+                      <view class="path-stage-grandchild-marker"></view>
+                      <text class="path-stage-grandchild-text">{{grandchild.title}}</text>
+                    </view>
+                    <view
+                      class="path-stage-child-action path-stage-child-action-{{item.status}}"
+                      catchtap="onReviewItemTap"
+                      data-status="{{item.status}}"
+                      data-url="{{grandchild.url}}"
+                      data-title="{{grandchild.title}}"
+                    >
+                      <text class="path-stage-child-action-text">{{grandchild.actionText}}</text>
+                      <view class="path-stage-child-action-arrow"></view>
+                    </view>
+                  </view>
+                </view>
+              </view>
+
+              <view wx:else class="path-stage-child-normal">
+                <view class="path-stage-child-main">
+                  <view class="path-stage-child-marker path-stage-child-marker-{{item.status}}"></view>
+                  <text class="path-stage-child-text">{{child.title}}</text>
+                </view>
+                <view
+                  class="path-stage-child-action path-stage-child-action-{{item.status}}"
+                  catchtap="onReviewItemTap"
+                  data-status="{{item.status}}"
+                  data-url="{{child.url}}"
+                  data-title="{{child.title}}"
+                >
+                  <text class="path-stage-child-action-text">{{child.actionText}}</text>
+                  <view class="path-stage-child-action-arrow"></view>
+                </view>
+              </view>
             </view>
           </view>
         </view>

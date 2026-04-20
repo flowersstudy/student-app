@@ -3,6 +3,7 @@ const { getStoredStudentAvatar } = require('./utils/avatar-options')
 const { syncChatUnreadBadge } = require('./utils/chat-badge')
 const { getRuntimeConfig } = require('./utils/runtime-config')
 const PRACTICE_COURSE_STORAGE_KEY = 'student_has_practice_course'
+const DIAGNOSE_COURSE_STORAGE_KEY = 'student_has_diagnose_course'
 const initialRuntimeConfig = getRuntimeConfig()
 
 App({
@@ -52,6 +53,7 @@ App({
   onLaunch() {
     const runtimeConfig = getRuntimeConfig()
     const hasPracticeCourse = wx.getStorageSync(PRACTICE_COURSE_STORAGE_KEY) === true
+    const hasDiagnoseCourse = wx.getStorageSync(DIAGNOSE_COURSE_STORAGE_KEY) === true
     const session = readStudentSession()
     const avatarUrl = getStoredStudentAvatar()
     const sessionInfo = session.info || {}
@@ -61,6 +63,7 @@ App({
     this.globalData.chatMockMode = runtimeConfig.chatMockMode
     this.globalData.runtimeEnv = runtimeConfig.envVersion
     this.globalData.hasPracticeCourse = hasPracticeCourse
+    this.globalData.hasDiagnoseCourse = hasDiagnoseCourse
     this.globalData.userProfile = {
       ...(this.globalData.userProfile || {}),
       name: sessionInfo.name || (this.globalData.userProfile || {}).name || '张三',

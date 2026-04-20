@@ -2,7 +2,6 @@ const { readStudentSession, saveStudentSession } = require('./auth')
 const {
   getAppSafe,
   getServerBase: getRequestServerBase,
-  handleUnauthorizedRedirect,
   requestWithAuth,
 } = require('./request')
 
@@ -43,9 +42,6 @@ async function requestChatApi(options = {}, requestOptions = {}) {
     return await executeRequest()
   } catch (error) {
     if (!allowDevLoginRetry || !canUseDevChatLogin()) {
-      if (error && error.statusCode === 401) {
-        handleUnauthorizedRedirect()
-      }
       throw error
     }
 
@@ -53,9 +49,6 @@ async function requestChatApi(options = {}, requestOptions = {}) {
       await devStudentLogin(1)
       return await executeRequest()
     } catch (retryError) {
-      if (retryError && retryError.statusCode === 401) {
-        handleUnauthorizedRedirect()
-      }
       throw retryError
     }
   }

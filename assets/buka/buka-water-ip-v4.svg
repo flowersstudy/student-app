@@ -1,0 +1,59 @@
+<svg width="320" height="320" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="ipAura" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(160 160) rotate(90) scale(118)">
+      <stop stop-color="#F7FCFF"/>
+      <stop offset="1" stop-color="#E0F3FF"/>
+    </radialGradient>
+    <linearGradient id="ipBody" x1="90" y1="54" x2="237" y2="270" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#88DBFF"/>
+      <stop offset="0.58" stop-color="#4AB8F0"/>
+      <stop offset="1" stop-color="#228DDB"/>
+    </linearGradient>
+    <linearGradient id="ipHand" x1="56" y1="136" x2="267" y2="183" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8FE0FF"/>
+      <stop offset="1" stop-color="#2897E2"/>
+    </linearGradient>
+    <filter id="ipShadow" x="30" y="35" width="261" height="252" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="12"/>
+      <feGaussianBlur stdDeviation="12"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.0627451 0 0 0 0 0.392157 0 0 0 0 0.654902 0 0 0 0.16 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_1"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_1" result="shape"/>
+    </filter>
+  </defs>
+
+  <circle cx="160" cy="160" r="118" fill="url(#ipAura)"/>
+  <circle cx="232" cy="88" r="18" fill="white" fill-opacity="0.34"/>
+  <circle cx="92" cy="236" r="22" fill="white" fill-opacity="0.22"/>
+
+  <g filter="url(#ipShadow)">
+    <path d="M147 56C160 42 183 41 197 54C208 65 210 81 205 94C223 98 238 108 248 123C260 142 261 168 255 190C247 219 227 241 199 252C173 261 143 261 117 252C81 241 57 214 55 178C53 151 61 127 79 109C91 97 107 89 124 86C119 72 127 62 147 56Z" fill="url(#ipBody)"/>
+    <path d="M147 56C155 49 166 46 177 48C169 58 170 71 178 80C185 88 196 91 206 90C204 95 200 100 195 104C181 114 159 115 145 106C132 98 125 85 127 72C128 66 132 60 147 56Z" fill="#A8EAFF"/>
+    <path d="M184 47C193 48 201 54 204 63C207 72 204 82 197 89C193 82 187 77 182 69C177 61 177 51 184 47Z" fill="#2C9EE4" opacity="0.78"/>
+
+    <path d="M95 151C80 152 67 160 57 173C49 184 48 195 55 201C63 208 77 206 90 198C101 191 110 181 115 168L95 151Z" fill="url(#ipHand)"/>
+    <path d="M222 141C237 141 250 148 260 159C269 169 272 180 267 188C261 197 247 197 235 190C223 182 213 170 206 156L222 141Z" fill="url(#ipHand)"/>
+    <path d="M100 178C89 177 79 180 71 186C63 192 62 201 68 207C75 213 88 212 99 204C107 198 112 191 115 184L100 178Z" fill="#56C0EC"/>
+    <path d="M220 184C232 182 243 185 251 191C258 197 259 206 253 212C245 219 233 219 222 213C213 207 207 199 204 191L220 184Z" fill="#4BB5EA"/>
+
+    <path d="M111 201C94 213 82 229 77 247C75 257 81 265 92 265H119C127 265 133 260 135 252C138 233 131 216 111 201Z" fill="#36A6E6"/>
+    <path d="M188 201C206 213 218 228 223 247C226 257 220 265 209 265H182C174 265 168 260 166 252C163 233 170 216 188 201Z" fill="#2897DE"/>
+
+    <ellipse cx="129" cy="129" rx="23" ry="29" transform="rotate(10 129 129)" fill="white"/>
+    <ellipse cx="181" cy="129" rx="23" ry="29" transform="rotate(-10 181 129)" fill="white"/>
+    <ellipse cx="135" cy="134" rx="6.2" ry="9.4" transform="rotate(10 135 134)" fill="#177FCE"/>
+    <ellipse cx="175" cy="134" rx="6.2" ry="9.4" transform="rotate(-10 175 134)" fill="#177FCE"/>
+    <ellipse cx="137" cy="130" rx="2" ry="3" transform="rotate(10 137 130)" fill="white"/>
+    <ellipse cx="173" cy="130" rx="2" ry="3" transform="rotate(-10 173 130)" fill="white"/>
+
+    <path d="M123 166C136 177 154 181 171 177C180 175 188 171 194 165" stroke="white" stroke-width="5.2" stroke-linecap="round"/>
+    <path d="M144 174C151 178 160 179 169 177" stroke="#2292DA" stroke-opacity="0.26" stroke-width="2.6" stroke-linecap="round"/>
+
+  </g>
+
+  <path d="M90 224C108 240 132 247 156 246" stroke="#92DEFF" stroke-width="8" stroke-linecap="round" opacity="0.48"/>
+  <circle cx="234" cy="87" r="5.4" fill="white" fill-opacity="0.56"/>
+  <circle cx="243" cy="98" r="3.2" fill="white" fill-opacity="0.44"/>
+</svg>

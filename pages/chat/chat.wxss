@@ -1,636 +1,161 @@
-/* ========================
-   教学沟通页
-======================== */
-
 .chat-page {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background:
-    radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 24%),
-    linear-gradient(180deg, #f7f9fc 0%, #f3f5f8 100%);
-  position: relative;
+  min-height: 100vh;
+  padding: 32rpx 24rpx 56rpx;
+  background: #f5f6fa;
   box-sizing: border-box;
 }
 
-/* ========================
-   右上角菜单
-======================== */
-.nav-more {
-  position: fixed;
-  top: calc(20rpx + env(safe-area-inset-top));
-  right: 24rpx;
-  z-index: 100;
-  width: 72rpx;
-  height: 72rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: rgba(226, 232, 240, 0.96);
-  border: 1rpx solid rgba(148, 163, 184, 0.34);
+.intro-block {
+  padding: 28rpx;
+  background: #ffffff;
+  border-radius: 20rpx;
+  border: 1rpx solid #e5e7eb;
 }
 
-.nav-more-icon {
-  width: 38rpx;
-  height: 38rpx;
-  opacity: 0.92;
-}
-
-/* ========================
-   消息列表
-======================== */
-.msg-list {
-  flex: 1;
-  padding: calc(24rpx + env(safe-area-inset-top)) 18rpx 20rpx;
-  height: calc(100vh - 120rpx);
-  box-sizing: border-box;
-}
-
-.msg-item {
-  display: flex;
-  flex-direction: row;
-  margin-bottom: 36rpx;
-  align-items: flex-start;
-}
-
-.msg-right {
-  flex-direction: row-reverse;
-}
-
-/* ========================
-   头像
-======================== */
-.msg-avatar {
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 24rpx;
-  flex-shrink: 0;
-}
-
-.avatar-fallback {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 10rpx 20rpx rgba(15, 23, 42, 0.06);
-}
-
-.avatar-self {
-  background: linear-gradient(135deg, #2563eb, #60a5fa);
-}
-
-.avatar-other {
-  background: linear-gradient(135deg, #64748b, #94a3b8);
-}
-
-.msg-avatar-text {
-  color: #ffffff;
-  font-size: 30rpx;
-  font-weight: 700;
-}
-
-/* ========================
-   消息体
-======================== */
-.msg-body {
-  max-width: 540rpx;
-  margin: 0 14rpx;
-}
-
-.msg-meta {
-  display: flex;
-  flex-direction: row;
-  align-items: baseline;
-  gap: 10rpx;
-  margin-bottom: 8rpx;
-}
-
-.meta-right {
-  flex-direction: row-reverse;
-}
-
-.msg-name {
-  font-size: 22rpx;
-  color: #64748b;
-}
-
-.msg-time {
-  font-size: 20rpx;
-  color: #94a3b8;
-}
-
-/* ========================
-   气泡
-======================== */
-.msg-bubble {
-  position: relative;
-  border-radius: 24rpx;
-  padding: 20rpx 24rpx;
-  display: inline-block;
-  max-width: 100%;
-  border: 1rpx solid rgba(148, 163, 184, 0.12);
-}
-
-.msg-bubble-clickable {
-  box-shadow: 0 0 0 2rpx rgba(37, 99, 235, 0.08);
-}
-
-.bubble-white {
-  background: rgba(255, 255, 255, 0.94);
-  box-shadow: 0 12rpx 24rpx rgba(15, 23, 42, 0.05);
-}
-
-.bubble-white::before {
-  content: '';
-  position: absolute;
-  top: 20rpx;
-  left: -10rpx;
-  width: 20rpx;
-  height: 20rpx;
-  background: rgba(255, 255, 255, 0.94);
-  border-left: 1rpx solid rgba(148, 163, 184, 0.12);
-  border-bottom: 1rpx solid rgba(148, 163, 184, 0.12);
-  transform: rotate(45deg);
-}
-
-.bubble-green {
-  background: linear-gradient(180deg, #eaf2ff, #dbeafe);
-  box-shadow: 0 12rpx 24rpx rgba(37, 99, 235, 0.08);
-}
-
-.bubble-green::after {
-  content: '';
-  position: absolute;
-  top: 20rpx;
-  right: -10rpx;
-  width: 20rpx;
-  height: 20rpx;
-  background: #dbeafe;
-  border-right: 1rpx solid rgba(37, 99, 235, 0.1);
-  border-bottom: 1rpx solid rgba(37, 99, 235, 0.1);
-  transform: rotate(-45deg);
-}
-
-.msg-content {
+.intro-title {
   display: block;
-  font-size: 30rpx;
-  line-height: 1.6;
-  color: #0f172a;
-  word-break: break-all;
-}
-
-.coupon-card {
-  margin-top: 18rpx;
-  padding: 22rpx;
-  border-radius: 22rpx;
-  background: linear-gradient(180deg, #fff7ed 0%, #fffbeb 100%);
-  border: 1rpx solid rgba(251, 146, 60, 0.24);
-  box-shadow: inset 0 1rpx 0 rgba(255, 255, 255, 0.6);
-}
-
-.coupon-topline {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12rpx;
-}
-
-.coupon-badge {
-  padding: 6rpx 14rpx;
-  border-radius: 999rpx;
-  background: rgba(249, 115, 22, 0.12);
-  color: #c2410c;
-  font-size: 20rpx;
+  font-size: 32rpx;
+  line-height: 1.4;
+  color: #1f2937;
   font-weight: 700;
 }
 
-.coupon-save {
-  font-size: 22rpx;
-  color: #ea580c;
-  font-weight: 700;
-}
-
-.coupon-title {
+.intro-desc {
   display: block;
   margin-top: 16rpx;
-  font-size: 30rpx;
+  font-size: 26rpx;
+  line-height: 1.75;
+  color: #6b7280;
+}
+
+.section {
+  margin-top: 20rpx;
+  padding: 28rpx;
+  background: #ffffff;
+  border-radius: 20rpx;
+  border: 1rpx solid #e5e7eb;
+}
+
+.section-title {
+  display: block;
+  font-size: 32rpx;
   line-height: 1.4;
-  color: #7c2d12;
+  color: #1f2937;
   font-weight: 700;
 }
 
-.coupon-subtitle {
+.section-hint {
   display: block;
   margin-top: 10rpx;
   font-size: 24rpx;
-  line-height: 1.6;
-  color: #9a3412;
+  line-height: 1.7;
+  color: #6b7280;
 }
 
-.coupon-price-row {
-  display: flex;
-  align-items: baseline;
-  gap: 14rpx;
-  margin-top: 18rpx;
-}
-
-.coupon-price {
-  font-size: 42rpx;
-  color: #ea580c;
-  font-weight: 800;
-}
-
-.coupon-original-price {
-  font-size: 24rpx;
-  color: #94a3b8;
-  text-decoration: line-through;
-}
-
-.coupon-tag-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10rpx;
-  margin-top: 18rpx;
-}
-
-.coupon-tag {
-  padding: 6rpx 12rpx;
-  border-radius: 999rpx;
-  background: rgba(255, 255, 255, 0.72);
-  color: #9a3412;
-  font-size: 20rpx;
-}
-
-.coupon-action-text {
-  display: block;
-  margin-top: 18rpx;
-  font-size: 22rpx;
-  color: #c2410c;
-  font-weight: 600;
-}
-
-.msg-image-shell {
-  margin-top: 18rpx;
-  border-radius: 22rpx;
-  overflow: hidden;
-  background: #f8fafc;
-  border: 1rpx solid rgba(148, 163, 184, 0.16);
-}
-
-.msg-image {
+.feedback-input {
   width: 100%;
-  display: block;
+  min-height: 300rpx;
+  margin-top: 24rpx;
+  padding: 0;
+  background: transparent;
+  box-sizing: border-box;
+  font-size: 28rpx;
+  line-height: 1.8;
+  color: #1f2937;
 }
 
-.msg-image-caption {
-  display: block;
-  margin-top: 12rpx;
-  font-size: 22rpx;
-  color: #64748b;
+.feedback-placeholder {
+  color: #9ca3af;
 }
 
-.msg-delivery-status {
-  display: block;
-  margin-top: 10rpx;
-  font-size: 20rpx;
-  text-align: right;
-  color: #94a3b8;
-}
-
-.msg-delivery-status-sending,
-.msg-delivery-status-queued {
-  color: #64748b;
-}
-
-.msg-delivery-status-failed {
-  color: #ef4444;
-}
-
-/* ========================
-   底部输入区
-======================== */
-.input-area-wrap {
-  position: fixed;
-  bottom: calc(56px + env(safe-area-inset-bottom));
-  left: 0;
-  right: 0;
-  background: rgba(255, 255, 255, 0.96);
-  border-top: 1rpx solid rgba(226, 232, 240, 0.96);
-  box-shadow: 0 -10rpx 28rpx rgba(15, 23, 42, 0.04);
-}
-
-.input-bar {
-  padding: 14rpx 16rpx;
-  padding-bottom: 14rpx;
+.upload-entry {
   display: flex;
-  flex-direction: row;
   align-items: center;
-  gap: 14rpx;
+  margin-top: 24rpx;
+  padding: 22rpx 24rpx;
+  border-radius: 16rpx;
+  background: #f9fafb;
+  border: 1rpx solid #e5e7eb;
 }
 
-.input-action {
-  width: 72rpx;
-  height: 72rpx;
+.upload-entry-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  border-radius: 0;
-  background: transparent;
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 14rpx;
+  background: #eef2ff;
+}
+
+.upload-entry-plus {
+  font-size: 34rpx;
+  color: #2563eb;
+  line-height: 1;
+}
+
+.upload-entry-text {
+  margin-left: 18rpx;
+  font-size: 28rpx;
+  color: #374151;
+  font-weight: 500;
+}
+
+.upload-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-top: 24rpx;
+}
+
+.image-card {
+  position: relative;
+  width: calc((100% - 32rpx) / 3);
+  height: 180rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  background: #e5e7eb;
+}
+
+.image-preview {
+  width: 100%;
+  height: 100%;
+}
+
+.image-remove {
+  position: absolute;
+  top: 10rpx;
+  right: 10rpx;
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  background: rgba(17, 24, 39, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-remove-text {
+  color: #ffffff;
+  font-size: 26rpx;
+  line-height: 1;
+}
+
+.submit-button {
+  width: 100%;
+  margin-top: 32rpx;
+  height: 88rpx;
+  line-height: 88rpx;
+  background: #2563eb;
+  color: #ffffff;
+  border-radius: 18rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  padding: 0;
+  text-align: center;
   border: none;
 }
 
-.input-action-icon {
-  width: 44rpx;
-  height: 44rpx;
-  opacity: 0.96;
-}
-
-.input-action-icon-plus {
-  width: 44rpx;
-  height: 44rpx;
-  padding: 0;
-  border-radius: 0;
-  background: transparent;
-}
-
-.chat-input {
-  flex: 1;
-  background: #f8fafc;
-  border-radius: 22rpx;
-  padding: 14rpx 18rpx;
-  font-size: 30rpx;
-  height: 72rpx;
-  box-sizing: border-box;
-  line-height: 1.4;
-  border: 1rpx solid rgba(148, 163, 184, 0.16);
-}
-
-.input-placeholder {
-  color: #94a3b8;
-  font-size: 28rpx;
-}
-
-.voice-btn {
-  flex: 1;
-  background: #f8fafc;
-  border-radius: 22rpx;
-  height: 72rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1rpx solid rgba(148, 163, 184, 0.16);
-}
-
-.voice-btn-text {
-  font-size: 28rpx;
-  color: #334155;
-  font-weight: 600;
-}
-
-.send-btn {
-  background: #2563eb;
-  border-radius: 22rpx;
-  padding: 14rpx 24rpx;
-  flex-shrink: 0;
-  height: 72rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  box-shadow: 0 10rpx 20rpx rgba(37, 99, 235, 0.2);
-}
-
-.send-text {
-  color: #ffffff;
-  font-size: 28rpx;
-  font-weight: 700;
-}
-
-/* ========================
-   表情面板
-======================== */
-.emoji-panel {
-  display: flex;
-  flex-wrap: wrap;
-  padding: 16rpx 12rpx;
-  padding-bottom: 12rpx;
-  background: rgba(255, 255, 255, 0.98);
-  border-top: 1rpx solid rgba(226, 232, 240, 0.96);
-}
-
-.emoji-item {
-  width: 10%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 14rpx 0;
-}
-
-.emoji-text {
-  font-size: 46rpx;
-}
-
-/* ========================
-   更多面板
-======================== */
-.more-panel {
-  display: flex;
-  flex-direction: row;
-  padding: 30rpx 12rpx 12rpx;
-  background: rgba(255, 255, 255, 0.98);
-  border-top: 1rpx solid rgba(226, 232, 240, 0.96);
-}
-
-.more-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16rpx;
-}
-
-.more-icon-stage {
-  width: 96rpx;
-  height: 96rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  border-radius: 50%;
-  background: rgba(226, 232, 240, 0.96);
-  border: 1rpx solid rgba(148, 163, 184, 0.34);
-}
-
-.more-icon-blue {
-  background: transparent;
-}
-
-.more-icon-slate {
-  background: transparent;
-}
-
-.more-icon-cyan {
-  background: transparent;
-}
-
-.more-icon-amber {
-  background: transparent;
-}
-
-.more-icon-indigo {
-  background: transparent;
-}
-
-.more-icon {
-  width: 68rpx;
-  height: 68rpx;
-}
-
-.more-label {
-  font-size: 22rpx;
-  color: #475569;
-  font-weight: 500;
-  text-align: center;
-  line-height: 1.45;
-}
-
-/* ========================
-   成员弹窗
-======================== */
-.panel-mask {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(15, 23, 42, 0.36);
-  z-index: 200;
-}
-
-.member-panel {
-  position: fixed;
-  top: 0;
-  right: -600rpx;
-  width: 560rpx;
-  height: 100vh;
-  background: linear-gradient(180deg, #f8fbff, #ffffff);
-  z-index: 300;
-  padding: 80rpx 32rpx 40rpx;
-  transition: right 0.3s ease;
-  overflow-y: auto;
-  box-sizing: border-box;
-  border-left: 1rpx solid rgba(148, 163, 184, 0.16);
-  box-shadow: -18rpx 0 36rpx rgba(15, 23, 42, 0.08);
-}
-
-.panel-show {
-  right: 0;
-}
-
-.panel-title {
-  font-size: 32rpx;
-  font-weight: 700;
-  color: #0f172a;
-  display: block;
-  margin-bottom: 32rpx;
-}
-
-.member-item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 20rpx 0;
-  border-bottom: 1rpx solid #edf2f7;
-}
-
-.member-avatar {
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 24rpx;
-  background: linear-gradient(135deg, #2563eb, #60a5fa);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 20rpx;
-}
-
-.member-avatar-text {
-  color: #ffffff;
-  font-size: 32rpx;
-  font-weight: 700;
-}
-
-.member-info {
-  flex: 1;
-}
-
-.member-name {
-  font-size: 28rpx;
-  color: #0f172a;
-  font-weight: 600;
-  display: block;
-}
-
-.member-role {
-  font-size: 22rpx;
-  color: #94a3b8;
-  display: block;
-  margin-top: 4rpx;
-}
-
-.divider {
-  height: 1rpx;
-  background: #ebebeb;
-  margin: 24rpx 0;
-}
-
-.clear-btn {
-  margin-top: 8rpx;
-  text-align: center;
-  padding: 24rpx;
-  background: #ffffff;
-  border-radius: 18rpx;
-  border: 1rpx solid rgba(148, 163, 184, 0.16);
-}
-
-.clear-btn-text {
-  color: #ef4444;
-  font-size: 28rpx;
-  font-weight: 600;
-}
-
-/* ========================
-   空状态
-======================== */
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 160rpx 64rpx;
-}
-
-.empty-icon {
-  width: 120rpx;
-  height: 120rpx;
-  margin-bottom: 32rpx;
-}
-
-.empty-title {
-  font-size: 34rpx;
-  font-weight: 700;
-  color: #0f172a;
-  margin-bottom: 20rpx;
-}
-
-.empty-desc {
-  font-size: 26rpx;
-  color: #64748b;
-  line-height: 1.7;
-  text-align: center;
-  margin-bottom: 48rpx;
-}
-
-.empty-btn {
-  width: 320rpx;
+.submit-button::after {
+  border: none;
 }

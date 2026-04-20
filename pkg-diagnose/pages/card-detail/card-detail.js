@@ -1,7 +1,12 @@
 const { fetchStudentPointLearningSummary } = require('../../../utils/student-api')
 const { buildStageUrl } = require('../../../utils/path-stage-routes')
+const { buildReviewItemVideoRoute } = require('../../../utils/polyv-video')
+const {
+  buildLearningPathProgress,
+  syncLearningPathFromServer,
+} = require('../../../utils/learning-path')
 
-const pointMap = {
+const POINT_MAP = {
   1: { name: '要点不全不准' },
   2: { name: '提炼转述困难' },
   3: { name: '分析结构不清' },
@@ -16,32 +21,103 @@ const PATH_STAGE_TEMPLATE = [
   {
     key: 'diagnose',
     title: '诊断',
-    reviewItems: ['诊断试卷', '解析课回放', '1v1诊断回放', '诊断报告'],
+    reviewItems: [
+      '诊断试卷',
+      '听解析课',
+      '去回顾（直播课回放链接）',
+    ],
   },
   {
     key: 'theory',
     title: '理论',
-    reviewItems: ['1v1共识回放', '1v1共识课后反馈', '课前讲义', '理论课回放', '视频讲解', '1v1纠偏回放', '1v1纠偏课后反馈'],
+    reviewItems: [
+      '课前讲义（PDF）',
+      {
+        title: '第一轮',
+        expanded: true,
+        children: [
+          '理论课（录播）',
+          '课后作业（PDF）',
+          '视频讲解',
+        ],
+      },
+      {
+        title: '第二轮',
+        expanded: true,
+        children: [
+          '理论课（录播）',
+          '课后作业（PDF）',
+          '视频讲解',
+        ],
+      },
+      {
+        title: '第三轮',
+        expanded: true,
+        children: [
+          '理论课（录播）',
+          '课后作业（PDF）',
+          '视频讲解',
+        ],
+      },
+      '上传思维导图（PDF/照片）',
+    ],
   },
   {
     key: 'training',
     title: '实训',
-    reviewItems: ['训练题目', '已交作业', '课堂反馈'],
+    reviewItems: [
+      {
+        title: '第一题',
+        expanded: true,
+        children: [
+          '题目（PDF）',
+          '视频讲解（PDF 文档及视频链接）',
+          '批改反馈【基于前者的一个 PDF】',
+        ],
+      },
+      {
+        title: '第二题',
+        expanded: true,
+        children: [
+          '题目（PDF）',
+          '视频讲解（PDF 文档及视频链接）',
+          '批改反馈【基于前者的一个 PDF】',
+        ],
+      },
+      {
+        title: '第三题',
+        expanded: true,
+        children: [
+          '题目（PDF）',
+          '视频讲解（PDF 文档及视频链接）',
+          '批改反馈【基于前者的一个 PDF】',
+        ],
+      },
+    ],
   },
   {
     key: 'exam',
     title: '测试',
-    reviewItems: ['测试题目', '卡点报告', '课堂反馈'],
-  },
-  {
-    key: 'report',
-    title: '报告',
-    reviewItems: ['先停一停，把前面几步整理好，再去刷题里继续巩固。'],
+    reviewItems: [
+      '题目（PDF）',
+      '视频讲解（PDF 文档及视频链接）',
+      '批改反馈【基于前者的一个 PDF】',
+      '查看卡点报告',
+    ],
   },
   {
     key: 'drill',
     title: '刷题',
-    reviewItems: ['刷题题目', '已交作业', '课堂反馈'],
+    reviewItems: [
+      '计时器',
+      '题目（PDF）',
+      '上传作业（PDF/图片）',
+      'AI批改',
+      '去上课（直播课连接）',
+      '去回顾（直播课回放连接）',
+      '群内答疑总结',
+      '刷题报告总结',
+    ],
   },
 ]
 
@@ -59,20 +135,171 @@ const DEMO_LEARNING_SUMMARY = {
   lastHomeworkSubmitAt: '2026-03-25T21:14:00',
 }
 
-function buildPathStages(courseStatus = 'pending') {
-  const currentIndex = courseStatus === 'solved' ? 5 : 2
+function cleanReviewItemTitle(title = '') {
+  return String(title || '')
+    .replace(/（[^）]*）/g, '')
+    .replace(/【[^】]*】/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
 
-  return PATH_STAGE_TEMPLATE.map((item, index) => {
-    let status = 'pending'
+function buildReviewEntry(title = '') {
+  const safeTitle = String(title || '').trim()
 
-    if (index < currentIndex) {
-      status = 'done'
-    } else if (index === currentIndex) {
-      status = 'current'
+  if (!safeTitle) {
+    return {
+      actionText: '查看',
+      actionType: 'view',
     }
+  }
+
+  if (safeTitle.includes('去回顾')) {
+    return {
+      actionText: '去回顾',
+      actionType: 'review',
+    }
+  }
+
+  if (safeTitle.includes('去上课')) {
+    return {
+      actionText: '去上课',
+      actionType: 'live',
+    }
+  }
+
+  if (safeTitle.includes('上传')) {
+    return {
+      actionText: '去上传',
+      actionType: 'upload',
+    }
+  }
+
+  if (
+    safeTitle.includes('讲义')
+    || safeTitle.includes('题目')
+    || safeTitle.includes('试卷')
+    || safeTitle.includes('作业')
+  ) {
+    return {
+      actionText: 'PDF',
+      actionType: 'pdf',
+    }
+  }
+
+  if (
+    safeTitle.includes('理论课')
+    || safeTitle.includes('视频讲解')
+    || safeTitle.includes('听解析课')
+  ) {
+    return {
+      actionText: '视频',
+      actionType: 'video',
+    }
+  }
+
+  if (safeTitle.includes('报告')) {
+    return {
+      actionText: '报告',
+      actionType: 'report',
+    }
+  }
+
+  if (safeTitle.includes('课表')) {
+    return {
+      actionText: '课表',
+      actionType: 'schedule',
+    }
+  }
+
+  if (safeTitle.includes('计时器')) {
+    return {
+      actionText: '开始',
+      actionType: 'timer',
+    }
+  }
+
+  return {
+    actionText: '查看',
+    actionType: 'view',
+  }
+}
+
+function buildReviewItemUrl(stageKey = '', rawTitle = '', pointId = 0, pointName = '', reviewIndex = -1, childIndex = -1) {
+  const videoUrl = buildReviewItemVideoRoute({
+    pointName,
+    stageKey,
+    reviewIndex,
+    childIndex,
+    title: cleanReviewItemTitle(rawTitle),
+  })
+
+  if (videoUrl) {
+    return videoUrl
+  }
+
+  const targetStageKey = String(rawTitle || '').includes('报告') ? 'report' : stageKey
+  return buildStageUrl(targetStageKey, pointId, pointName)
+}
+
+function buildReviewItem(stageKey = '', reviewItem = '', reviewIndex = 0, pointId = 0, pointName = '') {
+  if (reviewItem && typeof reviewItem === 'object') {
+    const rawTitle = reviewItem.title || ''
+
+    return {
+      id: `${stageKey}-${reviewIndex}`,
+      rawTitle,
+      title: cleanReviewItemTitle(rawTitle),
+      expanded: reviewItem.expanded !== false,
+      children: (reviewItem.children || []).map((childTitle, childIndex) => ({
+        id: `${stageKey}-${reviewIndex}-${childIndex}`,
+        rawTitle: childTitle,
+        title: cleanReviewItemTitle(childTitle),
+        url: buildReviewItemUrl(stageKey, childTitle, pointId, pointName, reviewIndex, childIndex),
+        ...buildReviewEntry(childTitle),
+      })),
+    }
+  }
+
+  return {
+    id: `${stageKey}-${reviewIndex}`,
+    rawTitle: reviewItem,
+    title: cleanReviewItemTitle(reviewItem),
+    url: buildReviewItemUrl(stageKey, reviewItem, pointId, pointName, reviewIndex, -1),
+    ...buildReviewEntry(reviewItem),
+  }
+}
+
+function isLockedCourseStatus(courseStatus = 'pending') {
+  return courseStatus === 'locked'
+}
+
+function normalizeCourseStatus(courseStatus = '') {
+  const safeStatus = String(courseStatus || '').trim()
+
+  if (['solved', 'completed', 'done'].includes(safeStatus)) {
+    return 'solved'
+  }
+
+  if (['learning', 'current', 'in_progress'].includes(safeStatus)) {
+    return 'learning'
+  }
+
+  if (safeStatus === 'locked') {
+    return 'locked'
+  }
+
+  return 'pending'
+}
+
+function buildPathStages(stageStatusMap = {}, pointId = 0, pointName = '') {
+  return PATH_STAGE_TEMPLATE.map((item, index) => {
+    const status = stageStatusMap[item.key] || 'locked'
 
     return {
       ...item,
+      reviewItems: (item.reviewItems || []).map((reviewItem, reviewIndex) => (
+        buildReviewItem(item.key, reviewItem, reviewIndex, pointId, pointName)
+      )),
       index: index + 1,
       status,
       expanded: true,
@@ -82,13 +309,18 @@ function buildPathStages(courseStatus = 'pending') {
 }
 
 function padNumber(value) {
-  return `${value}`.padStart(2, '0')
+  return String(value).padStart(2, '0')
+}
+
+function parseDate(dateText = '') {
+  if (!dateText) return null
+  const safeDate = new Date(String(dateText).replace(' ', 'T'))
+  return Number.isNaN(safeDate.getTime()) ? null : safeDate
 }
 
 function formatMonthDay(dateText = '') {
-  if (!dateText) return ''
-  const safeDate = new Date(String(dateText).replace(' ', 'T'))
-  if (Number.isNaN(safeDate.getTime())) return ''
+  const safeDate = parseDate(dateText)
+  if (!safeDate) return ''
   return `${safeDate.getMonth() + 1}.${safeDate.getDate()}`
 }
 
@@ -110,41 +342,37 @@ function formatDurationText(durationSec = 0) {
 }
 
 function formatTimeText(dateText = '') {
-  if (!dateText) return ''
-  const safeDate = new Date(String(dateText).replace(' ', 'T'))
-  if (Number.isNaN(safeDate.getTime())) return ''
+  const safeDate = parseDate(dateText)
+  if (!safeDate) return ''
 
   const hours = safeDate.getHours()
   const minutes = safeDate.getMinutes()
+  const minuteText = minutes === 0 ? '整' : padNumber(minutes)
 
   if (hours < 6) {
-    return minutes === 0 ? `凌晨${hours}点` : `凌晨${hours}:${padNumber(minutes)}`
+    return minutes === 0 ? `凌晨${hours}点` : `凌晨${hours}:${minuteText}`
   }
 
   if (hours < 12) {
-    return minutes === 0 ? `早上${hours}点` : `早上${hours}:${padNumber(minutes)}`
+    return minutes === 0 ? `早上${hours}点` : `早上${hours}:${minuteText}`
   }
 
   if (hours < 18) {
     const displayHour = hours === 12 ? 12 : hours - 12
-    return minutes === 0 ? `下午${displayHour}点` : `下午${displayHour}:${padNumber(minutes)}`
+    return minutes === 0 ? `下午${displayHour}点` : `下午${displayHour}:${minuteText}`
   }
 
-  return minutes === 0 ? `晚上${hours}点` : `晚上${hours}:${padNumber(minutes)}`
+  return minutes === 0 ? `晚上${hours}点` : `晚上${hours}:${minuteText}`
 }
 
 function getTimeHour(dateText = '') {
-  if (!dateText) return null
-  const safeDate = new Date(String(dateText).replace(' ', 'T'))
-  if (Number.isNaN(safeDate.getTime())) return null
-  return safeDate.getHours()
+  const safeDate = parseDate(dateText)
+  return safeDate ? safeDate.getHours() : null
 }
 
 function formatRelativeDateTime(dateText = '') {
-  if (!dateText) return ''
-
-  const safeDate = new Date(String(dateText).replace(' ', 'T'))
-  if (Number.isNaN(safeDate.getTime())) return ''
+  const safeDate = parseDate(dateText)
+  if (!safeDate) return ''
 
   const target = new Date(safeDate)
   target.setHours(0, 0, 0, 0)
@@ -216,7 +444,7 @@ function buildEncouragementCandidates(summary = {}) {
     const earliestTimeText = formatTimeText(summary.earliestSession.startedAt)
 
     if (earliestTimeText && earliestHour !== null && earliestHour < 10) {
-      candidates.push(`有一次，你从${earliestTimeText}就开始碰这个卡点了。`)
+      candidates.push(`有一次，你从${earliestTimeText}就开始啃这个卡点了。`)
       candidates.push(`你曾经在${earliestTimeText}就开始学这个卡点。`)
     }
   }
@@ -241,7 +469,7 @@ function buildEncouragementCandidates(summary = {}) {
   }
 
   if (!candidates.length) {
-    candidates.push('从这里开始，慢慢把这个卡点走顺。')
+    candidates.push('从这里开始，慢慢把这个卡点啃透。')
   }
 
   return candidates
@@ -265,27 +493,33 @@ Page({
     pointId: 2,
     pointName: '提炼转述困难',
     courseStatus: 'pending',
-    pathStages: buildPathStages('pending'),
+    isLocked: false,
+    pathStages: buildPathStages(buildLearningPathProgress('提炼转述困难', 'pending').stageStatusMap, 2, '提炼转述困难'),
     learningSummary: buildLearningSummary({}, 2),
   },
 
   onLoad(options) {
+    this.app = getApp()
     const id = parseInt(options.id, 10) || 2
-    const courseStatus = options.status === 'solved' ? 'solved' : 'pending'
-    const point = pointMap[id] || pointMap[2]
+    const courseStatus = normalizeCourseStatus(options.status)
+    const optionPointName = options.pointName ? decodeURIComponent(options.pointName) : ''
+    const point = POINT_MAP[id] || POINT_MAP[2]
+    const pointName = optionPointName || point.name
+    const initialProgress = buildLearningPathProgress(pointName, courseStatus)
 
     this.setData({
       pointId: id,
-      pointName: point.name,
-      courseStatus,
-      pathStages: buildPathStages(courseStatus),
+      pointName,
+      courseStatus: initialProgress.courseStatus,
+      isLocked: isLockedCourseStatus(initialProgress.courseStatus),
+      pathStages: buildPathStages(initialProgress.stageStatusMap, id, pointName),
     })
 
     wx.setNavigationBarTitle({
-      title: point.name,
+      title: pointName,
     })
 
-    void this.loadLearningSummary(point.name)
+    void this.initializePage(pointName)
   },
 
   onShow() {
@@ -295,23 +529,108 @@ Page({
   },
 
   onViewReport() {
+    if (this.data.isLocked) {
+      wx.showToast({
+        title: '还未解锁',
+        icon: 'none',
+      })
+      return
+    }
+
     const { pointId, pointName } = this.data
     const url = buildStageUrl('report', pointId, pointName)
-    if (!url) return
+
+    if (!url) {
+      return
+    }
 
     wx.navigateTo({ url })
   },
 
-  applyLearningSummary(summary = {}) {
-    this._learningSummarySource = summary
+  async initializePage(pointName) {
+    await this.loadPathProgress(pointName)
+    await this.loadLearningSummary(pointName)
+  },
+
+  applyPathProgress(progress = {}) {
+    const resolvedCourseStatus = normalizeCourseStatus(progress.courseStatus || this.data.courseStatus)
+
     this.setData({
-      learningSummary: buildLearningSummary(summary, this.data.pointId),
+      courseStatus: resolvedCourseStatus,
+      isLocked: isLockedCourseStatus(resolvedCourseStatus),
+      pathStages: buildPathStages(progress.stageStatusMap || {}, this.data.pointId, this.data.pointName),
+    })
+  },
+
+  async loadPathProgress(pointName) {
+    try {
+      await syncLearningPathFromServer(pointName, this.app)
+    } catch (_error) {}
+
+    this.applyPathProgress(buildLearningPathProgress(pointName, this.data.courseStatus))
+  },
+
+  onReviewItemTap(e) {
+    const { status, url, title } = e.currentTarget.dataset
+
+    if (status === 'locked') {
+      wx.showToast({
+        title: '还未解锁',
+        icon: 'none',
+      })
+      return
+    }
+
+    if (status === 'pending') {
+      wx.showToast({
+        title: '你还没学到这里哦~',
+        icon: 'none',
+      })
+      return
+    }
+
+    if (!url) {
+      wx.showToast({
+        title: `${title || '内容'}待接入`,
+        icon: 'none',
+      })
+      return
+    }
+
+    wx.navigateTo({ url })
+  },
+
+  toggleReviewGroup(e) {
+    const { stageKey, childId } = e.currentTarget.dataset
+
+    if (!stageKey || !childId) {
+      return
+    }
+
+    this.setData({
+      pathStages: this.data.pathStages.map((stage) => {
+        if (stage.key !== stageKey) {
+          return stage
+        }
+
+        return {
+          ...stage,
+          reviewItems: stage.reviewItems.map((item) => (
+            item.id === childId
+              ? { ...item, expanded: !item.expanded }
+              : item
+          )),
+        }
+      }),
     })
   },
 
   toggleStageExpand(e) {
     const { key } = e.currentTarget.dataset
-    if (!key) return
+
+    if (!key) {
+      return
+    }
 
     this.setData({
       pathStages: this.data.pathStages.map((item) => (
@@ -322,7 +641,19 @@ Page({
     })
   },
 
+  applyLearningSummary(summary = {}) {
+    this._learningSummarySource = summary
+    this.setData({
+      learningSummary: buildLearningSummary(summary, this.data.pointId),
+    })
+  },
+
   async loadLearningSummary(pointName) {
+    if (this.data.isLocked) {
+      this.applyLearningSummary({})
+      return
+    }
+
     try {
       const result = await fetchStudentPointLearningSummary(pointName, this)
       const hasStudyData = result && (
@@ -332,6 +663,7 @@ Page({
         || !!result.lastPlaybackAt
         || !!result.lastHomeworkSubmitAt
       )
+
       this.applyLearningSummary(hasStudyData ? result : DEMO_LEARNING_SUMMARY)
     } catch (error) {
       this.applyLearningSummary(DEMO_LEARNING_SUMMARY)

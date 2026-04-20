@@ -1,5 +1,5 @@
-const { ensureSilentLogin } = require('./auth')
-const { requestWithStudentAuth } = require('./request')
+const { ensureSilentLogin, getStudentAuthHeader } = require('./auth')
+const { getServerBase, requestWithStudentAuth } = require('./request')
 
 function unwrapListPayload(payload) {
   if (Array.isArray(payload)) {
@@ -13,7 +13,7 @@ function unwrapListPayload(payload) {
   return []
 }
 
-async function studentRequest({ url, method = 'GET', data = {} } = {}, appInstance) {
+async function studentRequest({ url, method = 'GET', data = {} } = {}, appInstance, requestOptions = {}) {
   await ensureSilentLogin(appInstance)
 
   return requestWithStudentAuth({
@@ -21,6 +21,7 @@ async function studentRequest({ url, method = 'GET', data = {} } = {}, appInstan
     method,
     data,
     appInstance,
+    ...requestOptions,
   })
 }
 
@@ -30,10 +31,21 @@ async function fetchStudentProfile(appInstance) {
   }, appInstance)
 }
 
+async function fetchStudentAccessSummary(appInstance) {
+  return studentRequest({
+    url: '/api/student/access-summary',
+  }, appInstance)
+}
+
 async function fetchStudentReviewOverview(appInstance) {
   return studentRequest({
     url: '/api/student/review-overview',
-  }, appInstance)
+  }, appInstance, {
+    clearOnUnauthorized: false,
+    redirectOnUnauthorized: '',
+    showErrorToast: false,
+    showNetworkErrorToast: false,
+  })
 }
 
 async function fetchStudentPointLearningSummary(pointName, appInstance) {
@@ -59,6 +71,117 @@ async function fetchStudentStudyCourse(courseId, appInstance) {
   return studentRequest({
     url: `/api/student/study/${courseId}`,
   }, appInstance)
+}
+
+async function fetchStudentLearningPath(pointName, appInstance) {
+  if (!pointName) {
+    return null
+  }
+
+  return studentRequest({
+    url: '/api/student/learning-path',
+    data: { pointName },
+  }, appInstance)
+}
+
+async function updateStudentLearningPathTask(taskId, data = {}, appInstance) {
+  if (!taskId) {
+    return null
+  }
+
+  return studentRequest({
+    url: `/api/student/learning-path/tasks/${taskId}`,
+    method: 'PATCH',
+    data,
+  }, appInstance)
+}
+
+async function uploadStudentSubmission(file = {}, data = {}, appInstance) {
+  if (!file || !file.path) {
+    throw new Error('缺少上传文件')
+  }
+
+  await ensureSilentLogin(appInstance)
+
+  return new Promise((resolve, reject) => {
+    wx.uploadFile({
+      url: `${String(getServerBase(appInstance) || '').replace(/\/+$/, '')}/api/submissions`,
+      filePath: file.path,
+      name: 'file',
+      header: getStudentAuthHeader(),
+      formData: {
+        fileName: file.name || '',
+        ...data,
+      },
+      success: (res) => {
+        let payload = {}
+        try {
+          payload = typeof res.data === 'string' ? JSON.parse(res.data) : (res.data || {})
+        } catch (error) {
+          reject(new Error('上传结果解析失败'))
+          return
+        }
+
+        if (res.statusCode >= 200 && res.statusCode < 300 && payload && payload.ok) {
+          resolve(payload)
+          return
+        }
+
+        reject(new Error((payload && (payload.message || payload.error)) || '上传失败'))
+      },
+      fail: reject,
+    })
+  })
+}
+
+async function fetchStudentSubmissions(data = {}, appInstance) {
+  const result = await studentRequest({
+    url: '/api/student/submissions',
+    data,
+  }, appInstance)
+
+  return unwrapListPayload(result)
+}
+
+async function fetchStudentSubmission(submissionId, appInstance) {
+  if (!submissionId) {
+    return null
+  }
+
+  return studentRequest({
+    url: `/api/student/submissions/${submissionId}`,
+  }, appInstance)
+}
+
+async function openStudentReviewedSubmission(submissionId, appInstance) {
+  if (!submissionId) {
+    throw new Error('缺少提交记录')
+  }
+
+  await ensureSilentLogin(appInstance)
+  const base = String(getServerBase(appInstance) || '').replace(/\/+$/, '')
+
+  return new Promise((resolve, reject) => {
+    wx.downloadFile({
+      url: `${base}/api/student/submissions/${submissionId}/review-file`,
+      header: getStudentAuthHeader(),
+      success: (res) => {
+        if (res.statusCode < 200 || res.statusCode >= 300 || !res.tempFilePath) {
+          reject(new Error('下载批改 PDF 失败'))
+          return
+        }
+
+        wx.openDocument({
+          filePath: res.tempFilePath,
+          fileType: 'pdf',
+          showMenu: true,
+          success: resolve,
+          fail: reject,
+        })
+      },
+      fail: reject,
+    })
+  })
 }
 
 async function fetchStudentLeaveRecords(appInstance) {
@@ -142,18 +265,34 @@ async function submitStudentMailbox(data, appInstance) {
   }, appInstance)
 }
 
+async function submitStudentFeedback(data, appInstance) {
+  return studentRequest({
+    url: '/api/student/feedbacks',
+    method: 'POST',
+    data,
+  }, appInstance)
+}
+
 module.exports = {
+  fetchStudentAccessSummary,
   fetchStudentLeaveRecords,
+  fetchStudentLearningPath,
   fetchStudentNotifications,
   fetchStudentPointLearningSummary,
   fetchStudentProfile,
   fetchStudentReviewOverview,
+  fetchStudentSubmission,
+  fetchStudentSubmissions,
   fetchStudentStudyCourse,
+  openStudentReviewedSubmission,
   recordStudentStudySession,
   markAllStudentNotificationsRead,
   markStudentNotificationRead,
   studentRequest,
+  submitStudentFeedback,
   submitStudentLeave,
   submitStudentMailbox,
+  uploadStudentSubmission,
+  updateStudentLearningPathTask,
   unwrapListPayload,
 }

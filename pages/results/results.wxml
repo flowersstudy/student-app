@@ -181,66 +181,33 @@
     </view>
   </view>
 
-  <view class="card fold-card fold-card-solved">
-    <view class="fold-card-head" bindtap="toggleSection" data-key="solved">
+  <view class="card fold-card review-point-card">
+    <view class="fold-card-head">
       <view class="fold-card-head-main">
         <view class="fold-card-title-row">
-          <text class="fold-card-title">已解决卡点</text>
-          <text class="fold-card-tag fold-card-tag-solved">{{solvedPoints.length}} 个</text>
+          <text class="fold-card-title">八个卡点</text>
+          <text class="fold-card-tag">{{reviewPointList.length}} 个</text>
         </view>
-      </view>
-      <view class="fold-card-head-side">
-        <view class="section-toggle-arrow {{sectionExpanded.solved ? 'section-toggle-arrow-open' : ''}}"></view>
       </view>
     </view>
 
-    <view wx:if="{{sectionExpanded.solved}}" class="fold-card-body fold-card-list-body">
+    <view class="fold-card-body fold-card-list-body">
       <view
-        wx:for="{{solvedPoints}}"
+        wx:for="{{reviewPointList}}"
         wx:key="id"
-        class="fold-card-list-item fold-card-list-item-solved fold-card-list-item-clickable"
+        class="fold-card-list-item fold-card-list-item-clickable review-point-item review-point-item-{{item.status}}"
         bindtap="goCardDetail"
         data-id="{{item.id}}"
-        data-status="solved"
+        data-status="{{item.status}}"
+        data-point-name="{{item.name}}"
       >
-        <view class="row-between">
-          <text class="point-block-name">{{item.name}}</text>
-          <view class="point-path-entry">
-            <text class="point-path-entry-text">去回顾</text>
-            <view class="point-path-entry-arrow"></view>
+        <view class="review-point-row">
+          <view class="review-point-main">
+            <text class="point-block-name">{{item.name}}</text>
           </view>
-        </view>
-      </view>
-    </view>
-  </view>
-
-  <view class="card fold-card fold-card-pending">
-    <view class="fold-card-head" bindtap="toggleSection" data-key="pending">
-      <view class="fold-card-head-main">
-        <view class="fold-card-title-row">
-          <text class="fold-card-title">待突破卡点</text>
-          <text class="fold-card-tag fold-card-tag-pending">{{pendingPoints.length}} 个</text>
-        </view>
-      </view>
-      <view class="fold-card-head-side">
-        <view class="section-toggle-arrow {{sectionExpanded.pending ? 'section-toggle-arrow-open' : ''}}"></view>
-      </view>
-    </view>
-
-      <view wx:if="{{sectionExpanded.pending}}" class="fold-card-body fold-card-list-body">
-      <view
-        wx:for="{{pendingPoints}}"
-        wx:key="id"
-        class="fold-card-list-item fold-card-list-item-pending fold-card-list-item-clickable"
-        bindtap="goCardDetail"
-        data-id="{{item.id}}"
-        data-status="pending"
-      >
-        <view class="row-between">
-          <text class="point-block-name">{{item.name}}</text>
-          <view class="point-path-entry">
-            <text class="point-path-entry-text">去回顾</text>
-            <view class="point-path-entry-arrow"></view>
+          <view class="review-point-status-slot">
+            <text class="review-point-status review-point-status-{{item.status}}">{{item.statusText}}</text>
+            <view class="review-point-status-arrow review-point-status-arrow-{{item.status}}"></view>
           </view>
         </view>
       </view>

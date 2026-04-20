@@ -1,10 +1,24 @@
 const { uiIcons } = require('../../../utils/ui-icons')
 const { finishStudySession, startStudySession } = require('../../../utils/study-session')
 const { normalizeStudyOptions } = require('../../../utils/study-route')
+const { resolvePolyvVideo } = require('../../../utils/polyv-video')
 const {
   fetchStudentPointLearningSummary,
   fetchStudentStudyCourse,
+  submitStudentFeedback,
 } = require('../../../utils/student-api')
+
+function decodeOption(value, fallback = '') {
+  if (value === undefined || value === null || `${value}` === '') {
+    return fallback
+  }
+
+  try {
+    return decodeURIComponent(`${value}`)
+  } catch (error) {
+    return `${value}`
+  }
+}
 
 function normalizeFileResource(resource = {}, index = 0) {
   return {
@@ -30,7 +44,7 @@ function buildRecordedTasks({ preFiles, videoTitle, postFiles, postVideoTitle })
   if (videoTitle) {
     tasks.push({
       id: 'video_main',
-      title: '观看理论课录播视频',
+      title: '观看录播视频',
       desc: videoTitle,
       done: false,
     })
@@ -48,7 +62,7 @@ function buildRecordedTasks({ preFiles, videoTitle, postFiles, postVideoTitle })
   if (postVideoTitle) {
     tasks.push({
       id: 'video_post',
-      title: '观看课后作业讲解视频',
+      title: '观看课后讲解视频',
       desc: postVideoTitle,
       done: false,
     })
@@ -56,8 +70,8 @@ function buildRecordedTasks({ preFiles, videoTitle, postFiles, postVideoTitle })
 
   tasks.push({
     id: 'submit_homework',
-    title: '上传作业等待老师点评',
-    desc: '老师将在 24 小时内批改',
+    title: '上传作业等待老师批改',
+    desc: '老师将在 24 小时内补充批改反馈',
     done: false,
   })
 
@@ -106,7 +120,7 @@ function extractLessonPayload(study = {}) {
     })
   })
 
-  const videoTitle = mainVideos[0] ? mainVideos[0].title : '理论课'
+  const videoTitle = mainVideos[0] ? mainVideos[0].title : '录播课'
   const videoId = mainVideos[0] ? mainVideos[0].videoId : ''
   const postVideoTitle = mainVideos[1] ? mainVideos[1].title : ''
   const postVideoId = mainVideos[1] ? mainVideos[1].videoId : ''
@@ -127,24 +141,50 @@ function extractLessonPayload(study = {}) {
   }
 }
 
+function buildPolyvPayload(options = {}, pointName = '') {
+  const slotKey = decodeOption(options.polyvSlotKey || '')
+  const directVideoId = decodeOption(options.videoId || '')
+  const directVideoTitle = decodeOption(options.videoTitle || '')
+  const resolved = resolvePolyvVideo(pointName, slotKey)
+  const videoId = directVideoId || resolved.vid || ''
+  const videoTitle = directVideoTitle || resolved.title || pointName || '录播课'
+
+  return {
+    preFiles: [],
+    videoId,
+    videoTitle,
+    postFiles: [],
+    postVideoId: '',
+    postVideoTitle: '',
+    recordedTasks: buildRecordedTasks({
+      preFiles: [],
+      videoTitle,
+      postFiles: [],
+      postVideoTitle: '',
+    }),
+  }
+}
+
 Page({
   data: {
     uiIcons,
     loading: true,
     preFiles: [],
     videoId: '',
-    videoTitle: '理论课',
+    videoTitle: '录播课',
     postFiles: [],
     postVideoId: '',
     postVideoTitle: '',
     feedback: '',
+    submittingFeedback: false,
     recordedTasks: [],
     recordedDoneCount: 0,
   },
 
   onLoad(options) {
+    this.rawOptions = options || {}
     this.studyOptions = normalizeStudyOptions(options, {
-      pointName: '理论课',
+      pointName: '录播课',
     })
     void this.loadRecordedLesson()
   },
@@ -168,6 +208,21 @@ Page({
 
   async loadRecordedLesson() {
     try {
+      const hasDirectPolyvSource = !!(
+        decodeOption(this.rawOptions.videoId || '')
+        || decodeOption(this.rawOptions.polyvSlotKey || '')
+      )
+
+      if (hasDirectPolyvSource) {
+        const payload = buildPolyvPayload(this.rawOptions, this.studyOptions.pointName)
+        this.setData({
+          loading: false,
+          ...payload,
+          recordedDoneCount: 0,
+        })
+        return
+      }
+
       let courseId = this.studyOptions.courseId
 
       if (!courseId && this.studyOptions.pointName) {
@@ -177,15 +232,13 @@ Page({
       }
 
       if (!courseId) {
+        const payload = buildPolyvPayload({
+          videoTitle: this.studyOptions.pointName || '录播课',
+        }, this.studyOptions.pointName)
+
         this.setData({
           loading: false,
-          videoTitle: this.studyOptions.pointName || '理论课',
-          recordedTasks: buildRecordedTasks({
-            preFiles: [],
-            videoTitle: this.studyOptions.pointName || '理论课',
-            postFiles: [],
-            postVideoTitle: '',
-          }),
+          ...payload,
         })
         return
       }
@@ -199,25 +252,25 @@ Page({
         recordedDoneCount: 0,
       })
     } catch (error) {
+      const payload = buildPolyvPayload({
+        videoTitle: this.studyOptions.pointName || '录播课',
+      }, this.studyOptions.pointName)
+
       this.setData({
         loading: false,
-        videoTitle: this.studyOptions.pointName || '理论课',
-        recordedTasks: buildRecordedTasks({
-          preFiles: [],
-          videoTitle: this.studyOptions.pointName || '理论课',
-          postFiles: [],
-          postVideoTitle: '',
-        }),
+        ...payload,
+        recordedDoneCount: 0,
       })
     }
   },
 
   openFile(e) {
     const { list, id } = e.currentTarget.dataset
-    const file = this.data[list].find((item) => String(item.id) === String(id))
+    const targetList = Array.isArray(this.data[list]) ? this.data[list] : []
+    const file = targetList.find((item) => String(item.id) === String(id))
     if (!file || !file.url) return
 
-    const files = this.data[list].map((item) => (
+    const files = targetList.map((item) => (
       String(item.id) === String(id) ? { ...item, opened: true } : item
     ))
 
@@ -231,7 +284,7 @@ Page({
   copyVideoId(videoId = '', title = '视频') {
     if (!videoId) {
       wx.showToast({
-        title: `${title}暂未上传`,
+        title: `${title}暂未配置`,
         icon: 'none',
       })
       return
@@ -249,11 +302,11 @@ Page({
   },
 
   enterVideo() {
-    this.copyVideoId(this.data.videoId, '理论课视频')
+    this.copyVideoId(this.data.videoId, this.data.videoTitle || '录播视频')
   },
 
   enterPostVideo() {
-    this.copyVideoId(this.data.postVideoId, '讲解视频')
+    this.copyVideoId(this.data.postVideoId, this.data.postVideoTitle || '讲解视频')
   },
 
   askTeacher() {
@@ -275,5 +328,48 @@ Page({
 
   onFeedbackInput(e) {
     this.setData({ feedback: e.detail.value })
+  },
+
+  async submitLessonFeedback() {
+    const content = String(this.data.feedback || '').trim()
+    if (!content) {
+      wx.showToast({
+        title: '请先填写课程反馈',
+        icon: 'none',
+      })
+      return
+    }
+
+    if (this.data.submittingFeedback) return
+
+    this.setData({ submittingFeedback: true })
+
+    try {
+      await submitStudentFeedback({
+        source: 'recorded_lesson',
+        title: this.data.videoTitle || this.studyOptions.pointName || '录播课反馈',
+        pointName: this.studyOptions.pointName || '',
+        courseId: this.studyOptions.courseId || '',
+        content,
+        meta: {
+          videoTitle: this.data.videoTitle || '',
+          recordedDoneCount: this.data.recordedDoneCount || 0,
+          recordedTasksTotal: Array.isArray(this.data.recordedTasks) ? this.data.recordedTasks.length : 0,
+        },
+      }, getApp())
+
+      this.setData({ feedback: '' })
+      wx.showToast({
+        title: '反馈已提交',
+        icon: 'success',
+      })
+    } catch (error) {
+      wx.showToast({
+        title: (error && error.message) || '提交失败，请稍后再试',
+        icon: 'none',
+      })
+    } finally {
+      this.setData({ submittingFeedback: false })
+    }
   },
 })

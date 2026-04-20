@@ -1,6 +1,0 @@
-﻿{
-    "navigationBarTitleText":  "积分兑换",
-    "usingComponents":  {
-                            "diagnose-coupon-fab":  "/components/diagnose-coupon-fab/index"
-                        }
-}

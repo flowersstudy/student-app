@@ -1,6 +1,6 @@
 const RUNTIME_CONFIG_STORAGE_KEY = 'student_app_runtime_config'
 const LOCAL_SERVER_BASE = 'http://localhost:3000'
-const RELEASE_SERVER_BASE = 'https://请替换为你的后端域名'
+const RELEASE_SERVER_BASE =  'https://apix.1v1.buzhi.com'
 
 function normalizeServerBase(serverBase = '') {
   return String(serverBase || '').trim().replace(/\/+$/, '')

@@ -1,0 +1,70 @@
+<view class="login-page">
+  <view class="bg-glow bg-glow-top"></view>
+  <view class="bg-glow bg-glow-bottom"></view>
+
+  <view class="login-main">
+    <view class="brand-shell">
+      <image class="brand-logo" src="/assets/buka/buka-main-happy.svg" mode="aspectFit"></image>
+    </view>
+
+    <text class="brand-title">申论不卡 提升稳啦</text>
+
+    <view class="form-area">
+      <view class="fields-wrap">
+        <view class="form-field">
+          <view class="field-icon field-icon-user">
+            <view class="user-head"></view>
+            <view class="user-body"></view>
+          </view>
+          <input
+            class="field-input"
+            value="{{account}}"
+            placeholder="请输入账号"
+            placeholder-class="field-placeholder"
+            confirm-type="next"
+            bindinput="handleAccountInput"
+          />
+        </view>
+
+        <view class="form-field">
+          <view class="field-icon field-icon-lock">
+            <view class="lock-shackle"></view>
+            <view class="lock-body"></view>
+          </view>
+          <input
+            class="field-input"
+            value="{{password}}"
+            password
+            placeholder="请输入密码"
+            placeholder-class="field-placeholder"
+            confirm-type="done"
+            bindinput="handlePasswordInput"
+          />
+          <text class="field-side-link" bindtap="handleForgotPassword">忘记？</text>
+        </view>
+      </view>
+
+      <button class="login-btn" hover-class="login-btn-hover" loading="{{submitting}}" disabled="{{submitting}}" bindtap="handleLogin">
+        登录
+      </button>
+
+      <text class="register-link" bindtap="handleRegister">注册</text>
+    </view>
+  </view>
+
+  <view class="agreement-bar">
+    <view class="agreement-row">
+      <view class="agreement-check-wrap" bindtap="toggleAgreement">
+        <view class="agreement-checkbox {{agreed ? 'agreement-checkbox-active' : ''}}">
+          <view wx:if="{{agreed}}" class="agreement-checkbox-dot"></view>
+        </view>
+      </view>
+      <view class="agreement-copy">
+        <text class="agreement-text">阅读并同意 </text>
+        <text class="agreement-link" data-type="agreement" catchtap="handleAgreementTap">《用户协议》</text>
+        <text class="agreement-text"> 和 </text>
+        <text class="agreement-link" data-type="privacy" catchtap="handleAgreementTap">《隐私政策》</text>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,8 +1,5 @@
 {
-  "navigationBarTitleText": "刷题课购买",
+  "navigationBarTitleText": "咨询学管老师",
   "navigationBarBackgroundColor": "#f7f9fc",
-  "navigationBarTextStyle": "black",
-  "usingComponents": {
-    "diagnose-coupon-fab": "/components/diagnose-coupon-fab/index"
-  }
+  "navigationBarTextStyle": "black"
 }

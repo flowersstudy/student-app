@@ -1,4 +1,8 @@
 function normalizeNumber(value) {
+  if (value === null || value === undefined || String(value).trim() === '') {
+    return null
+  }
+
   const numericValue = Number(value)
   return Number.isFinite(numericValue) ? numericValue : null
 }
@@ -201,7 +205,7 @@ function buildPointRateChart(pointItems = [], copy = {}) {
       bottom: `${value}%`,
     })),
     lineSvg: hasAnyData
-      ? buildLineSvg(targetSeries, { strokeColor: '#4b5563' })
+      ? buildLineSvg(targetSeries, { strokeColor: '#8f9baa' })
       : '',
     linePoints: hasAnyData ? buildLinePoints(targetSeries) : [],
     items: normalizedItems.map((item, index) => ({
@@ -255,7 +259,7 @@ function buildStudyTimeChart(studyItems = [], range = 'week', options = {}) {
         : '',
     isEmpty: !hasAnyData,
     lineSvg: hasAnyData
-      ? buildLineSvg(hourSeries, { strokeColor: '#ffeaee' })
+      ? buildLineSvg(hourSeries, { strokeColor: '#ff7375' })
       : '',
     linePoints: hasAnyData ? buildLinePoints(hourSeries) : [],
     items: normalizedItems.map((item) => ({

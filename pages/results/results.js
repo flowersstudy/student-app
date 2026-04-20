@@ -25,6 +25,34 @@ const REVIEW_PROGRESS_PRESET = {
   currentScore: 65,
   targetScore: 80,
 }
+const REVIEW_POINT_LIST = [
+  { id: 1, name: '要点不全不准' },
+  { id: 2, name: '提炼转述困难' },
+  { id: 3, name: '分析结构不清' },
+  { id: 4, name: '公文结构不清' },
+  { id: 5, name: '对策推导困难' },
+  { id: 6, name: '作文立意不准' },
+  { id: 7, name: '作文论证不清' },
+  { id: 8, name: '作文表达不畅' },
+]
+const REVIEW_POINT_NAME_TO_ID = REVIEW_POINT_LIST.reduce((result, item) => {
+  result[item.name] = item.id
+  return result
+}, {})
+const REVIEW_POINT_STATUS_PRIORITY = {
+  learning: 0,
+  completed: 1,
+  pending: 2,
+  locked: 3,
+}
+const REVIEW_POINT_STATUS_TEXT_MAP = {
+  learning: '学习中',
+  completed: '已完成',
+  pending: '待突破',
+  locked: '待解锁',
+}
+const FORCE_REVIEW_POINT_STATUS_PREVIEW = false
+const REVIEW_POINT_STATUS_PREVIEW_ORDER = ['learning', 'completed', 'pending', 'locked']
 const REVIEW_POINT_RATE_PRESET = [
   { id: 1, name: '要点不全不准', shortTop: '要点不全', shortBottom: '不准', currentRate: 65, targetRate: 80 },
   { id: 2, name: '提炼转述困难', shortTop: '提炼转述', shortBottom: '困难', currentRate: 50, targetRate: 80 },
@@ -65,7 +93,7 @@ const REVIEW_CHART_COPY = {
   },
 }
 
-const FORCE_STUDY_TIME_PREVIEW = true
+const FORCE_STUDY_TIME_PREVIEW = false
 
 const REVIEW_STUDY_TIME_PRESET = {
   day: [
@@ -133,6 +161,148 @@ const REVIEW_POINT_META = {
   作文表达不畅: { id: 8, shortTop: '作文表达', shortBottom: '不畅' },
 }
 
+function getReviewPointId(item = {}) {
+  const itemId = Number(item && item.id)
+  if (Number.isFinite(itemId) && itemId > 0) {
+    return itemId
+  }
+
+  const pointName = String(item && item.name ? item.name : item && item.pointName ? item.pointName : '').trim()
+  return REVIEW_POINT_NAME_TO_ID[pointName] || 0
+}
+
+function buildReviewPointStatusItem(item = {}, status = 'locked') {
+  const safeStatus = REVIEW_POINT_STATUS_TEXT_MAP[status] ? status : 'locked'
+
+  return {
+    ...item,
+    status: safeStatus,
+    statusText: REVIEW_POINT_STATUS_TEXT_MAP[safeStatus] || '待解锁',
+    actionText: safeStatus === 'locked' ? '去解锁' : '去回顾',
+  }
+}
+
+function buildReviewPointPreviewList() {
+  return REVIEW_POINT_LIST.map((item, index) => {
+    const status = REVIEW_POINT_STATUS_PREVIEW_ORDER[index % REVIEW_POINT_STATUS_PREVIEW_ORDER.length]
+    return buildReviewPointStatusItem(item, status)
+  }).sort((prev, next) => {
+    const prevPriority = Object.prototype.hasOwnProperty.call(REVIEW_POINT_STATUS_PRIORITY, prev.status)
+      ? REVIEW_POINT_STATUS_PRIORITY[prev.status]
+      : 99
+    const nextPriority = Object.prototype.hasOwnProperty.call(REVIEW_POINT_STATUS_PRIORITY, next.status)
+      ? REVIEW_POINT_STATUS_PRIORITY[next.status]
+      : 99
+    const priorityDiff = prevPriority - nextPriority
+    if (priorityDiff !== 0) {
+      return priorityDiff
+    }
+
+    return prev.id - next.id
+  })
+}
+
+function buildReviewPointList(profile = {}, hasDiagnoseCourse = false) {
+  if (FORCE_REVIEW_POINT_STATUS_PREVIEW) {
+    return buildReviewPointPreviewList()
+  }
+
+  const inProgressSet = new Set(
+    (Array.isArray(profile && profile.inProgress) ? profile.inProgress : [])
+      .map(getReviewPointId)
+      .filter((itemId) => itemId > 0)
+  )
+  const completedSet = new Set(
+    (Array.isArray(profile && profile.completed) ? profile.completed : [])
+      .map(getReviewPointId)
+      .filter((itemId) => itemId > 0)
+  )
+
+  return REVIEW_POINT_LIST
+    .map((item) => {
+      let status = 'locked'
+      let statusText = '待解锁'
+
+      if (inProgressSet.has(item.id)) {
+        status = 'learning'
+        statusText = '学习中'
+      } else if (completedSet.has(item.id)) {
+        status = 'completed'
+        statusText = '已完成'
+      } else if (hasDiagnoseCourse) {
+        status = 'pending'
+        statusText = '待突破'
+      }
+
+      return {
+        ...buildReviewPointStatusItem(item, status),
+        statusText,
+      }
+    })
+    .sort((prev, next) => {
+      const prevPriority = Object.prototype.hasOwnProperty.call(REVIEW_POINT_STATUS_PRIORITY, prev.status)
+        ? REVIEW_POINT_STATUS_PRIORITY[prev.status]
+        : 99
+      const nextPriority = Object.prototype.hasOwnProperty.call(REVIEW_POINT_STATUS_PRIORITY, next.status)
+        ? REVIEW_POINT_STATUS_PRIORITY[next.status]
+        : 99
+      const priorityDiff = prevPriority - nextPriority
+      if (priorityDiff !== 0) {
+        return priorityDiff
+      }
+
+      return prev.id - next.id
+    })
+}
+
+function normalizeReviewPointStatuses(items = [], profile = {}, hasDiagnoseCourse = false) {
+  if (FORCE_REVIEW_POINT_STATUS_PREVIEW) {
+    return buildReviewPointPreviewList()
+  }
+
+  if (!Array.isArray(items) || !items.length) {
+    return buildReviewPointList(profile, hasDiagnoseCourse)
+  }
+
+  const fallbackById = buildReviewPointList(profile, hasDiagnoseCourse).reduce((result, item) => {
+    result[item.id] = item
+    return result
+  }, {})
+
+  return items
+    .map((item, index) => {
+      const pointId = getReviewPointId(item) || index + 1
+      const fallbackItem = fallbackById[pointId] || REVIEW_POINT_LIST.find((point) => point.id === pointId) || null
+      const safeStatus = ['learning', 'completed', 'pending', 'locked'].includes(String(item && item.status || ''))
+        ? String(item.status)
+        : (fallbackItem ? fallbackItem.status : 'locked')
+      const pointName = String(item && (item.pointName || item.name) ? (item.pointName || item.name) : fallbackItem && fallbackItem.name ? fallbackItem.name : '').trim()
+
+      return {
+        id: pointId,
+        name: pointName || (fallbackItem ? fallbackItem.name : `卡点${pointId}`),
+        ...buildReviewPointStatusItem({
+          id: pointId,
+          name: pointName || (fallbackItem ? fallbackItem.name : `卡点${pointId}`),
+        }, safeStatus),
+      }
+    })
+    .sort((prev, next) => {
+      const prevPriority = Object.prototype.hasOwnProperty.call(REVIEW_POINT_STATUS_PRIORITY, prev.status)
+        ? REVIEW_POINT_STATUS_PRIORITY[prev.status]
+        : 99
+      const nextPriority = Object.prototype.hasOwnProperty.call(REVIEW_POINT_STATUS_PRIORITY, next.status)
+        ? REVIEW_POINT_STATUS_PRIORITY[next.status]
+        : 99
+      const priorityDiff = prevPriority - nextPriority
+      if (priorityDiff !== 0) {
+        return priorityDiff
+      }
+
+      return prev.id - next.id
+    })
+}
+
 function buildStudyTimeTabs(currentRange = 'week') {
   return createStudyTimeTabs(currentRange, STUDY_TIME_RANGE_OPTIONS)
 }
@@ -189,11 +359,6 @@ Page({
     uiIcons,
     isEnrolled: false,
     hasDiagnoseCourse: false,
-    sectionExpanded: {
-      diagnose: true,
-      solved: true,
-      pending: true,
-    },
     pointRateLegendExpanded: true,
     studentName: '张三',
     profileSummary: {
@@ -229,18 +394,7 @@ Page({
     },
     diagnoseReportActionText: '查看完整报告',
     totalPoints: 1260,
-    solvedPoints: [
-      { id: 2, name: '提炼转述困难' },
-      { id: 4, name: '公文结构不清' },
-      { id: 6, name: '作文立意不准' }
-    ],
-    pendingPoints: [
-      { id: 1, name: '要点不全不准' },
-      { id: 5, name: '对策推导困难' },
-      { id: 3, name: '分析结构不清' },
-      { id: 7, name: '作文论证不清' },
-      { id: 8, name: '作文表达不畅' }
-    ]
+    reviewPointList: buildReviewPointList({}, false),
   },
 
   async onShow() {
@@ -293,6 +447,7 @@ Page({
       targetScore: diagnosis.targetScore || this.data.targetScore,
       diagnosisReport: nextDiagnosisReport,
       diagnoseReportActionText: hasDiagnoseCourse ? '查看完整报告' : '立即了解',
+      reviewPointList: buildReviewPointList(profile, hasDiagnoseCourse),
       'stats.scoreGap': hasDiagnoseCourse
         ? (Number.isFinite(diagnosisScoreGap) ? diagnosisScoreGap : this.data.stats.scoreGap)
         : 0,
@@ -303,15 +458,6 @@ Page({
   },
 
   onLoad() {},
-
-  toggleSection(e) {
-    const { key } = e.currentTarget.dataset
-    if (!key) return
-
-    this.setData({
-      [`sectionExpanded.${key}`]: !this.data.sectionExpanded[key],
-    })
-  },
 
   togglePointRateLegend() {
     this.setData({
@@ -378,6 +524,11 @@ Page({
           'profileSummary.targetExam': targetExamText,
           'diagnosisReport.exam': targetExamText,
         } : {}),
+        reviewPointList: normalizeReviewPointStatuses(
+          result && result.pointStatuses ? result.pointStatuses : [],
+          app.globalData.userProfile || {},
+          this.data.hasDiagnoseCourse
+        ),
         progressChart: buildProgressChart(
           progressPayload.entryScore !== null || progressPayload.currentScore !== null || progressPayload.targetScore !== null
             ? progressPayload
@@ -402,7 +553,9 @@ Page({
   goCardDetail(e) {
     const id = e.currentTarget.dataset.id
     const status = e.currentTarget.dataset.status || 'pending'
-    wx.navigateTo({ url: `/pkg-diagnose/pages/card-detail/card-detail?id=${id}&status=${status}` })
+    const pointName = encodeURIComponent(e.currentTarget.dataset.pointName || '')
+
+    wx.navigateTo({ url: `/pkg-diagnose/pages/card-detail/card-detail?id=${id}&status=${status}&pointName=${pointName}` })
   },
 
   goAvatarPicker() {

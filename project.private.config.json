@@ -5,15 +5,15 @@
     "miniprogram": {
       "list": [
         {
-          "name": "pkg-diagnose/pages/diagnose-detail/diagnose-detail",
-          "pathName": "pkg-diagnose/pages/diagnose-detail/diagnose-detail",
+          "name": "pages/mailbox/mailbox",
+          "pathName": "pages/mailbox/mailbox",
           "query": "",
-          "scene": null,
-          "launchMode": "default"
+          "launchMode": "default",
+          "scene": null
         },
         {
-          "name": "pkg-diagnose/pages/diagnose-detail/diagnose-detail",
-          "pathName": "pkg-diagnose/pages/diagnose-detail/diagnose-detail",
+          "name": "pages/leave/leave",
+          "pathName": "pages/leave/leave",
           "query": "",
           "launchMode": "default",
           "scene": null
@@ -33,7 +33,7 @@
     "useStaticServer": false,
     "useLanDebug": false,
     "showES6CompileOption": false,
-    "compileHotReLoad": true,
+    "compileHotReLoad": false,
     "checkInvalidKey": true,
     "ignoreDevUnusedFiles": true,
     "bigPackageSizeSupport": false,

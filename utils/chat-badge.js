@@ -1,7 +1,6 @@
 const CHAT_UNREAD_COUNT_KEY = 'student_chat_unread_count'
 const CHAT_BADGE_SEEN_KEY = 'student_chat_badge_seen'
 const CHAT_TAB_INDEX = 1
-const DEFAULT_NEW_USER_CHAT_UNREAD = 2
 
 function normalizeUnreadCount(value) {
   const count = Number(value || 0)
@@ -37,27 +36,27 @@ function applyChatTabBadge(count) {
   const normalizedCount = normalizeUnreadCount(count)
 
   if (normalizedCount > 0) {
-    wx.setTabBarBadge({
-      index: CHAT_TAB_INDEX,
-      text: normalizedCount > 99 ? '99+' : String(normalizedCount),
-    })
+    if (typeof wx.setTabBarBadge === 'function') {
+      wx.setTabBarBadge({
+        index: CHAT_TAB_INDEX,
+        text: normalizedCount > 99 ? '99+' : String(normalizedCount),
+      })
+    }
     return normalizedCount
   }
 
-  wx.removeTabBarBadge({
-    index: CHAT_TAB_INDEX,
-  })
+  if (typeof wx.removeTabBarBadge === 'function') {
+    wx.removeTabBarBadge({
+      index: CHAT_TAB_INDEX,
+    })
+  }
   return 0
 }
 
 function syncChatUnreadBadge(appInstance) {
-  let unreadCount = readChatUnreadCount()
-
-  if (!hasSeenChatBadge() && unreadCount <= 0) {
-    unreadCount = writeChatUnreadCount(DEFAULT_NEW_USER_CHAT_UNREAD)
-  }
-
-  return applyChatTabBadge(unreadCount)
+  wx.setStorageSync(CHAT_BADGE_SEEN_KEY, true)
+  writeChatUnreadCount(0)
+  return applyChatTabBadge(0)
 }
 
 function setChatUnreadBadge(count) {

@@ -1,0 +1,113 @@
+.page {
+  min-height: 100vh;
+  background: #f6f8fc;
+  padding: 24rpx;
+  box-sizing: border-box;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  box-sizing: border-box;
+  box-shadow: 0 12rpx 32rpx rgba(26, 110, 255, 0.08);
+}
+
+.hero {
+  margin-bottom: 24rpx;
+}
+
+.hero-title {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.hero-subtitle {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 26rpx;
+  color: #6b7280;
+}
+
+.summary,
+.feedback,
+.state {
+  margin-bottom: 24rpx;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 24rpx;
+  padding: 14rpx 0;
+  border-bottom: 1rpx solid #eef2f7;
+}
+
+.summary-row:last-child {
+  border-bottom: none;
+}
+
+.summary-label {
+  color: #6b7280;
+  font-size: 26rpx;
+}
+
+.summary-value {
+  flex: 1;
+  text-align: right;
+  color: #111827;
+  font-size: 26rpx;
+}
+
+.summary-score {
+  color: #1a6eff;
+  font-size: 42rpx;
+  font-weight: 700;
+}
+
+.section-title {
+  display: block;
+  margin-bottom: 20rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #111827;
+}
+
+.feedback-text,
+.state-text {
+  font-size: 28rpx;
+  line-height: 1.8;
+  color: #374151;
+}
+
+.actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 28rpx;
+}
+
+.btn {
+  flex: 1;
+  border-radius: 999rpx;
+  font-size: 28rpx;
+}
+
+.btn::after {
+  border: none;
+}
+
+.btn-primary {
+  background: #1a6eff;
+  color: #ffffff;
+}
+
+.btn-secondary {
+  background: #eef4ff;
+  color: #1a6eff;
+}
+
+.preview-btn {
+  margin-top: 24rpx;
+}

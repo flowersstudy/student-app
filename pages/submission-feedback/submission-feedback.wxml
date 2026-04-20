@@ -1,0 +1,54 @@
+<view class="page">
+  <view class="hero card">
+    <text class="hero-title">{{title}}</text>
+    <text class="hero-subtitle">{{pointName}}</text>
+  </view>
+
+  <view wx:if="{{loading}}" class="state card">
+    <text class="state-text">正在加载批改结果...</text>
+  </view>
+
+  <view wx:elif="{{submission && graded}}" class="content">
+    <view class="summary card">
+      <view class="summary-row">
+        <text class="summary-label">分数</text>
+        <text class="summary-score">{{submission.score || '--'}}分</text>
+      </view>
+      <view class="summary-row">
+        <text class="summary-label">作业文件</text>
+        <text class="summary-value">{{submission.fileName}}</text>
+      </view>
+      <view class="summary-row">
+        <text class="summary-label">提交时间</text>
+        <text class="summary-value">{{submission.submittedAt}}</text>
+      </view>
+      <view class="summary-row">
+        <text class="summary-label">批改时间</text>
+        <text class="summary-value">{{submission.gradedAt || '--'}}</text>
+      </view>
+      <view wx:if="{{submission.hasReviewedFile}}" class="summary-row">
+        <text class="summary-label">批改 PDF</text>
+        <text class="summary-value">{{submission.reviewedFileName || '老师批改文件'}}</text>
+      </view>
+    </view>
+
+    <view class="feedback card">
+      <text class="section-title">老师评语</text>
+      <text class="feedback-text">{{submission.feedback || '老师暂未填写详细评语'}}</text>
+      <button wx:if="{{submission.hasReviewedFile}}" class="btn btn-primary preview-btn" bindtap="onOpenReviewedPdfTap">查看老师批改 PDF</button>
+    </view>
+  </view>
+
+  <view wx:elif="{{submission && !graded}}" class="state card">
+    <text class="state-text">{{emptyText}}</text>
+    <view class="actions">
+      <button class="btn btn-secondary" bindtap="onRefreshTap">刷新状态</button>
+      <button class="btn btn-primary" bindtap="onAskTeacherTap">去提问</button>
+    </view>
+  </view>
+
+  <view wx:else class="state card">
+    <text class="state-text">{{emptyText}}</text>
+    <button class="btn btn-secondary" bindtap="onRefreshTap">重新加载</button>
+  </view>
+</view>

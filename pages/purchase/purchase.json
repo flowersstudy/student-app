@@ -1,8 +1,5 @@
 {
-  "navigationBarTitleText": "购买方案",
-  "navigationBarBackgroundColor": "#f4f7fb",
-  "navigationBarTextStyle": "black",
-  "usingComponents": {
-    "diagnose-coupon-fab": "/components/diagnose-coupon-fab/index"
-  }
+  "navigationBarTitleText": "咨询学管老师",
+  "navigationBarBackgroundColor": "#f7f9fc",
+  "navigationBarTextStyle": "black"
 }

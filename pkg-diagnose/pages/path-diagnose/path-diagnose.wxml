@@ -1,8 +1,8 @@
-﻿<view class="path-page">
+<view class="path-page">
   <view class="path-card">
     <text class="path-card-title">{{sectionTitle}}</text>
     <view class="path-list">
-      <view wx:for="{{pathItems}}" wx:key="title" class="path-item">
+      <view wx:for="{{pathItems}}" wx:key="id" class="path-item">
         <view class="path-left">
           <view class="path-dot path-dot-{{item.status}}"></view>
           <view wx:if="{{index < pathItems.length - 1}}" class="path-line"></view>
@@ -10,21 +10,44 @@
         <view class="path-main">
           <view class="path-row">
             <text class="path-title">{{item.title}}</text>
-            <view
-              wx:if="{{item.actionText}}"
-              class="path-action"
-              bindtap="onActionTap"
-              data-label="{{item.actionLabel}}"
-            >
-              <text class="path-action-text">{{item.actionText}}</text>
-              <view class="path-action-arrow"></view>
-            </view>
-          </view>
-          <text wx:if="{{item.desc}}" class="path-desc">{{item.desc}}</text>
-          <view wx:if="{{item.countdownParts}}" class="countdown-display">
-            <view wx:for="{{item.countdownParts}}" wx:key="label" wx:for-item="time" class="countdown-unit">
-              <text class="countdown-num">{{time.value}}</text>
-              <text class="countdown-unit-label">{{time.label}}</text>
+            <view class="path-actions" wx:if="{{item.actionText || item.secondaryActionText}}">
+              <picker
+                wx:if="{{item.actionType === 'schedule'}}"
+                mode="multiSelector"
+                range="{{appointmentPickerRange}}"
+                value="{{appointmentPickerValue}}"
+                bindchange="onAppointmentConfirm"
+                data-task-id="{{item.id}}"
+                data-status="{{item.status}}"
+              >
+                <view class="path-action {{item.status === 'pending' ? 'path-action-disabled' : ''}}">
+                  <text class="path-action-text">{{item.actionText}}</text>
+                  <view class="path-action-arrow"></view>
+                </view>
+              </picker>
+              <view
+                wx:if="{{item.actionType !== 'schedule' && item.actionText}}"
+                class="path-action {{item.status === 'pending' ? 'path-action-disabled' : ''}}"
+                bindtap="onActionTap"
+                data-task-id="{{item.id}}"
+                data-status="{{item.status}}"
+                data-action-type="{{item.actionType}}"
+                data-title="{{item.title}}"
+              >
+                <text class="path-action-text">{{item.actionText}}</text>
+                <view class="path-action-arrow"></view>
+              </view>
+              <view
+                wx:if="{{item.secondaryActionText}}"
+                class="path-action path-action-secondary {{item.status === 'pending' ? 'path-action-disabled' : ''}}"
+                bindtap="onSecondaryActionTap"
+                data-task-id="{{item.id}}"
+                data-status="{{item.status}}"
+                data-action-type="{{item.secondaryActionType}}"
+              >
+                <text class="path-action-text">{{item.secondaryActionText}}</text>
+                <view class="path-action-arrow"></view>
+              </view>
             </view>
           </view>
         </view>

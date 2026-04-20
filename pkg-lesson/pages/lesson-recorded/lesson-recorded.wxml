@@ -1,7 +1,6 @@
 <view class="lesson-page">
   <view class="timeline">
 
-    <!-- 课前 -->
     <view class="timeline-item">
       <view class="timeline-left">
         <view class="timeline-dot"></view>
@@ -19,14 +18,13 @@
               <text class="file-name {{item.url ? '' : 'file-name-gray'}}">{{item.name}}</text>
             </view>
             <text wx:if="{{item.opened}}" class="tag tag-green">已打开</text>
-            <text wx:elif="{{item.url}}" class="file-arrow">›</text>
+            <text wx:elif="{{item.url}}" class="file-arrow">→</text>
             <text wx:else class="tag tag-gray">暂未上传</text>
           </view>
         </view>
       </view>
     </view>
 
-    <!-- 上课中 -->
     <view class="timeline-item">
       <view class="timeline-left">
         <view class="timeline-dot"></view>
@@ -44,7 +42,6 @@
       </view>
     </view>
 
-    <!-- 课程任务 -->
     <view class="timeline-item">
       <view class="timeline-left">
         <view class="timeline-dot"></view>
@@ -70,7 +67,6 @@
       </view>
     </view>
 
-    <!-- 课后 -->
     <view class="timeline-item">
       <view class="timeline-left">
         <view class="timeline-dot timeline-dot-gray"></view>
@@ -87,7 +83,7 @@
               <text class="file-name {{item.url ? '' : 'file-name-gray'}}">{{item.name}}</text>
             </view>
             <text wx:if="{{item.opened}}" class="tag tag-green">已打开</text>
-            <text wx:elif="{{item.url}}" class="file-arrow">›</text>
+            <text wx:elif="{{item.url}}" class="file-arrow">→</text>
             <text wx:else class="tag tag-gray">暂未上传</text>
           </view>
 
@@ -113,6 +109,7 @@
             bindinput="onFeedbackInput"
             auto-height
           />
+          <button class="btn-enter" bindtap="submitLessonFeedback" loading="{{submittingFeedback}}" disabled="{{submittingFeedback}}">提交反馈</button>
         </view>
       </view>
     </view>

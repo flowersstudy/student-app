@@ -1,6 +1,0 @@
-{
-    "navigationBarTitleText":  "阶段考试",
-    "usingComponents":  {
-                            "diagnose-coupon-fab":  "/components/diagnose-coupon-fab/index"
-                        }
-}

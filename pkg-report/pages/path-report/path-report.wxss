@@ -1,1 +1,27 @@
-@import "/pages/path-common.wxss";
+﻿@import "/pages/path-common.wxss";
+
+.report-card {
+  min-height: 320rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.report-title {
+  color: #0f172a;
+  font-size: 36rpx;
+  line-height: 1.4;
+  font-weight: 700;
+}
+
+.report-text {
+  display: block;
+  margin-top: 24rpx;
+  max-width: 560rpx;
+  color: #475569;
+  font-size: 26rpx;
+  line-height: 1.72;
+  font-weight: 500;
+}
