@@ -1,0 +1,27 @@
+<view class="container">
+  <view wx:if="{{loading}}" class="center">
+    <text class="tip">加载中...</text>
+  </view>
+
+  <view wx:elif="{{error}}" class="center">
+    <text class="tip error">{{error}}</text>
+  </view>
+
+  <view wx:else class="card">
+    <view class="title">{{lesson.title || '直播课'}}</view>
+    <view class="meta">
+      <text>老师：{{lesson.teacher_name}}</text>
+    </view>
+    <view class="meta">
+      <text>时间：{{lesson.date}} {{lesson.start_time}}–{{lesson.end_time}}</text>
+    </view>
+
+    <view wx:if="{{lesson.live_url}}" class="actions">
+      <button class="btn-primary" bindtap="onJoinLive">进入直播</button>
+      <button class="btn-secondary" bindtap="onCopyLink">复制链接</button>
+    </view>
+    <view wx:else class="center">
+      <text class="tip">老师尚未上传直播链接，请稍后再来</text>
+    </view>
+  </view>
+</view>

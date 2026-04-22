@@ -1,6 +1,6 @@
 .chat-page {
   min-height: 100vh;
-  padding: 32rpx 24rpx 56rpx;
+  padding: 32rpx 24rpx calc(112px + env(safe-area-inset-bottom));
   background: #f5f6fa;
   box-sizing: border-box;
 }

@@ -1,33 +1,6 @@
 const { uiIcons } = require('../../../utils/ui-icons')
-const { completeLocalUpload } = require('../../../utils/offline')
-const { recordPrescribedStudyDuration } = require('../../../utils/study-session')
 const { appendStudyQuery, normalizeStudyOptions } = require('../../../utils/study-route')
-
-const DEFAULT_HOMEWORK_DURATION_MIN = 40
-
-function buildAiReview(uploadedFiles = []) {
-  const hasImage = uploadedFiles.some((item) => item.kind === 'image')
-  const hasDoc = uploadedFiles.some((item) => item.kind === 'file')
-
-  return {
-    score: hasImage && hasDoc ? 84 : hasImage ? 80 : 78,
-    summary: hasImage && hasDoc
-      ? 'AI 初步判断：你本次提交材料比较完整，主要问题集中在对策表述不够具体。'
-      : 'AI 初步判断：本次作答思路基本在线，但还需要再补强针对性和表达完整度。',
-    strengths: [
-      '已经能围绕题干核心问题展开作答',
-      '对策方向基本没有明显跑偏',
-    ],
-    risks: [
-      '部分对策还偏抽象，落地动作不够清楚',
-      '个别表述更像观点，没完全写成可执行对策',
-    ],
-    suggestions: [
-      '把“谁来做、怎么做、做到什么程度”写清楚',
-      '提交后可在复盘页继续写明自己最不确定的地方',
-    ],
-  }
-}
+const { uploadStudentSubmission } = require('../../../utils/student-api')
 
 Page({
   data: {
@@ -55,7 +28,6 @@ Page({
   onLoad(options) {
     this.studyOptions = normalizeStudyOptions(options, {
       pointName: this.data.assignment.pointName,
-      durationMin: DEFAULT_HOMEWORK_DURATION_MIN,
     })
     this.setData({
       assignment: {
@@ -115,46 +87,55 @@ Page({
 
   async submitHomework() {
     if (this.data.uploadedFiles.length === 0) {
-      wx.showToast({
-        title: '请先上传作业',
-        icon: 'none',
-      })
+      wx.showToast({ title: '请先上传作业', icon: 'none' })
       return
     }
 
-    this.data.uploadedFiles.forEach((item) => {
-      completeLocalUpload({
-        fileName: item.name,
-        reviewType: 'practice-homework',
-        checkpoint: this.data.assignment.pointName,
-        sourcePath: item.path,
+    // 先弹订阅消息授权，让老师批改完后能通知到学生
+    try {
+      const templateId = 'PGKtvst6aqQRRyGe1aHwnArQ3-dk-VKDYUFO7VNadLo'
+      await new Promise((resolve) => {
+        wx.requestSubscribeMessage({
+          tmplIds: [templateId],
+          complete: resolve,
+        })
       })
-    })
+    } catch (_) {}
 
-    this.setData({
-      aiReview: buildAiReview(this.data.uploadedFiles),
-      submitMeta: {
-        submittedAt: '刚刚提交',
-        countText: `共提交 ${this.data.uploadedFiles.length} 个文件`,
-      },
-    })
+    wx.showLoading({ title: '提交中...', mask: true })
 
-    await recordPrescribedStudyDuration(this, {
-      sessionType: 'practice',
-      courseId: (page) => page.studyOptions && page.studyOptions.courseId,
-      studyTaskId: (page) => (page.studyOptions && (page.studyOptions.studyTaskId || page.studyOptions.taskId)) || null,
-      pointName: (page) => page.studyOptions && page.studyOptions.pointName,
-      durationMin: (page) => page.studyOptions && page.studyOptions.durationMin,
-      dedupeKey: (page) => {
-        const options = page.studyOptions || {}
-        return `practice-homework:${options.studyTaskId || options.taskId || options.pointName || 'unknown'}`
-      },
-    })
+    const pointName = this.studyOptions.pointName || this.data.assignment.pointName
+    const app = getApp()
+    const studentName = ((app.globalData || {}).userProfile || {}).name || ''
+    const submissions = []
 
-    wx.showToast({
-      title: '已提交并生成 AI 初评',
-      icon: 'success',
-    })
+    try {
+      for (const file of this.data.uploadedFiles) {
+        const result = await uploadStudentSubmission(file, {
+          studentName,
+          reviewType: 'practice-homework',
+          checkpoint: pointName,
+          pointName,
+          stageKey: this.studyOptions.stageKey || 'practice',
+          taskId: this.studyOptions.taskId || '',
+          priority: 'normal',
+          submittedNormal: 'true',
+        }, app)
+        submissions.push(result)
+      }
+
+      wx.hideLoading()
+      this.setData({
+        submitMeta: {
+          submittedAt: '刚刚提交',
+          countText: `共提交 ${submissions.length} 个文件`,
+        },
+      })
+      wx.showToast({ title: '提交成功', icon: 'success' })
+    } catch (err) {
+      wx.hideLoading()
+      wx.showToast({ title: err.message || '提交失败，请重试', icon: 'none' })
+    }
   },
 
   goReview() {

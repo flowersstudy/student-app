@@ -574,6 +574,14 @@ Page({
     const { status, url, title } = e.currentTarget.dataset
 
     if (status === 'locked') {
+      if (!this.data.isLocked) {
+        wx.showToast({
+          title: '你还没学到这里哦~',
+          icon: 'none',
+        })
+        return
+      }
+
       wx.showToast({
         title: '还未解锁',
         icon: 'none',

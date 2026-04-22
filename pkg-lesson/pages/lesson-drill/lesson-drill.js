@@ -1,11 +1,13 @@
 const { uiIcons } = require('../../../utils/ui-icons')
 const { finishCountdownStudySession, startCountdownStudySession } = require('../../../utils/countdown-study-session')
+const { openRemoteDocument } = require('../../../utils/document-url')
 const {
   createTimerPickerHours,
   createTimerPickerMinutes,
   minutesToPickerValue,
   pickerValueToMinutes,
 } = require('../../../utils/timer-picker')
+const { submitLearningPathUploadTask } = require('../../../utils/learning-path')
 
 const RECOMMENDED_MINUTES_PER_QUESTION = 30
 const TIMER_PICKER_HOURS = createTimerPickerHours()
@@ -149,10 +151,7 @@ Page({
       return { ...item, [key]: item[key].map((fileItem) => fileItem.id === fileid ? { ...fileItem, opened: true } : fileItem) }
     })
     this.setData({ drillQuestions: questions })
-    wx.downloadFile({
-      url: file.url,
-      success: (res) => wx.openDocument({ filePath: res.tempFilePath, showMenu: true }),
-    })
+    void openRemoteDocument(file.url)
   },
 
   toggleTimer() {
@@ -233,16 +232,34 @@ Page({
     })
   },
 
-  uploadHomework() {
-    wx.showToast({ title: '上传作业功能开发中', icon: 'none' })
+  async uploadHomework() {
+    const pointName = (this.studyOptions && this.studyOptions.pointName) || ''
+    const taskId = (this.studyOptions && this.studyOptions.taskId) || 'lesson_homework'
+    try {
+      const result = await submitLearningPathUploadTask(pointName, 'lesson', taskId, getApp())
+      if (!result.files.length) return
+      wx.showToast({ title: `已上传 ${result.files.length} 个文件`, icon: 'success' })
+    } catch (err) {
+      if (err && err.errMsg && err.errMsg.includes('cancel')) return
+      wx.showToast({ title: '上传失败，请重试', icon: 'none' })
+    }
   },
 
   watchAnalysis() {
     wx.showToast({ title: '解析视频加载中...', icon: 'loading' })
   },
 
-  uploadAnswer() {
-    wx.showToast({ title: '上传答案功能开发中', icon: 'none' })
+  async uploadAnswer() {
+    const pointName = (this.studyOptions && this.studyOptions.pointName) || ''
+    const taskId = (this.studyOptions && this.studyOptions.taskId) || 'lesson_answer'
+    try {
+      const result = await submitLearningPathUploadTask(pointName, 'lesson', taskId, getApp())
+      if (!result.files.length) return
+      wx.showToast({ title: `已上传 ${result.files.length} 个文件`, icon: 'success' })
+    } catch (err) {
+      if (err && err.errMsg && err.errMsg.includes('cancel')) return
+      wx.showToast({ title: '上传失败，请重试', icon: 'none' })
+    }
   },
 
   askQuestion() {

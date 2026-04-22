@@ -8,6 +8,7 @@
   submitLearningPathUploadTask,
   syncLearningPathFromServer,
 } = require('../../../utils/learning-path')
+const { openRemoteDocument } = require('../../../utils/document-url')
 const { buildLearningTaskVideoRoute } = require('../../../utils/polyv-video')
 const { normalizeStudyOptions } = require('../../../utils/study-route')
 
@@ -19,41 +20,6 @@ function shouldAutoCompleteTheoryDocument(taskId = '') {
   const safeTaskId = String(taskId || '').trim()
   return safeTaskId === 'theory_handout'
     || /^theory_round_\d+_(handout|homework_pdf)$/.test(safeTaskId)
-}
-
-function openRemoteDocument(url = '', title = '资料') {
-  const targetUrl = String(url || '').trim()
-  if (!targetUrl) {
-    return Promise.resolve(false)
-  }
-
-  wx.showLoading({
-    title: '打开中',
-  })
-
-  return new Promise((resolve, reject) => {
-    wx.downloadFile({
-      url: targetUrl,
-      success: (res) => {
-        if (res.statusCode < 200 || res.statusCode >= 300 || !res.tempFilePath) {
-          reject(new Error('下载失败'))
-          return
-        }
-
-        wx.openDocument({
-          filePath: res.tempFilePath,
-          showMenu: true,
-          success: () => resolve(true),
-          fail: reject,
-          complete: () => wx.hideLoading(),
-        })
-      },
-      fail: (error) => {
-        wx.hideLoading()
-        reject(error)
-      },
-    })
-  })
 }
 
 Page({
@@ -313,7 +279,10 @@ Page({
 
     if (actionType === 'document') {
       try {
-        const opened = await openRemoteDocument(resource.url, title)
+        const opened = await openRemoteDocument(resource.url, {
+          title,
+          appInstance: this.app,
+        })
         if (opened) {
           if (status !== 'done' && shouldAutoCompleteTheoryDocument(taskId)) {
             const completed = await this.markTheoryDocumentDone(taskId)

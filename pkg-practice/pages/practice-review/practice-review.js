@@ -1,7 +1,4 @@
-const { recordPrescribedStudyDuration } = require('../../../utils/study-session')
 const { appendStudyQuery, normalizeStudyOptions } = require('../../../utils/study-route')
-
-const DEFAULT_HOMEWORK_DURATION_MIN = 40
 
 Page({
   data: {
@@ -28,7 +25,6 @@ Page({
   onLoad(options) {
     this.studyOptions = normalizeStudyOptions(options, {
       pointName: '对策推导困难',
-      durationMin: DEFAULT_HOMEWORK_DURATION_MIN,
     })
   },
 
@@ -65,18 +61,6 @@ Page({
   },
 
   async submitReview() {
-    await recordPrescribedStudyDuration(this, {
-      sessionType: 'review',
-      courseId: (page) => page.studyOptions && page.studyOptions.courseId,
-      studyTaskId: (page) => (page.studyOptions && (page.studyOptions.studyTaskId || page.studyOptions.taskId)) || null,
-      pointName: (page) => page.studyOptions && page.studyOptions.pointName,
-      durationMin: (page) => page.studyOptions && page.studyOptions.durationMin,
-      dedupeKey: (page) => {
-        const options = page.studyOptions || {}
-        return `practice-review:${options.studyTaskId || options.taskId || options.pointName || 'unknown'}`
-      },
-    })
-
     wx.showToast({
       title: '复盘反馈已提交',
       icon: 'success',

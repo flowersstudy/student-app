@@ -4,6 +4,7 @@ const {
   uploadStudentSubmission,
   updateStudentLearningPathTask,
 } = require('./student-api')
+const { normalizeDocumentResource } = require('./document-url')
 const { appendStudyQuery } = require('./study-route')
 
 const STORAGE_KEY = 'student_learning_path_progress_v1'
@@ -511,10 +512,44 @@ function saveRemoteLearningPathPayload(pointName = '', payload = null) {
   const safePointName = String(pointName || '').trim()
   if (!safePointName || !payload) return
 
+  const normalizedPayload = {
+    ...payload,
+    stages: Array.isArray(payload.stages)
+      ? payload.stages.map((stage) => ({
+          ...stage,
+          groups: Array.isArray(stage.groups)
+            ? stage.groups.map((group) => {
+                const normalizedItems = (group.items || group.tasks || []).map((item) => {
+                  const nextItem = { ...item }
+
+                  if (item.resource) {
+                    nextItem.resource = normalizeDocumentResource(item.resource)
+                  }
+
+                  if (item.meta && typeof item.meta === 'object') {
+                    nextItem.meta = {
+                      ...item.meta,
+                      resource: normalizeDocumentResource(item.meta.resource),
+                    }
+                  }
+
+                  return nextItem
+                })
+
+                return {
+                  ...group,
+                  ...(Array.isArray(group.items) ? { items: normalizedItems } : {}),
+                  ...(Array.isArray(group.tasks) ? { tasks: normalizedItems } : {}),
+                }
+              })
+            : [],
+        }))
+      : [],
+  }
   const allPayloads = readAllRemotePayloads()
-  allPayloads[safePointName] = payload
+  allPayloads[safePointName] = normalizedPayload
   writeAllRemotePayloads(allPayloads)
-  hydrateLearningPathStateFromPayload(payload)
+  hydrateLearningPathStateFromPayload(normalizedPayload)
 }
 
 function saveLearningPathTaskMeta(pointName = '', stageKey = '', taskId = '', meta = {}) {
@@ -810,9 +845,11 @@ function buildLearningPathProgress(pointName = '', courseStatus = 'pending') {
   }
 
   if (resolvedCourseStatus === 'pending') {
+    stageStatusMap.theory = 'current'
+
     return {
       courseStatus: resolvedCourseStatus,
-      currentStageKey: '',
+      currentStageKey: 'theory',
       stageStatusMap,
     }
   }

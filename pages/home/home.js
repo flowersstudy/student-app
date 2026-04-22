@@ -549,16 +549,8 @@ function buildFallbackCurrentStageKey(course = {}) {
 }
 
 function getReviewOverviewPointIds(reviewOverview = {}) {
-  const pointRates = Array.isArray(reviewOverview && reviewOverview.pointRates) ? reviewOverview.pointRates : []
   const pointStatuses = Array.isArray(reviewOverview && reviewOverview.pointStatuses) ? reviewOverview.pointStatuses : []
   const pointIds = []
-
-  pointRates.forEach((item) => {
-    const pointId = getPointIdByName(item && (item.pointName || item.point_name) || '')
-    if (POINT_ORDER.includes(pointId) && !pointIds.includes(pointId)) {
-      pointIds.push(pointId)
-    }
-  })
 
   pointStatuses.forEach((item) => {
     const status = String(item && item.status || '').trim()

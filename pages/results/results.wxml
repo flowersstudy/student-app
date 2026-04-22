@@ -19,6 +19,9 @@
           <text class="profile-summary-divider">·</text>
           <text class="profile-summary-goal-inline">{{profileSummary.targetExam}}</text>
         </view>
+        <view class="profile-leave-action" bindtap="handleLogout">
+          <text class="profile-leave-action-text">离开</text>
+        </view>
       </view>
     </view>
   </view>
@@ -169,7 +172,7 @@
             <view wx:for="{{studyTimeChart.items}}" wx:key="key" class="study-chart-column">
               <text class="study-chart-value {{item.isMissing ? 'study-chart-value-missing' : ''}}">{{item.valueText}}</text>
               <view class="study-chart-bar-track">
-                <view class="study-chart-bar {{item.isMissing ? 'study-chart-bar-missing' : ''}}" style="height: {{item.barHeight}}%;"></view>
+                <view class="study-chart-bar {{item.isMissing ? 'study-chart-bar-missing' : ''}} {{item.isPlaceholder ? 'study-chart-bar-placeholder' : ''}}" style="height: {{item.barHeight}}%;"></view>
               </view>
               <text class="study-chart-label">{{item.label}}</text>
             </view>
